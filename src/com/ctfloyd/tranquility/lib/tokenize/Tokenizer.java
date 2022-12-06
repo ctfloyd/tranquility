@@ -98,24 +98,43 @@ public class Tokenizer {
                 }
             }
 
-            if (isStartOfPunctuator(token)) {
-                if (scratchHasContent()) {
-                    String identifier = finishScratch();
-                    emit(TokenType.IDENTIFIER, identifier);
-                    inScratchSpace = false;
+            if (scratchHasContent() && isScratchSpaceTerminator(token)) {
+                if (scratchHasKeywordOrReservedWord()){
+                    String scratch = finishScratch();
+                    emit(getTokenTypeForKeywordOrReservedWord(scratch));
+                    continue;
                 }
 
-                TokenType punctuatorType = determinePunctuator(token);
-                emit(punctuatorType);
-                continue;
-            }
+                if (scratchHasNumericLiteral()) {
+                    // Just hand off the string representation to the parser to deal with.
+                    String scratch = finishScratch();
+                    emit(TokenType.NUMERIC_LITERAL, scratch);
+                    continue;
+                }
 
-            if (scratchHasContent() && (isWhitespace(token) || token == END_OF_FILE_CHARACTER)) {
-                // identifier
+                if (scratchHasStringLiteral()) {
+                    String scratch = finishScratch();
+                    // Chop off the quotes
+                    emit(TokenType.STRING_LITERAL, scratch.substring(1, scratch.length() - 1));
+                    continue;
+                }
+
+                if (scratchHasBooleanLiteral())  {
+                    String scratch = finishScratch();
+                    emit(TokenType.BOOLEAN_LITERAL, scratch);
+                    continue;
+                }
+
+                if (scratchHasNullLiteral()) {
+                    String scratch = finishScratch();
+                    emit(TokenType.NULL_LITERAL);
+                    continue;
+                }
+
                 String identifier = finishScratch();
                 emit(TokenType.IDENTIFIER, identifier);
                 inScratchSpace = false;
-                continue;
+                // continue parsing because the current token hasn't been handled
             }
 
             if (isWhitespace(token)) {
@@ -123,27 +142,20 @@ public class Tokenizer {
                 continue;
             }
 
-            if (!inScratchSpace &&(isStartOfKeywordOrReservedWord(token) || isValidIdentifier(token))) {
-                if (Character.isDigit(token)) {
+            if (isStartOfPunctuator(token)) {
+                TokenType punctuatorType = determinePunctuator(token);
+                emit(punctuatorType);
+                continue;
+            }
 
-                }
+            if (!inScratchSpace && (isStartOfKeywordOrReservedWord(token) || isValidIdentifier(token) || isValidStartOfLiteral(token))) {
                 inScratchSpace = true;
                 appendScratch(token);
                 continue;
             }
 
-            if (inScratchSpace && isValidIdentifier(token)) {
+            if (inScratchSpace && isStartOfKeywordOrReservedWord(token) || isValidIdentifier(token) || isValidStartOfLiteral(token)) {
                 appendScratch(token);
-
-                // FIXME: It technically possible that a keyword could be a substring of another keyword. If this is the
-                // case then we will greedily match the shortest keyword. Verify that this isn't an expected case that
-                // needs to be handed differently.
-                if (scratchHasKeywordOrReservedWord()) {
-                    String scratch = finishScratch();
-                    emit(getTokenTypeForKeywordOrReservedWord(scratch));
-                    inScratchSpace = false;
-                }
-
                 continue;
             }
 
@@ -182,8 +194,47 @@ public class Tokenizer {
         return tmp;
     }
 
+    private boolean isScratchSpaceTerminator(int token) {
+        return isStartOfPunctuator(token) || isWhitespace(token) || token == END_OF_FILE_CHARACTER;
+    }
+
     private boolean scratchHasContent() {
         return scratch.length() > 0;
+    }
+
+    private boolean scratchHasNumericLiteral() {
+        // FIXME: Only supports positive decimal literals for now, but should eventually support hexadecimal, octal, signed numbers,
+        // exponents, etc.
+        String currentScratch = scratch.toString();
+        if (currentScratch.isEmpty()) {
+            return false;
+        }
+
+        for (int i = 0; i < currentScratch.length(); i++) {
+            if (!Character.isDigit(currentScratch.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean scratchHasBooleanLiteral() {
+        String currentScratch = scratch.toString();
+        return currentScratch.equals("true") || currentScratch.equals("false");
+    }
+
+    private boolean scratchHasNullLiteral() {
+        String currentScratch = scratch.toString();
+        return currentScratch.equals("null");
+    }
+
+    private boolean scratchHasStringLiteral() {
+        if (scratch.length() == 1) {
+            return false;
+        }
+
+        // FIXME: There are more edge cases defined in the specification: escaped characters, unicode codepoints, etc.
+        return scratch.charAt(0) == '"' && scratch.charAt(scratch.length() - 1) == '"';
     }
 
     private boolean scratchHasKeywordOrReservedWord() {
@@ -466,6 +517,10 @@ public class Tokenizer {
 
     private boolean isValidIdentifier(int ch) {
         return Character.isLetter(ch) || Character.isDigit(ch) || ch == '$' || ch == '_';
+    }
+
+    private boolean isValidStartOfLiteral(int ch) {
+        return Character.isLetter(ch) || Character.isDigit(ch) || ch == '"';
     }
 
     private boolean isStartOfPunctuator(int ch) {

@@ -108,6 +108,55 @@ public class TokenizerTest {
         assertTrue("Expected IDENTIFIER value to be 'identifier'", identifierToken.getValue().equals("identifier"));
     }
 
+    private void tokenize_givenTrueBooleanLiteral_shouldEmitBooleanLiteral() {
+        String input = "true";
+        Tokenizer tokenizer = new Tokenizer(input.toCharArray());
+        List<Token> tokens = tokenizer.tokenize();
+        assertTrue("An unexpected number of tokens was emitted", tokens.size() == 1);
+        Token booleanToken = tokens.get(0);
+        assertTrue("Expected 'BOOLEAN_LITERAL' token emitted, but another type of token was emitted instead", booleanToken.getType() == TokenType.BOOLEAN_LITERAL);
+        assertTrue("Expected 'BOOLEAN_LITERAL' token to have value 'true'", booleanToken.getValue().equals("true"));
+    }
+
+    private void tokenize_givenFalseBooleanLiteral_shouldEmitBooleanLiteral() {
+        String input = "false";
+        Tokenizer tokenizer = new Tokenizer(input.toCharArray());
+        List<Token> tokens = tokenizer.tokenize();
+        assertTrue("An unexpected number of tokens was emitted", tokens.size() == 1);
+        Token booleanToken = tokens.get(0);
+        assertTrue("Expected 'BOOLEAN_LITERAL' token emitted, but another type of token was emitted instead", booleanToken.getType() == TokenType.BOOLEAN_LITERAL);
+        assertTrue("Expected 'BOOLEAN_LITERAL' token to have value 'true'", booleanToken.getValue().equals("false"));
+    }
+
+    private void tokenize_givenNullLiteral_shouldEmitNullLiteral() {
+        String input = "null";
+        Tokenizer tokenizer = new Tokenizer(input.toCharArray());
+        List<Token> tokens = tokenizer.tokenize();
+        assertTrue("An unexpected number of tokens was emitted", tokens.size() == 1);
+        Token nullLiteral = tokens.get(0);
+        assertTrue("Expected 'NULL_LITERAL' token emitted, but another type of token was emitted instead", nullLiteral.getType() == TokenType.NULL_LITERAL);
+    }
+
+    private void tokenize_givenStringLiteral_shouldEmitStringLiteral() {
+        String input = "\"foo\"";
+        Tokenizer tokenizer = new Tokenizer(input.toCharArray());
+        List<Token> tokens = tokenizer.tokenize();
+        assertTrue("An unexpected number of tokens was emitted", tokens.size() == 1);
+        Token stringLiteral = tokens.get(0);
+        assertTrue("Expected 'STRING_LITERAL' token emitted, but another type of token was emitted instead", stringLiteral.getType() == TokenType.STRING_LITERAL);
+        assertTrue("Expected 'STRING_LITERAL' token to have value 'foo'", stringLiteral.getValue().equals("foo"));
+    }
+
+    private void tokenize_givenNumericLiteral_shouldEmitNumericLiteral() {
+        String input = "1234";
+        Tokenizer tokenizer = new Tokenizer(input.toCharArray());
+        List<Token> tokens = tokenizer.tokenize();
+        assertTrue("An unexpected number of tokens was emitted", tokens.size() == 1);
+        Token numericLiteral = tokens.get(0);
+        assertTrue("Expected 'NUMERIC_LITERAL' token emitted, but another type of token was emitted instead", numericLiteral.getType() == TokenType.NUMERIC_LITERAL);
+        assertTrue("Expected 'STRING_LITERAL' token to have value '1234'", numericLiteral.getValue().equals("1234"));
+    }
+
     private void assertTrue(String message, boolean condition) {
         if (!condition) {
             throw new RuntimeException(message);
@@ -129,6 +178,11 @@ public class TokenizerTest {
         tokenize_givenVarAndIdentifier_shouldEmitVarAndIdentifierToken();
         tokenize_givenIdentifierWithInvalidCharacter_shouldEmitError();
         tokenize_givenAllPunctuation_expectUniqueTokensForAll();
+        tokenize_givenNullLiteral_shouldEmitNullLiteral();
+        tokenize_givenNumericLiteral_shouldEmitNumericLiteral();
+        tokenize_givenTrueBooleanLiteral_shouldEmitBooleanLiteral();
+        tokenize_givenFalseBooleanLiteral_shouldEmitBooleanLiteral();
+        tokenize_givenStringLiteral_shouldEmitStringLiteral();
     }
 
     public static void main(String[] args) {
