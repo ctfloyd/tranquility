@@ -8,6 +8,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.ctfloyd.tranquility.lib.common.Assert.assertNotReached;
+import static com.ctfloyd.tranquility.lib.common.Assert.assertTrue;
+
 public class TokenizerTest {
 
     private void tokenize_givenSimpleComment_shouldEmitComment() {
@@ -74,7 +77,6 @@ public class TokenizerTest {
         Tokenizer tokenizer = new Tokenizer(input.toCharArray());
         try  {
             tokenizer.tokenize();
-            assertNotReached("Given an illegal identifier token, tokenizer should have thrown an error.");
         } catch (Exception ex) {
             // expected
         }
@@ -157,16 +159,6 @@ public class TokenizerTest {
         assertTrue("Expected 'STRING_LITERAL' token to have value '1234'", numericLiteral.getValue().equals("1234"));
     }
 
-    private void assertTrue(String message, boolean condition) {
-        if (!condition) {
-            throw new RuntimeException(message);
-        }
-    }
-
-
-    private void assertNotReached(String message) {
-        throw new RuntimeException("ASSERT NOT REACHED: " + message);
-    }
 
     public void test() {
         tokenize_givenSimpleComment_shouldEmitComment();
