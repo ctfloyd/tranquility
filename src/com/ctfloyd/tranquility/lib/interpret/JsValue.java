@@ -19,6 +19,10 @@ public class JsValue {
         return new JsValue(JsValueType.NUMBER, sum);
     }
 
+    public static JsValue object(JsObject object) {
+        return new JsValue(JsValueType.OBJECT, object);
+    }
+
     public static JsValue undefined() {
         return new JsValue(JsValueType.UNDEFINED);
     }
@@ -76,6 +80,11 @@ public class JsValue {
     public Double asDouble() {
         ASSERT(this.type == JsValueType.NUMBER);
         return number;
+    }
+
+    public JsObject asObject() {
+        ASSERT(this.type == JsValueType.OBJECT);
+        return object;
     }
 
     @Override
