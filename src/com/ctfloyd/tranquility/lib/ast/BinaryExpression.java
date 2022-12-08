@@ -1,7 +1,7 @@
 package com.ctfloyd.tranquility.lib.ast;
 
 import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.JsValue;
+import com.ctfloyd.tranquility.lib.interpret.Value;
 
 import java.util.StringJoiner;
 
@@ -30,11 +30,11 @@ public class BinaryExpression extends AstNode {
     }
 
     @Override
-    public JsValue interpret(AstInterpreter interpreter) throws Exception {
+    public Value interpret(AstInterpreter interpreter) throws Exception {
         if (operator == BinaryExpressionOperator.PLUS) {
-            JsValue leftValue = left.interpret(interpreter);
-            JsValue rightValue = right.interpret(interpreter);
-            return JsValue.add(leftValue, rightValue);
+            Value leftValue = left.interpret(interpreter);
+            Value rightValue = right.interpret(interpreter);
+            return Value.add(leftValue, rightValue);
         } else {
             throw new UnsupportedOperationException("NOT IMPLEMENTED");
         }

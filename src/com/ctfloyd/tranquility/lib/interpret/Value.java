@@ -4,92 +4,92 @@ import java.util.StringJoiner;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
-public class JsValue {
+public class Value {
 
-    private JsValueType type;
+    private ValueType type;
     private String stringValue;
     private Double number;
     private Boolean bool;
     private JsObject object;
 
-    public static JsValue add(JsValue left, JsValue right) {
+    public static Value add(Value left, Value right) {
         ASSERT(left.isNumber());
         ASSERT(right.isNumber());
         Double sum = left.asDouble() + right.asDouble();
-        return new JsValue(JsValueType.NUMBER, sum);
+        return new Value(ValueType.NUMBER, sum);
     }
 
-    public static JsValue object(JsObject object) {
-        return new JsValue(JsValueType.OBJECT, object);
+    public static Value object(JsObject object) {
+        return new Value(ValueType.OBJECT, object);
     }
 
-    public static JsValue undefined() {
-        return new JsValue(JsValueType.UNDEFINED);
+    public static Value undefined() {
+        return new Value(ValueType.UNDEFINED);
     }
 
-    public static JsValue number(Double value) {
-        return new JsValue(JsValueType.NUMBER, value);
+    public static Value number(Double value) {
+        return new Value(ValueType.NUMBER, value);
     }
 
-    public JsValue(JsValueType type, Object value)  {
+    public Value(ValueType type, Object value)  {
         this.type = type;
-        if (type == JsValueType.STRING) {
+        if (type == ValueType.STRING) {
             ASSERT(value instanceof String);
             this.stringValue = value.toString();
-        } else if (type == JsValueType.NUMBER)  {
+        } else if (type == ValueType.NUMBER)  {
             ASSERT(value instanceof Double);
             this.number = (Double) value;
-        } else if (type == JsValueType.BOOLEAN) {
+        } else if (type == ValueType.BOOLEAN) {
             ASSERT(value instanceof Boolean);
             this.bool = (Boolean)  value;
-        } else if (type == JsValueType.OBJECT) {
+        } else if (type == ValueType.OBJECT) {
             ASSERT(value instanceof JsObject);
             this.object = (JsObject) value;
         }
     }
 
-    public JsValue(JsValueType type) {
-        ASSERT(type == JsValueType.UNDEFINED || type == JsValueType.NULL);
+    public Value(ValueType type) {
+        ASSERT(type == ValueType.UNDEFINED || type == ValueType.NULL);
         this.type = type;
     }
 
     public boolean isString() {
-        return type == JsValueType.STRING;
+        return type == ValueType.STRING;
     }
 
     public boolean isNumber() {
-        return type == JsValueType.NUMBER;
+        return type == ValueType.NUMBER;
     }
 
     public boolean isBoolean() {
-        return type == JsValueType.BOOLEAN;
+        return type == ValueType.BOOLEAN;
     }
 
     public boolean isObject() {
-        return type == JsValueType.OBJECT;
+        return type == ValueType.OBJECT;
     }
 
     public boolean isNull() {
-        return type == JsValueType.NULL;
+        return type == ValueType.NULL;
     }
 
     public boolean isUndefined() {
-        return type == JsValueType.UNDEFINED;
+        return type == ValueType.UNDEFINED;
     }
 
     public Double asDouble() {
-        ASSERT(this.type == JsValueType.NUMBER);
+        ASSERT(this.type == ValueType.NUMBER);
         return number;
     }
 
     public JsObject asObject() {
-        ASSERT(this.type == JsValueType.OBJECT);
+        ASSERT(this.type == ValueType.OBJECT);
         return object;
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", JsValue.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", Value.class.getSimpleName() + "[", "]")
                 .add("type=" + type)
                 .add("stringValue='" + stringValue + "'")
                 .add("number=" + number)

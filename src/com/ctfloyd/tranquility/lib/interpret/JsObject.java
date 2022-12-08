@@ -7,13 +7,13 @@ import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
 public class JsObject {
 
-    private final Map<String, JsValue> properties = new HashMap<>();
+    private final Map<String, Value> properties = new HashMap<>();
 
-    public JsValue get(String propertyName) {
-        return properties.getOrDefault(propertyName, JsValue.undefined());
+    public Value get(String propertyName) {
+        return properties.getOrDefault(propertyName, Value.undefined());
     }
 
-    public void put(String propertyName, JsValue value) {
+    public void put(String propertyName, Value value) {
         ASSERT(value != null);
         ASSERT(propertyName != null);
         ASSERT(!propertyName.isBlank());

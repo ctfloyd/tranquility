@@ -1,6 +1,6 @@
 package com.ctfloyd.tranquility.lib.interpret;
 
-public enum JsValueType {
+public enum ValueType {
     BOOLEAN,
     NULL,
     NUMBER,

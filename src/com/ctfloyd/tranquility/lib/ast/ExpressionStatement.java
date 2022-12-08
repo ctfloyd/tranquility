@@ -1,7 +1,7 @@
 package com.ctfloyd.tranquility.lib.ast;
 
 import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.JsValue;
+import com.ctfloyd.tranquility.lib.interpret.Value;
 
 import java.util.StringJoiner;
 
@@ -17,7 +17,7 @@ public class ExpressionStatement extends AstNode {
         return expression;
     }
 
-    public JsValue interpret(AstInterpreter interpreter) throws Exception {
+    public Value interpret(AstInterpreter interpreter) throws Exception {
         return expression.interpret(interpreter);
     }
 

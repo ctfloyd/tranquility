@@ -11,7 +11,7 @@ import com.ctfloyd.tranquility.lib.ast.NumericLiteral;
 import com.ctfloyd.tranquility.lib.ast.Program;
 import com.ctfloyd.tranquility.lib.ast.ReturnStatement;
 import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.JsValue;
+import com.ctfloyd.tranquility.lib.interpret.Value;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.assertTrue;
 
@@ -24,7 +24,7 @@ public class AstInterpreterTest {
         program.addChild(statement);
 
         AstInterpreter interpreter = new AstInterpreter();
-        JsValue finalValue = program.interpret(interpreter);
+        Value finalValue = program.interpret(interpreter);
         assertTrue("Value is not a number", finalValue.isNumber());
         assertTrue("Value is not '150'", finalValue.asDouble() == 150D);
     }
@@ -51,7 +51,7 @@ public class AstInterpreterTest {
         program.addChild(callStatement);
 
         AstInterpreter interpreter = new AstInterpreter();
-        JsValue result = program.interpret(interpreter);
+        Value result = program.interpret(interpreter);
         assertTrue("Value is not a number", result.isNumber());
         assertTrue("Value is not '3'", result.asDouble() == 3D);
     }

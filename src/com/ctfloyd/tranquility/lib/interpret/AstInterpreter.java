@@ -17,10 +17,10 @@ public class AstInterpreter {
 
     public void defineFunction(String functionName, BlockStatement body) {
         Function function = new Function(functionName, body);
-        globalObject.put(functionName, JsValue.object(function));
+        globalObject.put(functionName, Value.object(function));
     }
 
-    public JsValue getIdentifier(String identifierName)  {
+    public Value getIdentifier(String identifierName)  {
         return globalObject.get(identifierName);
     }
 
@@ -28,11 +28,11 @@ public class AstInterpreter {
         setIdentifier(identifier, Optional.empty());
     }
 
-    public void setIdentifier(String identifier, Optional<JsValue> value) {
+    public void setIdentifier(String identifier, Optional<Value> value) {
         if (value.isPresent()) {
             globalObject.put(identifier, value.get());
         } else {
-            globalObject.put(identifier, JsValue.undefined());
+            globalObject.put(identifier, Value.undefined());
         }
     }
 

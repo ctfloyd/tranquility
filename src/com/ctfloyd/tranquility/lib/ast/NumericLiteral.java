@@ -1,7 +1,7 @@
 package com.ctfloyd.tranquility.lib.ast;
 
 import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.JsValue;
+import com.ctfloyd.tranquility.lib.interpret.Value;
 
 import java.util.StringJoiner;
 
@@ -14,8 +14,8 @@ public class NumericLiteral extends AstNode {
     }
 
     @Override
-    public JsValue interpret(AstInterpreter interpreter) {
-        return JsValue.number(value);
+    public Value interpret(AstInterpreter interpreter) {
+        return Value.number(value);
     }
 
     @Override
