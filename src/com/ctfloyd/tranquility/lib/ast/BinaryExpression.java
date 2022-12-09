@@ -41,6 +41,13 @@ public class BinaryExpression extends AstNode {
     }
 
     @Override
+    public void dump(int indent) {
+        System.out.println(left);
+        System.out.println(" + ");
+        System.out.println(right);
+    }
+
+    @Override
     public String toString() {
         return new StringJoiner(", ", BinaryExpression.class.getSimpleName() + "[", "]")
                 .add("left=" + left)

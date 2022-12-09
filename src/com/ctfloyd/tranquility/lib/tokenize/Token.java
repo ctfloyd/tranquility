@@ -2,17 +2,21 @@ package com.ctfloyd.tranquility.lib.tokenize;
 
 import java.util.StringJoiner;
 
+import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
+
 public class Token {
 
     private final TokenType type;
     private final String value;
 
     public Token(TokenType type) {
+        ASSERT(type != null);
         this.type = type;
         this.value = null;
     }
 
     public Token(TokenType type, String value) {
+        ASSERT(type != null);
         this.type = type;
         this.value = value;
     }

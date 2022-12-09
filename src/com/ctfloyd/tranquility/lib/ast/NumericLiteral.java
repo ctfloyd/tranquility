@@ -19,6 +19,11 @@ public class NumericLiteral extends AstNode {
     }
 
     @Override
+    public void dump(int indent) {
+        System.out.println("NUMERIC_LITERAL: "  + value);
+    }
+
+    @Override
     public String toString() {
         return new StringJoiner(", ", NumericLiteral.class.getSimpleName() + "[", "]")
                 .add("value=" + value)

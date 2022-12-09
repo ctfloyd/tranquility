@@ -30,4 +30,11 @@ public class Program extends AstNode {
         }
         return lastValue;
     }
+
+    @Override
+    public void dump(int indent) {
+        System.out.println("Program {");
+        children.forEach(child -> child.dump(indent));
+        System.out.println("}");
+    }
 }

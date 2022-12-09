@@ -22,6 +22,13 @@ public class ExpressionStatement extends AstNode {
     }
 
     @Override
+    public void dump(int indent) {
+        System.out.println("ExpressionStatement {");
+        expression.dump(indent);
+        System.out.println("}");
+    }
+
+    @Override
     public String toString() {
         return new StringJoiner(", ", ExpressionStatement.class.getSimpleName() + "[", "]")
                 .add("expression=" + expression)

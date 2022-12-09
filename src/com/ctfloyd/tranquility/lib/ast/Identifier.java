@@ -15,4 +15,14 @@ public class Identifier extends AstNode {
     public String getName() {
         return name;
     }
+
+    @Override
+    public void dump(int indent) {
+        System.out.println("Identifier: " + name);
+    }
+
+    @Override
+    public boolean isIdentifier() {
+        return true;
+    }
 }

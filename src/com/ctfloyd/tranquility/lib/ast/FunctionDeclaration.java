@@ -21,6 +21,14 @@ public class FunctionDeclaration extends AstNode {
     }
 
     @Override
+    public void dump(int indent) {
+        System.out.println("FUNCTION DECLARATION {");
+        System.out.println("NAME: " + name);
+        blockStatement.dump(0);
+        System.out.println("}");
+    }
+
+    @Override
     public Value interpret(AstInterpreter interpreter) throws Exception {
         GlobalObject globalObject = interpreter.getGlobalObject();
         Value value = Value.object(new Function(name, blockStatement));

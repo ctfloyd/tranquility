@@ -25,6 +25,7 @@ public enum TokenType {
     DIVIDE_EQUALS,
     DOES_NOT_EQUAL,
     ELSE,
+    EOF,
     EQUALITY,
     EXCLAMATION,
     FOR,

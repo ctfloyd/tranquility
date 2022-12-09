@@ -24,4 +24,10 @@ public class CallExpression extends AstNode {
         ASSERT(object.isFunction());
         return ((Function)object).getBody().interpret(interpreter);
     }
+
+    @Override
+    public void dump(int indent) {
+        System.out.println("CALL: ");
+        callee.dump(indent);
+    }
 }

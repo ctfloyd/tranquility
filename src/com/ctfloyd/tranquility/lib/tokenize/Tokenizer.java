@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 public class Tokenizer {
 
     // tab, vertical tab, form feed, space
-    private static final Set<Character> WHITESPACE = Stream.of((char) 0x09, (char) 0x0B, (char) 0x0C, (char) 0x20)
+    private static final Set<Character> WHITESPACE = Stream.of((char) 0x09, (char) 0x0B, (char) 0x0C, (char) 0x20, '\n')
             .collect(Collectors.toSet());
     private static final Set<Character> LINE_TERMINATORS = Stream.of((char) 0x0A, (char) 0x0D)
             .collect(Collectors.toSet());
@@ -53,6 +53,7 @@ public class Tokenizer {
         }
 
         List<Token> tokens = tokenizeInternal();
+        tokens.add(new Token(TokenType.EOF));
 
         this.tokenized = true;
         return tokens;

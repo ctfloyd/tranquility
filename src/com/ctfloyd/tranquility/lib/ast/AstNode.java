@@ -9,4 +9,12 @@ public class AstNode {
         throw new Exception("Not implemented");
     }
 
+    public void dump(int indent) {
+        System.out.println("GENERIC AST NODE DUMP");
+    }
+
+    public boolean isIdentifier() {
+        return false;
+    }
+
 }
