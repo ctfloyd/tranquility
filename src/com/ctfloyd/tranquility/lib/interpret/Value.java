@@ -31,6 +31,8 @@ public class Value {
         return new Value(ValueType.NUMBER, value);
     }
 
+    public static Value string(String value) { return new Value(ValueType.STRING, value); }
+
     public Value(ValueType type, Object value)  {
         this.type = type;
         if (type == ValueType.STRING) {

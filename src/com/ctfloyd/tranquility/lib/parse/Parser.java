@@ -11,6 +11,7 @@ import com.ctfloyd.tranquility.lib.ast.Identifier;
 import com.ctfloyd.tranquility.lib.ast.NumericLiteral;
 import com.ctfloyd.tranquility.lib.ast.Program;
 import com.ctfloyd.tranquility.lib.ast.ReturnStatement;
+import com.ctfloyd.tranquility.lib.ast.StringLiteral;
 import com.ctfloyd.tranquility.lib.tokenize.Token;
 import com.ctfloyd.tranquility.lib.tokenize.TokenStream;
 import com.ctfloyd.tranquility.lib.tokenize.TokenType;
@@ -124,6 +125,8 @@ public class Parser {
             return new Identifier(consume().getValue());
         } else if (type == TokenType.NUMERIC_LITERAL) {
             return new NumericLiteral(Double.parseDouble(consume().getValue()));
+        } else if (type == TokenType.STRING_LITERAL){
+            return new StringLiteral(consume().getValue());
         } else {
             ASSERT(false, "Not implemented, cannot handle token: " + currentToken + " for primary expression.");
             return null;
