@@ -25,7 +25,6 @@ public class Parser {
 
     public Parser(TokenStream tokenStream) {
         ASSERT(tokenStream != null);
-        System.out.println("Token stream: " + tokenStream);
         this.tokenStream = tokenStream;
     }
 
@@ -42,7 +41,6 @@ public class Parser {
     // FIXME: Instead of returning AstNode everywhere, we should make stricter constraints about which *type* of AstNode
     // is being returned
     private AstNode parseStatement() {
-        System.out.println("Parse Statement current token: " + currentToken);
         if (matchesExpression()) {
             AstNode expression = parseExpression();
             return new ExpressionStatement(expression);
@@ -75,7 +73,6 @@ public class Parser {
         BlockStatement block = new BlockStatement();
         consume(TokenType.LEFT_CURLY_BRACE);
         while (!done() && !match(TokenType.RIGHT_CURLY_BRACE)) {
-            System.out.println("Parsing block statement with current token: " + currentToken);
             // FIXME: Support consuming semicolons
             if (matchesStatement()) {
                 block.addChild(parseStatement());
@@ -84,7 +81,6 @@ public class Parser {
             }
         }
         consume(TokenType.RIGHT_CURLY_BRACE);
-        System.out.println("Returning from parse block statement with token: " + currentToken);
         return block;
     }
 
@@ -110,7 +106,6 @@ public class Parser {
     }
 
     private AstNode parseExpression() {
-        System.out.println("Parse expression current token: " + currentToken);
         AstNode expression = parsePrimaryExpression();
         if (matchesSecondaryExpression()) {
             expression = parseSecondaryExpression(expression);
@@ -126,7 +121,6 @@ public class Parser {
             consume(TokenType.RIGHT_PARENTHESIS);
             return expression;
         } else if (type == TokenType.IDENTIFIER) {
-            System.out.println("Making new identifier: " + currentToken);
             return new Identifier(consume().getValue());
         } else if (type == TokenType.NUMERIC_LITERAL) {
             return new NumericLiteral(Double.parseDouble(consume().getValue()));
@@ -137,7 +131,6 @@ public class Parser {
     }
 
     private AstNode parseSecondaryExpression(AstNode leftHandSide) {
-        System.out.println("Parse secondary expression token: " + currentToken);
         TokenType type = currentToken.getType();
         if (type == TokenType.PLUS) {
             consume();
