@@ -13,6 +13,8 @@ import com.ctfloyd.tranquility.lib.ast.ReturnStatement;
 import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
 import com.ctfloyd.tranquility.lib.interpret.Value;
 
+import java.util.Collections;
+
 import static com.ctfloyd.tranquility.lib.common.Assert.assertTrue;
 
 public class AstInterpreterTest {
@@ -42,9 +44,9 @@ public class AstInterpreterTest {
         ExpressionStatement statement = new ExpressionStatement(expression);
         ReturnStatement returnStatement = new ReturnStatement(statement);
         block.addChild(returnStatement);
-        FunctionDeclaration functionDeclaration = new FunctionDeclaration("foo", block);
+        FunctionDeclaration functionDeclaration = new FunctionDeclaration("foo", Collections.emptyList(), block);
 
-        CallExpression callExpression = new CallExpression(new Identifier("foo"));
+        CallExpression callExpression = new CallExpression(new Identifier("foo"), Collections.emptyList());
         ExpressionStatement callStatement = new ExpressionStatement(callExpression);
 
         program.addChild(functionDeclaration);

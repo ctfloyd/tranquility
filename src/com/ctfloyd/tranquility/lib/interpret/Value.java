@@ -89,6 +89,11 @@ public class Value {
         return object;
     }
 
+    public String asString() {
+        ASSERT(this.type == ValueType.STRING);
+        return stringValue;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", Value.class.getSimpleName() + "[", "]")

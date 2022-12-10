@@ -8,6 +8,7 @@ import com.ctfloyd.tranquility.lib.ast.CallExpression;
 import com.ctfloyd.tranquility.lib.ast.ExpressionStatement;
 import com.ctfloyd.tranquility.lib.ast.FunctionDeclaration;
 import com.ctfloyd.tranquility.lib.ast.Identifier;
+import com.ctfloyd.tranquility.lib.ast.MemberExpression;
 import com.ctfloyd.tranquility.lib.ast.NumericLiteral;
 import com.ctfloyd.tranquility.lib.ast.Program;
 import com.ctfloyd.tranquility.lib.ast.ReturnStatement;
@@ -15,6 +16,9 @@ import com.ctfloyd.tranquility.lib.ast.StringLiteral;
 import com.ctfloyd.tranquility.lib.tokenize.Token;
 import com.ctfloyd.tranquility.lib.tokenize.TokenStream;
 import com.ctfloyd.tranquility.lib.tokenize.TokenType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
@@ -64,10 +68,18 @@ public class Parser {
         consume(TokenType.FUNCTION);
         String functionName = consume(TokenType.IDENTIFIER).getValue();
         consume(TokenType.LEFT_PARENTHESIS);
+
+        List<String> arguments = new ArrayList<>();
+        while(match(TokenType.IDENTIFIER)) {
+            arguments.add(consume().getValue());
+            if (match(TokenType.COMMA)) {
+                consume(TokenType.COMMA);
+            }
+        }
         // FIXME: Support parsing function parameters
         consume(TokenType.RIGHT_PARENTHESIS);
         BlockStatement functionBody = parseBlockStatement();
-        return new FunctionDeclaration(functionName, functionBody);
+        return new FunctionDeclaration(functionName, arguments, functionBody);
     }
 
     private BlockStatement parseBlockStatement() {
@@ -94,16 +106,27 @@ public class Parser {
     }
 
     private CallExpression parseCallExpression(AstNode leftHandSide) {
-        // FIXME: allow arguments
         consume(TokenType.LEFT_PARENTHESIS);
+        List<AstNode> arguments = new ArrayList<>();
+        while (matchesExpression()) {
+            arguments.add(parseExpression());
+            if (match(TokenType.COMMA)) {
+                consume(TokenType.COMMA);
+            }
+        }
         consume(TokenType.RIGHT_PARENTHESIS);
 
         if (leftHandSide.isIdentifier()) {
-            return new CallExpression((Identifier) leftHandSide);
+            return new CallExpression(leftHandSide, arguments);
         }
 
         ASSERT(false, "Do not know how to handle call expression for things that aren't identifiers.");
         return null;
+    }
+
+    private MemberExpression parseMemberExpression(AstNode leftHandSide) {
+        consume(TokenType.PERIOD);
+        return new MemberExpression(leftHandSide, parseExpression());
     }
 
     private AstNode parseExpression() {
@@ -143,6 +166,8 @@ public class Parser {
             return new BinaryExpression(leftHandSide, parseExpression(), BinaryExpressionOperator.MINUS);
         } else if (type == TokenType.LEFT_PARENTHESIS) {
             return parseCallExpression(leftHandSide);
+        } else if (type == TokenType.PERIOD) {
+            return parseMemberExpression(leftHandSide);
         } else {
             ASSERT(false, "Do not know how to handle token: " + currentToken + " for parsing secondary expression.");
             return null;
@@ -188,6 +213,7 @@ public class Parser {
                 type == TokenType.MULTIPLY ||
                 type == TokenType.COMMENT ||
                 type == TokenType.EQUALITY ||
+                type == TokenType.PERIOD ||
                 type == TokenType.LEFT_PARENTHESIS;
     }
 

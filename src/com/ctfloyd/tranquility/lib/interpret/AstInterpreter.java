@@ -2,26 +2,37 @@ package com.ctfloyd.tranquility.lib.interpret;
 
 import com.ctfloyd.tranquility.lib.ast.BlockStatement;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Iterator;
 import java.util.Optional;
 
 public class AstInterpreter {
 
-    // FIXME: The interpreter should know about scopes and be able to enter / exit them to look up identifiers.
-    // For now everything will live in the global namespace.
-
-    private final GlobalObject globalObject;
+    private final Deque<Scope> scopes;
 
     public AstInterpreter() {
-        globalObject = new GlobalObject();
+        scopes = new ArrayDeque<>();
+        scopes.add(new GlobalScope());
     }
 
-    public void defineFunction(String functionName, BlockStatement body) {
-        Function function = new Function(functionName, body);
-        globalObject.put(functionName, Value.object(function));
+    public void enterScope() {
+        scopes.push(new Scope());
     }
 
-    public Value getIdentifier(String identifierName)  {
-        return globalObject.get(identifierName);
+    public void leaveScope() {
+        scopes.pop();
+    }
+
+    public Value getIdentifier(String identifier)  {
+        Iterator<Scope> backwards = scopes.descendingIterator();
+        while (backwards.hasNext()) {
+            Scope scope = backwards.next();
+            if (scope.has(identifier)) {
+                return scope.get(identifier);
+            }
+        }
+        return Value.undefined();
     }
 
     public void setIdentifier(String identifier) {
@@ -29,15 +40,15 @@ public class AstInterpreter {
     }
 
     public void setIdentifier(String identifier, Optional<Value> value) {
+        Scope scope = getCurrentScope();
         if (value.isPresent()) {
-            globalObject.put(identifier, value.get());
+            scope.put(identifier, value.get());
         } else {
-            globalObject.put(identifier, Value.undefined());
+            scope.put(identifier, Value.undefined());
         }
     }
 
-    public GlobalObject getGlobalObject() {
-        return globalObject;
+    public Scope getCurrentScope() {
+        return scopes.peek();
     }
-
 }

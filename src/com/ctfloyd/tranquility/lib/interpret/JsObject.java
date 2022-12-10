@@ -23,5 +23,6 @@ public class JsObject {
     public boolean isFunction() {
         return false;
     }
+    public boolean isNativeFunction() { return false; }
 
 }
