@@ -20,7 +20,8 @@ public class StringLiteral extends AstNode {
 
     @Override
     public void dump(int indent) {
-        System.out.println("STRING_LITERAL: "  + value);
+        printIndent(indent);
+        System.out.println("StringLiteral (Value: "  + value + ")");
     }
 
     @Override

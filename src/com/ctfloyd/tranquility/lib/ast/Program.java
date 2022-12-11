@@ -33,8 +33,10 @@ public class Program extends AstNode {
 
     @Override
     public void dump(int indent) {
-        System.out.println("Program {");
-        children.forEach(child -> child.dump(indent));
-        System.out.println("}");
+        printIndent(indent);
+        System.out.println("Program (");
+        children.forEach(child -> child.dump(indent + 1));
+        printIndent(indent);
+        System.out.println(")");
     }
 }

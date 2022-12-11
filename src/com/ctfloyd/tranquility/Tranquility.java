@@ -17,6 +17,7 @@ public class Tranquility {
         Parser parser = new Parser(new TokenStream(tokenizer.tokenize()));
         AstInterpreter astInterpreter = new AstInterpreter();
         Program program = parser.parse();
+        program.dump(0);
         program.interpret(astInterpreter);
     }
 

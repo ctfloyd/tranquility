@@ -27,10 +27,13 @@ public class FunctionDeclaration extends AstNode {
 
     @Override
     public void dump(int indent) {
-        System.out.println("FUNCTION DECLARATION {");
-        System.out.println("NAME: " + name);
-        blockStatement.dump(0);
-        System.out.println("}");
+        printIndent(indent);
+        System.out.println("FunctionDeclaration (");
+        printIndent(indent + 1);
+        System.out.println("Name: " + name);
+        blockStatement.dump(indent + 1);
+        printIndent(indent);
+        System.out.println(")");
     }
 
     @Override

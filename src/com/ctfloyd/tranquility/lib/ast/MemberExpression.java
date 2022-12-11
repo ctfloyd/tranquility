@@ -30,12 +30,11 @@ public class MemberExpression extends AstNode {
 
     @Override
     public void dump(int indent) {
-        System.out.println("MEMBER EXPRESSION {");
-        System.out.println("OBJECT {");
-        object.dump(indent);
-        System.out.println("}");
-        System.out.println("PROPERTY {");
-        property.dump(indent);
-        System.out.println("}");
+        printIndent(indent);
+        System.out.println("MemberExpression (");
+        object.dump(indent + 1);
+        property.dump(indent + 1);
+        printIndent(indent);
+        System.out.println(")");
     }
 }

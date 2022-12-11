@@ -42,9 +42,14 @@ public class BinaryExpression extends AstNode {
 
     @Override
     public void dump(int indent) {
-        System.out.println(left);
-        System.out.println(" + ");
-        System.out.println(right);
+        printIndent(indent);
+        System.out.println("BinaryExpression (");
+        left.dump(indent + 1);
+        printIndent(indent);
+        System.out.println(operator.name());
+        right.dump(indent + 1);
+        printIndent(indent);
+        System.out.println(")");
     }
 
     @Override

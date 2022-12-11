@@ -23,7 +23,8 @@ public class Identifier extends AstNode {
 
     @Override
     public void dump(int indent) {
-        System.out.println("Identifier: " + name);
+        printIndent(indent);
+        System.out.println("Identifier (Name:  " + name + ")");
     }
 
     @Override

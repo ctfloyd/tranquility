@@ -58,7 +58,10 @@ public class CallExpression extends AstNode {
 
     @Override
     public void dump(int indent) {
-        System.out.println("CALL: ");
-        callee.dump(indent);
+        printIndent(indent);
+        System.out.println("CallExpression (");
+        callee.dump(indent + 1);
+        printIndent(indent);
+        System.out.println(")");
     }
 }

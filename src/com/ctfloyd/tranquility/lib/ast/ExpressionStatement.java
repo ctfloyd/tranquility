@@ -23,9 +23,11 @@ public class ExpressionStatement extends AstNode {
 
     @Override
     public void dump(int indent) {
-        System.out.println("ExpressionStatement {");
-        expression.dump(indent);
-        System.out.println("}");
+        printIndent(indent);
+        System.out.println("ExpressionStatement (");
+        expression.dump(indent + 1);
+        printIndent(indent);
+        System.out.println(")");
     }
 
     @Override

@@ -16,8 +16,11 @@ public class ReturnStatement extends AstNode {
 
     @Override
     public void dump(int indent) {
-        System.out.println("RETURN: ");
-        argument.dump(indent);
+        printIndent(indent);
+        System.out.println("Return (");
+        argument.dump(indent + 1);
+        printIndent(indent);
+        System.out.println(")");
     }
 
     @Override

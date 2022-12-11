@@ -28,8 +28,10 @@ public class BlockStatement extends AstNode {
 
     @Override
     public void dump(int indent) {
-        System.out.println("{");
-        children.forEach(child -> child.dump(indent));
-        System.out.println("}");
+        printIndent(indent);
+        System.out.println("BlockStatement (");
+        children.forEach(child -> child.dump(indent + 1));
+        printIndent(indent);
+        System.out.println(")");
     }
 }
