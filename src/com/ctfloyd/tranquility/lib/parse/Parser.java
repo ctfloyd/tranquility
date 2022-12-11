@@ -76,7 +76,6 @@ public class Parser {
                 consume(TokenType.COMMA);
             }
         }
-        // FIXME: Support parsing function parameters
         consume(TokenType.RIGHT_PARENTHESIS);
         BlockStatement functionBody = parseBlockStatement();
         return new FunctionDeclaration(functionName, arguments, functionBody);
