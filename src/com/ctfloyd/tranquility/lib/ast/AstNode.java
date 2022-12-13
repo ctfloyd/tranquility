@@ -13,7 +13,7 @@ public class AstNode {
         System.out.println("GENERIC AST NODE DUMP");
     }
 
-    public void printIndent(int indent) {
+    protected void printIndent(int indent) {
         for(int i = 0; i < indent * 3; i++) {
             System.out.print(" ");
         }
