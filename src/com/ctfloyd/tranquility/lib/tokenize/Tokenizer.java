@@ -239,7 +239,8 @@ public class Tokenizer {
         }
 
         // FIXME: There are more edge cases defined in the specification: escaped characters, unicode codepoints, etc.
-        return scratch.charAt(0) == '"' && scratch.charAt(scratch.length() - 1) == '"';
+        return (scratch.charAt(0) == '"' && scratch.charAt(scratch.length() - 1) == '"') ||
+                (scratch.charAt(0) == '\'' && scratch.charAt(scratch.length() - 1) == '\'');
     }
 
     private boolean scratchHasKeywordOrReservedWord() {
@@ -525,7 +526,7 @@ public class Tokenizer {
     }
 
     private boolean isValidStartOfLiteral(int ch) {
-        return Character.isLetter(ch) || Character.isDigit(ch) || ch == '"';
+        return Character.isLetter(ch) || Character.isDigit(ch) || ch == '"' || ch == '\'';
     }
 
     private boolean isStartOfPunctuator(int ch) {
