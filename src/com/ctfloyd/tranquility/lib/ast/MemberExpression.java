@@ -9,9 +9,9 @@ import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 public class MemberExpression extends AstNode {
 
     private final AstNode object;
-    private final AstNode property;
+    private final Identifier property;
 
-    public MemberExpression(AstNode object, AstNode property) {
+    public MemberExpression(AstNode object, Identifier property) {
         ASSERT(object != null);
         ASSERT(property != null);
         this.object = object;
@@ -23,8 +23,7 @@ public class MemberExpression extends AstNode {
         Value unknownValue = object.interpret(interpreter);
         ASSERT(unknownValue.isObject());
         JsObject object = unknownValue.asObject();
-        Value propertyName = property.interpret(interpreter);
-        ASSERT(propertyName.isString());
+        Value propertyName = Value.string(property.getName());
         return object.get(propertyName.asString());
     }
 

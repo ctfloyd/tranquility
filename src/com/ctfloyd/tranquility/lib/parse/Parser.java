@@ -114,18 +114,17 @@ public class Parser {
             }
         }
         consume(TokenType.RIGHT_PARENTHESIS);
-
-        if (leftHandSide.isIdentifier()) {
-            return new CallExpression(leftHandSide, arguments);
-        }
-
-        ASSERT(false, "Do not know how to handle call expression for things that aren't identifiers.");
-        return null;
+        return new CallExpression(leftHandSide, arguments);
     }
 
-    private MemberExpression parseMemberExpression(AstNode leftHandSide) {
+    private AstNode parseMemberExpression(AstNode leftHandSide) {
         consume(TokenType.PERIOD);
-        return new MemberExpression(leftHandSide, parseExpression());
+        Identifier identifier = new Identifier(consume(TokenType.IDENTIFIER).getValue());
+        MemberExpression memberExpression = new MemberExpression(leftHandSide, identifier);
+        if (matchesSecondaryExpression()) {
+            return parseSecondaryExpression(memberExpression);
+        }
+        return memberExpression;
     }
 
     private AstNode parseExpression() {
