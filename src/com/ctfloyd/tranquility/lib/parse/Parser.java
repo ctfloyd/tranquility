@@ -179,7 +179,7 @@ public class Parser {
 
     private Token consume(TokenType tokenType) {
         consume();
-        ASSERT(previousToken.getType() == tokenType);
+        ASSERT(previousToken.getType() == tokenType, "Expected token type to be " + tokenType + " but got " + previousToken.getType() + " instead. ");
         return previousToken;
     }
 
