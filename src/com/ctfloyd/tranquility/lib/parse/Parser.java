@@ -13,6 +13,7 @@ import com.ctfloyd.tranquility.lib.ast.NumericLiteral;
 import com.ctfloyd.tranquility.lib.ast.Program;
 import com.ctfloyd.tranquility.lib.ast.ReturnStatement;
 import com.ctfloyd.tranquility.lib.ast.StringLiteral;
+import com.ctfloyd.tranquility.lib.ast.VariableDeclarator;
 import com.ctfloyd.tranquility.lib.tokenize.Token;
 import com.ctfloyd.tranquility.lib.tokenize.TokenStream;
 import com.ctfloyd.tranquility.lib.tokenize.TokenType;
@@ -58,6 +59,8 @@ public class Parser {
             return parseBlockStatement();
         } else if (type == TokenType.RETURN) {
             return parseReturnStatement();
+        } else if (type == TokenType.VAR) {
+            return parseVariableDeclarator();
         } else {
             ASSERT(false, "Do not know how to handle token: " + currentToken + " for parse statement.");
             return null;
@@ -79,6 +82,19 @@ public class Parser {
         consume(TokenType.RIGHT_PARENTHESIS);
         BlockStatement functionBody = parseBlockStatement();
         return new FunctionDeclaration(functionName, arguments, functionBody);
+    }
+
+    private VariableDeclarator parseVariableDeclarator() {
+        consume(TokenType.VAR);
+        String variableName = consume(TokenType.IDENTIFIER).getValue();
+
+        if (match(TokenType.ASSIGNMENT)) {
+            consume(TokenType.ASSIGNMENT);
+            AstNode expression = parseExpression();
+            return new VariableDeclarator(variableName, expression);
+        }
+
+        return new VariableDeclarator(variableName);
     }
 
     private BlockStatement parseBlockStatement() {
