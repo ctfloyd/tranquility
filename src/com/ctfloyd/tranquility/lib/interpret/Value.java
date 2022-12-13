@@ -19,6 +19,13 @@ public class Value {
         return new Value(ValueType.NUMBER, sum);
     }
 
+    public static Value concat(Value left, Value right) {
+        ASSERT(left.isString());
+        ASSERT(right.isString());
+        String concat = left.asString() + right.asString();
+        return Value.string(concat);
+    }
+
     public static Value object(JsObject object) {
         return new Value(ValueType.OBJECT, object);
     }

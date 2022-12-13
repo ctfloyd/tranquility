@@ -34,7 +34,13 @@ public class BinaryExpression extends AstNode {
         if (operator == BinaryExpressionOperator.PLUS) {
             Value leftValue = left.interpret(interpreter);
             Value rightValue = right.interpret(interpreter);
-            return Value.add(leftValue, rightValue);
+            if (leftValue.isNumber() && rightValue.isNumber()) {
+                return Value.add(leftValue, rightValue);
+            } else if (leftValue.isString() && rightValue.isString()) {
+                return Value.concat(leftValue, rightValue);
+            } else {
+                throw new UnsupportedOperationException("Cannot handle binary 'PLUS' operator for values (" + leftValue + ", " + rightValue + ")");
+            }
         } else {
             throw new UnsupportedOperationException("NOT IMPLEMENTED");
         }
