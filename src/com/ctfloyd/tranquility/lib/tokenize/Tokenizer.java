@@ -100,42 +100,46 @@ public class Tokenizer {
             }
 
             if (scratchHasContent() && isScratchSpaceTerminator(token)) {
+                boolean scratchHandled = false;
                 if (scratchHasKeywordOrReservedWord()){
                     String scratch = finishScratch();
                     emit(getTokenTypeForKeywordOrReservedWord(scratch));
-                    continue;
+                    scratchHandled = true;
                 }
 
                 if (scratchHasNumericLiteral()) {
                     // Just hand off the string representation to the parser to deal with.
                     String scratch = finishScratch();
                     emit(TokenType.NUMERIC_LITERAL, scratch);
-                    continue;
+                    scratchHandled = true;
                 }
 
                 if (scratchHasStringLiteral()) {
                     String scratch = finishScratch();
                     // Chop off the quotes
                     emit(TokenType.STRING_LITERAL, scratch.substring(1, scratch.length() - 1));
-                    continue;
+                    scratchHandled = true;
                 }
 
                 if (scratchHasBooleanLiteral())  {
                     String scratch = finishScratch();
                     emit(TokenType.BOOLEAN_LITERAL, scratch);
-                    continue;
+                    scratchHandled = true;
                 }
 
                 if (scratchHasNullLiteral()) {
                     String scratch = finishScratch();
                     emit(TokenType.NULL_LITERAL);
-                    continue;
+                    scratchHandled = true;
                 }
 
-                String identifier = finishScratch();
-                emit(TokenType.IDENTIFIER, identifier);
-                inScratchSpace = false;
+                if (!scratchHandled) {
+                    String identifier = finishScratch();
+                    emit(TokenType.IDENTIFIER, identifier);
+                }
+
                 // continue parsing because the current token hasn't been handled
+                inScratchSpace = false;
             }
 
             if (isWhitespace(token)) {
@@ -230,7 +234,7 @@ public class Tokenizer {
     }
 
     private boolean scratchHasStringLiteral() {
-        if (scratch.length() == 1) {
+        if (scratch.length() <= 1) {
             return false;
         }
 
