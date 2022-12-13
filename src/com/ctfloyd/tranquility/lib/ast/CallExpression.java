@@ -60,7 +60,16 @@ public class CallExpression extends AstNode {
     public void dump(int indent) {
         printIndent(indent);
         System.out.println("CallExpression (");
+        printIndent(indent + 1);
+        System.out.println("[Callee] {");
         callee.dump(indent + 1);
+        printIndent(indent + 1);
+        System.out.println("}");
+        printIndent(indent + 1);
+        System.out.println("[Arguments] {");
+        arguments.forEach(argument -> argument.dump(indent + 1));
+        printIndent(indent + 1);
+        System.out.println("}");
         printIndent(indent);
         System.out.println(")");
     }
