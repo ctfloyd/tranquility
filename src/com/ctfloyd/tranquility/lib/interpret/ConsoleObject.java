@@ -12,6 +12,7 @@ public class ConsoleObject extends JsObject {
     }
 
     public Value log(List<Value> arguments) {
+        System.out.print("(JS Log) ");
         if (arguments == null) {
             System.out.println("null");
         }
