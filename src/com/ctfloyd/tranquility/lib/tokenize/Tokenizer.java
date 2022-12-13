@@ -100,6 +100,13 @@ public class Tokenizer {
             }
 
             if (scratchHasContent() && isScratchSpaceTerminator(token)) {
+                // If a string literal is being parsed and a terminator is encountered then the terminator should be
+                // handled as part of the string and not as its own token.
+                if (scratchBeginsWithStringLiteral() && !scratchHasStringLiteral()) {
+                    appendScratch(token);
+                    continue;
+                }
+
                 boolean scratchHandled = false;
                 if (scratchHasKeywordOrReservedWord()){
                     String scratch = finishScratch();
@@ -231,6 +238,14 @@ public class Tokenizer {
     private boolean scratchHasNullLiteral() {
         String currentScratch = scratch.toString();
         return currentScratch.equals("null");
+    }
+
+    private boolean scratchBeginsWithStringLiteral() {
+        if (scratch.length() <= 0) {
+            return false;
+        }
+
+        return scratch.charAt(0) == '"' || scratch.charAt(0) == '\'';
     }
 
     private boolean scratchHasStringLiteral() {
