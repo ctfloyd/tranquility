@@ -18,25 +18,28 @@ public class ConsoleObject extends JsObject {
 
         for (Value value : arguments) {
             if (value.isString()) {
-                System.out.println(value.asString());
+                System.out.print(value.asString());
             }
 
             if (value.isNumber()) {
-                System.out.println(value.asDouble());
+                System.out.print(value.asDouble());
             }
 
             if (value.isNull()) {
-                System.out.println("null");
+                System.out.print("null");
             }
 
             if (value.isUndefined()) {
-                System.out.println("undefined");
+                System.out.print("undefined");
             }
 
             if (value.isObject()) {
-                System.out.println("[object Object]");
+                System.out.print("[object Object]");
             }
+
+            System.out.print(" ");
         }
+        System.out.println();
 
         return Value.undefined();
     }
