@@ -9,6 +9,14 @@ import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
  */
 public class ConsoleObject extends JsObject {
 
+    private enum LogLevel {
+        DEBUG,
+        ASSERT,
+        LOG,
+        ERROR,
+        WARN
+    }
+
     public ConsoleObject() {
         put("log", Value.object(new NativeFunction(this::log)));
         put("assert", Value.object(new NativeFunction(this::assertImpl)));
@@ -47,14 +55,18 @@ public class ConsoleObject extends JsObject {
             }
         }
 
-        // FIXME: Logging levels are currently unimplemented
         // 5 Perform Logger("assert", data)
-        log(data);
+        logImpl(LogLevel.ASSERT, data);
         return Value.undefined();
     }
 
     public Value log(List<Value> arguments) {
-        System.out.print("(JS Log) ");
+        logImpl(LogLevel.LOG, arguments);
+        return Value.undefined();
+    }
+
+    private void logImpl(LogLevel logLevel, List<Value> arguments) {
+        System.out.print("(JS Log) [" + logLevel.name() + "] ");
         if (arguments == null) {
             System.out.println("null");
         }
@@ -84,7 +96,7 @@ public class ConsoleObject extends JsObject {
         }
         System.out.println();
 
-        return Value.undefined();
     }
+
 
 }
