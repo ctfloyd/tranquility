@@ -15,6 +15,7 @@ import com.ctfloyd.tranquility.lib.ast.Program;
 import com.ctfloyd.tranquility.lib.ast.ReturnStatement;
 import com.ctfloyd.tranquility.lib.ast.StringLiteral;
 import com.ctfloyd.tranquility.lib.ast.VariableDeclarator;
+import com.ctfloyd.tranquility.lib.common.NumberUtils;
 import com.ctfloyd.tranquility.lib.tokenize.Token;
 import com.ctfloyd.tranquility.lib.tokenize.TokenStream;
 import com.ctfloyd.tranquility.lib.tokenize.TokenType;
@@ -166,7 +167,9 @@ public class Parser {
         } else if (type == TokenType.IDENTIFIER) {
             return new Identifier(consume().getValue());
         } else if (type == TokenType.NUMERIC_LITERAL) {
-            return new NumericLiteral(Double.parseDouble(consume().getValue()));
+            Number value = NumberUtils.parse(consume().getValue());
+            ASSERT(value != null);
+            return new NumericLiteral(value.doubleValue());
         } else if (type == TokenType.STRING_LITERAL) {
             return new StringLiteral(consume().getValue());
         } else if (type == TokenType.BOOLEAN_LITERAL) {
