@@ -4,6 +4,7 @@ import com.ctfloyd.tranquility.lib.ast.AstNode;
 import com.ctfloyd.tranquility.lib.ast.BinaryExpression;
 import com.ctfloyd.tranquility.lib.ast.BinaryExpressionOperator;
 import com.ctfloyd.tranquility.lib.ast.BlockStatement;
+import com.ctfloyd.tranquility.lib.ast.BooleanLiteral;
 import com.ctfloyd.tranquility.lib.ast.CallExpression;
 import com.ctfloyd.tranquility.lib.ast.ExpressionStatement;
 import com.ctfloyd.tranquility.lib.ast.FunctionDeclaration;
@@ -162,8 +163,10 @@ public class Parser {
             return new Identifier(consume().getValue());
         } else if (type == TokenType.NUMERIC_LITERAL) {
             return new NumericLiteral(Double.parseDouble(consume().getValue()));
-        } else if (type == TokenType.STRING_LITERAL){
+        } else if (type == TokenType.STRING_LITERAL) {
             return new StringLiteral(consume().getValue());
+        } else if (type == TokenType.BOOLEAN_LITERAL) {
+            return new BooleanLiteral(Boolean.parseBoolean(consume().getValue()));
         } else {
             ASSERT(false, "Not implemented, cannot handle token: " + currentToken + " for primary expression.");
             return null;

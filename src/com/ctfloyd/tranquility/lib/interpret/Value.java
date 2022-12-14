@@ -40,6 +40,8 @@ public class Value {
 
     public static Value string(String value) { return new Value(ValueType.STRING, value); }
 
+    public static Value bool(boolean value) { return new Value(ValueType.BOOLEAN, value); }
+
     public Value(ValueType type, Object value)  {
         this.type = type;
         if (type == ValueType.STRING) {
@@ -99,6 +101,11 @@ public class Value {
     public String asString() {
         ASSERT(this.type == ValueType.STRING);
         return stringValue;
+    }
+
+    public boolean asBoolean() {
+        ASSERT(this.type == ValueType.BOOLEAN);
+        return bool;
     }
 
     @Override
