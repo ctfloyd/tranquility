@@ -117,6 +117,10 @@ public class ConsoleObject extends JsObject {
                 System.out.print(value.asDouble());
             }
 
+            if (value.isBoolean()) {
+                System.out.print(value.asBoolean());
+            }
+
             if (value.isNull()) {
                 System.out.print("null");
             }
