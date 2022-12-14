@@ -1,5 +1,7 @@
 package com.ctfloyd.tranquility.lib.parse;
 
+import com.ctfloyd.tranquility.lib.ast.AssignmentExpression;
+import com.ctfloyd.tranquility.lib.ast.AssignmentExpressionOperator;
 import com.ctfloyd.tranquility.lib.ast.AstNode;
 import com.ctfloyd.tranquility.lib.ast.BinaryExpression;
 import com.ctfloyd.tranquility.lib.ast.BinaryExpressionOperator;
@@ -191,6 +193,10 @@ public class Parser {
         } else if (type == TokenType.LESS_THAN) {
             consume(TokenType.LESS_THAN);
             return new BinaryExpression(leftHandSide, parseExpression(), BinaryExpressionOperator.LESS_THAN);
+        } else if (type == TokenType.ASSIGNMENT) {
+            consume(TokenType.ASSIGNMENT);
+            ASSERT(leftHandSide.isIdentifier());
+            return new AssignmentExpression((Identifier) leftHandSide, parseExpression(), AssignmentExpressionOperator.EQUALS);
         } else if (type == TokenType.LEFT_PARENTHESIS) {
             return parseCallExpression(leftHandSide);
         } else if (type == TokenType.PERIOD) {
@@ -242,7 +248,8 @@ public class Parser {
                 type == TokenType.EQUALITY ||
                 type == TokenType.PERIOD ||
                 type == TokenType.LEFT_PARENTHESIS ||
-                type == TokenType.LESS_THAN;
+                type == TokenType.LESS_THAN ||
+                type == TokenType.ASSIGNMENT;
     }
 
     private boolean matchesStatement() {
