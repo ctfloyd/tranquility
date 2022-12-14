@@ -9,6 +9,7 @@ import com.ctfloyd.tranquility.lib.ast.BlockStatement;
 import com.ctfloyd.tranquility.lib.ast.BooleanLiteral;
 import com.ctfloyd.tranquility.lib.ast.CallExpression;
 import com.ctfloyd.tranquility.lib.ast.ExpressionStatement;
+import com.ctfloyd.tranquility.lib.ast.ForStatement;
 import com.ctfloyd.tranquility.lib.ast.FunctionDeclaration;
 import com.ctfloyd.tranquility.lib.ast.Identifier;
 import com.ctfloyd.tranquility.lib.ast.MemberExpression;
@@ -68,6 +69,8 @@ public class Parser {
             return parseReturnStatement();
         } else if (type == TokenType.VAR) {
             return parseVariableDeclarator();
+        } else if (type == TokenType.FOR) {
+            return parseForStatement();
         } else {
             ASSERT(false, "Do not know how to handle token: " + currentToken + " for parse statement.");
             return null;
@@ -89,6 +92,19 @@ public class Parser {
         consume(TokenType.RIGHT_PARENTHESIS);
         BlockStatement functionBody = parseBlockStatement();
         return new FunctionDeclaration(functionName, arguments, functionBody);
+    }
+
+    private ForStatement parseForStatement() {
+        consume(TokenType.FOR);
+        consume(TokenType.LEFT_PARENTHESIS);
+        AstNode initializer = parseStatement();
+        consume(TokenType.SEMICOLON);
+        AstNode test = parseExpression();
+        consume(TokenType.SEMICOLON);
+        AstNode update = parseStatement();
+        consume(TokenType.RIGHT_PARENTHESIS);
+        BlockStatement body = parseBlockStatement();
+        return new ForStatement(initializer, test, update, body);
     }
 
     private VariableDeclarator parseVariableDeclarator() {
@@ -258,7 +274,8 @@ public class Parser {
         return matchesExpression() ||
                 type == TokenType.FUNCTION ||
                 type == TokenType.RETURN ||
-                type == TokenType.VAR;
+                type == TokenType.VAR ||
+                type == TokenType.FOR;
     }
 
     private boolean done() {
