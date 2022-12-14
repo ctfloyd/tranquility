@@ -41,6 +41,9 @@ public class Parser {
         while (!done()) {
             AstNode node = parseStatement();
             program.addChild(node);
+            if (match(TokenType.SEMICOLON)) {
+                consume(TokenType.SEMICOLON);
+            }
         }
         return program;
     }
@@ -102,9 +105,10 @@ public class Parser {
         BlockStatement block = new BlockStatement();
         consume(TokenType.LEFT_CURLY_BRACE);
         while (!done() && !match(TokenType.RIGHT_CURLY_BRACE)) {
-            // FIXME: Support consuming semicolons
             if (matchesStatement()) {
                 block.addChild(parseStatement());
+            } else if (match(TokenType.SEMICOLON)) {
+                consume(TokenType.SEMICOLON);
             } else {
                 ASSERT(false, "Should only match statements in block statements. Couldn't match: " + currentToken);
             }
