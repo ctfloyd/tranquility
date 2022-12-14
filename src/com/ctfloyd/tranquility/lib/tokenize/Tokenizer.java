@@ -1,5 +1,7 @@
 package com.ctfloyd.tranquility.lib.tokenize;
 
+import com.ctfloyd.tranquility.lib.common.NumberUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -222,12 +224,7 @@ public class Tokenizer {
             return false;
         }
 
-        for (int i = 0; i < currentScratch.length(); i++) {
-            if (!Character.isDigit(currentScratch.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
+        return NumberUtils.isParseable(currentScratch);
     }
 
     private boolean scratchHasBooleanLiteral() {
