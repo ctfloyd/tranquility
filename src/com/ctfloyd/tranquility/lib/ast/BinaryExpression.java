@@ -5,6 +5,8 @@ import com.ctfloyd.tranquility.lib.interpret.Value;
 
 import java.util.StringJoiner;
 
+import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
+
 public class BinaryExpression extends AstNode {
 
     private final AstNode left;
@@ -41,6 +43,12 @@ public class BinaryExpression extends AstNode {
             } else {
                 throw new UnsupportedOperationException("Cannot handle binary 'PLUS' operator for values (" + leftValue + ", " + rightValue + ")");
             }
+        } else if (operator == BinaryExpressionOperator.LESS_THAN) {
+            Value leftValue = left.interpret(interpreter);
+            Value rightValue = right.interpret(interpreter);
+            ASSERT(leftValue.isNumber());
+            ASSERT(rightValue.isNumber());
+            return Value.bool(leftValue.asDouble() < rightValue.asDouble());
         } else {
             throw new UnsupportedOperationException("NOT IMPLEMENTED");
         }

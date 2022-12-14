@@ -188,6 +188,9 @@ public class Parser {
         } else if (type == TokenType.MINUS) {
             consume();
             return new BinaryExpression(leftHandSide, parseExpression(), BinaryExpressionOperator.MINUS);
+        } else if (type == TokenType.LESS_THAN) {
+            consume(TokenType.LESS_THAN);
+            return new BinaryExpression(leftHandSide, parseExpression(), BinaryExpressionOperator.LESS_THAN);
         } else if (type == TokenType.LEFT_PARENTHESIS) {
             return parseCallExpression(leftHandSide);
         } else if (type == TokenType.PERIOD) {
@@ -238,7 +241,8 @@ public class Parser {
                 type == TokenType.COMMENT ||
                 type == TokenType.EQUALITY ||
                 type == TokenType.PERIOD ||
-                type == TokenType.LEFT_PARENTHESIS;
+                type == TokenType.LEFT_PARENTHESIS ||
+                type == TokenType.LESS_THAN;
     }
 
     private boolean matchesStatement() {
