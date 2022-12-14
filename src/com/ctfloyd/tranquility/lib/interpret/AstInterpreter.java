@@ -35,6 +35,17 @@ public class AstInterpreter {
         return Value.undefined();
     }
 
+    public boolean hasIdentifier(String identifier) {
+        Iterator<Scope> backwards = scopes.descendingIterator();
+        while (backwards.hasNext()) {
+            Scope scope = backwards.next();
+            if (scope.has(identifier)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void setIdentifier(String identifier) {
         setIdentifier(identifier, Optional.empty());
     }
