@@ -35,4 +35,14 @@ public class AssignmentExpression extends AstNode {
             throw new UnsupportedOperationException("Not implemented.");
         }
     }
+
+    @Override
+    public void dump(int indent) {
+        printIndent(indent);
+        System.out.println("AssignmentExpression (");
+        identifier.dump(indent + 1);
+        printIndent(indent + 1);
+        System.out.println("Operator (" + operator + ")");
+        rightHandSide.dump(indent + 1);
+    }
 }
