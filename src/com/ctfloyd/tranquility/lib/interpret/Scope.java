@@ -2,6 +2,7 @@ package com.ctfloyd.tranquility.lib.interpret;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 
 public class Scope {
 
@@ -21,5 +22,12 @@ public class Scope {
 
     public boolean has(String identifierName)  {
         return declarations.containsKey(identifierName);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Scope.class.getSimpleName() + "[", "]")
+                .add("declarations=" + declarations)
+                .toString();
     }
 }
