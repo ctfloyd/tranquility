@@ -11,9 +11,9 @@ import java.util.stream.Stream;
 public class Tokenizer {
 
     // tab, vertical tab, form feed, space
-    private static final Set<Character> WHITESPACE = Stream.of((char) 0x09, (char) 0x0B, (char) 0x0C, (char) 0x20, '\n')
+    private static final Set<Character> WHITESPACE = Stream.of('\r', '\t',  (char) 0xB, (char) 0x20, '\n')
             .collect(Collectors.toSet());
-    private static final Set<Character> LINE_TERMINATORS = Stream.of((char) 0x0A, (char) 0x0D)
+    private static final Set<Character> LINE_TERMINATORS = Stream.of('\r', '\n')
             .collect(Collectors.toSet());
     private static final Set<Character> COMMENT = Stream.of('/', '*').collect(Collectors.toSet());
     private static final Set<String> KEYWORDS = Stream.of("break", "for", "new", "var", "continue", "function", "return",
@@ -178,7 +178,8 @@ public class Tokenizer {
             }
 
             // FIXME: It would be nice to know line numbers and line indexes from the original input that caused the failure.
-            throw new IllegalStateException("Did not know how to process token: " + ((char) token) + " at index: " + index);
+            String error = String.format("Did not know how to process token %d at index %d", token, index);
+            throw new IllegalStateException(error);
         }
 
         List<Token> someTokens = tokens;
