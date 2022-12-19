@@ -12,6 +12,7 @@ import com.ctfloyd.tranquility.lib.ast.ExpressionStatement;
 import com.ctfloyd.tranquility.lib.ast.ForStatement;
 import com.ctfloyd.tranquility.lib.ast.FunctionDeclaration;
 import com.ctfloyd.tranquility.lib.ast.Identifier;
+import com.ctfloyd.tranquility.lib.ast.IfStatement;
 import com.ctfloyd.tranquility.lib.ast.MemberExpression;
 import com.ctfloyd.tranquility.lib.ast.NumericLiteral;
 import com.ctfloyd.tranquility.lib.ast.Program;
@@ -71,6 +72,8 @@ public class Parser {
             return parseVariableDeclarator();
         } else if (type == TokenType.FOR) {
             return parseForStatement();
+        } else if (type == TokenType.IF) {
+            return parseIfStatement();
         } else {
             ASSERT(false, "Do not know how to handle token: " + currentToken + " for parse statement.");
             return null;
@@ -105,6 +108,15 @@ public class Parser {
         consume(TokenType.RIGHT_PARENTHESIS);
         BlockStatement body = parseBlockStatement();
         return new ForStatement(initializer, test, update, body);
+    }
+
+    private IfStatement parseIfStatement() {
+        consume(TokenType.IF);
+        consume(TokenType.LEFT_PARENTHESIS);
+        AstNode test = parseExpression();
+        consume(TokenType.RIGHT_PARENTHESIS);
+        AstNode body = parseBlockStatement();
+        return new IfStatement(test, body);
     }
 
     private VariableDeclarator parseVariableDeclarator() {
