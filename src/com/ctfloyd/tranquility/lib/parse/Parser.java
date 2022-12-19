@@ -116,7 +116,20 @@ public class Parser {
         AstNode test = parseExpression();
         consume(TokenType.RIGHT_PARENTHESIS);
         AstNode body = parseBlockStatement();
-        return new IfStatement(test, body);
+        AstNode alternate = null;
+        if (match(TokenType.ELSE)) {
+            alternate = parseElseStatement();
+        }
+        return new IfStatement(test, body, alternate);
+    }
+
+    private AstNode parseElseStatement() {
+        consume(TokenType.ELSE);
+        if (match(TokenType.IF)) {
+            return parseIfStatement();
+        } else {
+            return parseBlockStatement();
+        }
     }
 
     private VariableDeclarator parseVariableDeclarator() {

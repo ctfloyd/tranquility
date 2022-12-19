@@ -11,12 +11,14 @@ public class IfStatement extends AstNode {
 
     private final AstNode test;
     private final AstNode body;
+    private final AstNode alternate;
 
-    public IfStatement(AstNode test, AstNode body) {
+    public IfStatement(AstNode test, AstNode body, AstNode alternate) {
         ASSERT(test != null);
         ASSERT(body != null);
         this.test = test;
         this.body = body;
+        this.alternate = alternate;
     }
 
     @Override
@@ -27,6 +29,10 @@ public class IfStatement extends AstNode {
         if (result.asBoolean()) {
             interpreter.enterScope();
             value = body.interpret(interpreter);
+            interpreter.leaveScope();
+        } else if (alternate != null){
+            interpreter.enterScope();
+            value = alternate.interpret(interpreter);
             interpreter.leaveScope();
         }
         return value;
