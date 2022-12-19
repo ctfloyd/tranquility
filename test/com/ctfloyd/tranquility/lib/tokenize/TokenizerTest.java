@@ -170,6 +170,17 @@ public class TokenizerTest {
         assertTrue("An unexpected number of tokens was emitted", tokens.size() == 2);
         Token numericLiteral = tokens.get(0);
         assertTrue("Expected 'NUMERIC_LITERAL' token emitted, but another type of token was emitted instead", numericLiteral.getType() == TokenType.NUMERIC_LITERAL);
-        assertTrue("Expected 'STRING_LITERAL' token to have value '1234'", numericLiteral.getValue().equals("1234"));
+        assertTrue("Expected 'NUMERIC_LITERAL' token to have value '1234'", numericLiteral.getValue().equals("1234"));
+    }
+
+    @Test
+    public void tokenize_givenStringLiteralWithPunctuator_shouldEmitStringLiteral() {
+        String input = "'hello! world'";
+        Tokenizer tokenizer = new Tokenizer(input.toCharArray());
+        List<Token> tokens = tokenizer.tokenize();
+        assertTrue("An unexpected number of tokens was emitted", tokens.size() == 2);
+        Token stringLiteral = tokens.get(0);
+        assertTrue("Expected 'STRING_LITERAL' token emitted, but another type of token was emitted instead", stringLiteral.getType() == TokenType.STRING_LITERAL);
+        assertTrue("Expected 'STRING_LITERAL' token to have value 'hello! world'", stringLiteral.getValue().equals("hello! world"));
     }
 }
