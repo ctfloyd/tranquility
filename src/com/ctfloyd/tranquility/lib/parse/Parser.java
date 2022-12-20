@@ -1,31 +1,15 @@
 package com.ctfloyd.tranquility.lib.parse;
 
-import com.ctfloyd.tranquility.lib.ast.AssignmentExpression;
-import com.ctfloyd.tranquility.lib.ast.AssignmentExpressionOperator;
-import com.ctfloyd.tranquility.lib.ast.AstNode;
-import com.ctfloyd.tranquility.lib.ast.BinaryExpression;
-import com.ctfloyd.tranquility.lib.ast.BinaryExpressionOperator;
-import com.ctfloyd.tranquility.lib.ast.BlockStatement;
-import com.ctfloyd.tranquility.lib.ast.BooleanLiteral;
-import com.ctfloyd.tranquility.lib.ast.CallExpression;
-import com.ctfloyd.tranquility.lib.ast.ExpressionStatement;
-import com.ctfloyd.tranquility.lib.ast.ForStatement;
-import com.ctfloyd.tranquility.lib.ast.FunctionDeclaration;
-import com.ctfloyd.tranquility.lib.ast.Identifier;
-import com.ctfloyd.tranquility.lib.ast.IfStatement;
-import com.ctfloyd.tranquility.lib.ast.MemberExpression;
-import com.ctfloyd.tranquility.lib.ast.NumericLiteral;
-import com.ctfloyd.tranquility.lib.ast.Program;
-import com.ctfloyd.tranquility.lib.ast.ReturnStatement;
-import com.ctfloyd.tranquility.lib.ast.StringLiteral;
-import com.ctfloyd.tranquility.lib.ast.VariableDeclarator;
+import com.ctfloyd.tranquility.lib.ast.*;
 import com.ctfloyd.tranquility.lib.common.NumberUtils;
 import com.ctfloyd.tranquility.lib.tokenize.Token;
 import com.ctfloyd.tranquility.lib.tokenize.TokenStream;
 import com.ctfloyd.tranquility.lib.tokenize.TokenType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
@@ -217,6 +201,8 @@ public class Parser {
             return new StringLiteral(consume().getValue());
         } else if (type == TokenType.BOOLEAN_LITERAL) {
             return new BooleanLiteral(Boolean.parseBoolean(consume().getValue()));
+        } else if (type == TokenType.LEFT_CURLY_BRACE) {
+            return parseObjectExpression();
         } else {
             ASSERT(false, "Not implemented, cannot handle token: " + currentToken + " for primary expression.");
             return null;
@@ -246,6 +232,21 @@ public class Parser {
             ASSERT(false, "Do not know how to handle token: " + currentToken + " for parsing secondary expression.");
             return null;
         }
+    }
+
+    private AstNode parseObjectExpression() {
+        consume(TokenType.LEFT_CURLY_BRACE);
+
+        Map<Identifier, AstNode> properties = new HashMap<>();
+        while (!done() && !match(TokenType.RIGHT_CURLY_BRACE)) {
+            // FIXME: This shouldn't be as strict as an identifier
+            Identifier property = new Identifier(consume(TokenType.IDENTIFIER).getValue());
+            consume(TokenType.COLON);
+            AstNode value = parseExpression();
+            properties.put(property, value);
+        }
+        consume(TokenType.RIGHT_CURLY_BRACE);
+        return new ObjectExpression(properties);
     }
 
     private boolean match(TokenType tokenType) {
