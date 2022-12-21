@@ -99,6 +99,11 @@ public class Value {
         return number;
     }
 
+    public int asInteger() {
+        ASSERT(this.type == ValueType.NUMBER);
+        return number.intValue();
+    }
+
     public JsObject asObject() {
         ASSERT(this.type == ValueType.OBJECT);
         return object;
