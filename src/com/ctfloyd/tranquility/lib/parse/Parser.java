@@ -250,7 +250,13 @@ public class Parser {
 
     private void parseObjectProperty(Map<Identifier, AstNode> properties) {
         // FIXME: This shouldn't be as strict as an identifier
-        Identifier property = new Identifier(consume(TokenType.IDENTIFIER).getValue());
+        Identifier property = null;
+        if (match(TokenType.IDENTIFIER)){
+            property = new Identifier(consume(TokenType.IDENTIFIER).getValue());
+        } else if (match(TokenType.STRING_LITERAL)) {
+            property = new Identifier(consume(TokenType.STRING_LITERAL).getValue());
+        }
+        ASSERT(property != null);
         consume(TokenType.COLON);
         AstNode value = parseExpression();
         properties.put(property, value);
