@@ -23,6 +23,7 @@ public class BinaryExpression extends AstNode {
         HANDLERS.put(BinaryExpressionOperator.LESS_THAN, this::lessThan);
         HANDLERS.put(BinaryExpressionOperator.LESS_THAN_EQUALS, this::lessThanEquals);
         HANDLERS.put(BinaryExpressionOperator.GREATER_THAN, this::greaterThan);
+        HANDLERS.put(BinaryExpressionOperator.GREATER_THAN_EQUALS, this::greaterThanEquals);
         this.left = left;
         this.right = right;
         this.operator = operator;
@@ -74,6 +75,15 @@ public class BinaryExpression extends AstNode {
         ASSERT(leftValue.isNumber());
         ASSERT(rightValue.isNumber());
         return Value.bool(leftValue.asDouble() > rightValue.asDouble());
+    }
+
+    private Value greaterThanEquals(AstInterpreter interpreter) {
+        Value leftValue = left.interpret(interpreter);
+        Value rightValue = right.interpret(interpreter);
+        // FIXME: Types should be coerced
+        ASSERT(leftValue.isNumber());
+        ASSERT(rightValue.isNumber());
+        return Value.bool(leftValue.asDouble() >= rightValue.asDouble());
     }
 
     @Override

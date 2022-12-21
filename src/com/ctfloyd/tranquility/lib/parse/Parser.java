@@ -226,6 +226,9 @@ public class Parser {
         } else if (type == TokenType.GREATER_THAN) {
             consume(TokenType.GREATER_THAN);
             return new BinaryExpression(leftHandSide, parseExpression(), BinaryExpressionOperator.GREATER_THAN);
+        } else if (type == TokenType.GREATER_THAN_EQUALS) {
+            consume(TokenType.GREATER_THAN_EQUALS);
+            return new BinaryExpression(leftHandSide, parseExpression(), BinaryExpressionOperator.GREATER_THAN_EQUALS);
         } else if (type == TokenType.ASSIGNMENT) {
             consume(TokenType.ASSIGNMENT);
             ASSERT(leftHandSide.isIdentifier());
@@ -312,6 +315,7 @@ public class Parser {
                 type == TokenType.LESS_THAN ||
                 type == TokenType.LESS_THAN_EQUALS ||
                 type == TokenType.GREATER_THAN ||
+                type == TokenType.GREATER_THAN_EQUALS ||
                 type == TokenType.ASSIGNMENT;
     }
 
