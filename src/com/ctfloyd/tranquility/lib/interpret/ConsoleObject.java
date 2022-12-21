@@ -9,6 +9,9 @@ import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
  */
 public class ConsoleObject extends JsObject {
 
+    private static final String ANSI_YELLOW = "\u001B[33m";
+    private static final String ANSI_RESET = "\u001B[0m";
+
     private enum LogLevel {
         ASSERT,
         DEBUG,
@@ -103,7 +106,7 @@ public class ConsoleObject extends JsObject {
     // TODO: 1.1.10, 1.1.11
 
     private void logImpl(LogLevel logLevel, List<Value> arguments) {
-        System.out.print("(JS Log) [" + logLevel.name() + "] ");
+        System.out.print(ANSI_YELLOW + "(JS Log) [" + logLevel.name() + "] ");
         if (arguments == null) {
             System.out.println("null");
         }
@@ -135,9 +138,6 @@ public class ConsoleObject extends JsObject {
 
             System.out.print(" ");
         }
-        System.out.println();
-
+        System.out.println(ANSI_RESET);
     }
-
-
 }
