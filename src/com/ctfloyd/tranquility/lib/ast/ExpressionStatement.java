@@ -17,7 +17,7 @@ public class ExpressionStatement extends AstNode {
         return expression;
     }
 
-    public Value interpret(AstInterpreter interpreter) throws Exception {
+    public Value interpret(AstInterpreter interpreter) {
         return expression.interpret(interpreter);
     }
 

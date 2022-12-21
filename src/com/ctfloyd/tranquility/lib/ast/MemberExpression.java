@@ -19,7 +19,7 @@ public class MemberExpression extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) throws Exception {
+    public Value interpret(AstInterpreter interpreter) {
         Value unknownValue = object.interpret(interpreter);
         ASSERT(unknownValue.isObject());
         JsObject object = unknownValue.asObject();

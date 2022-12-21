@@ -1,6 +1,5 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.common.StringUtils;
 import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
 import com.ctfloyd.tranquility.lib.interpret.Value;
 
@@ -24,7 +23,7 @@ public class AssignmentExpression extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) throws Exception {
+    public Value interpret(AstInterpreter interpreter) {
         if (operator == AssignmentExpressionOperator.EQUALS) {
             String variable = identifier.getName();
             Value newValue = rightHandSide.interpret(interpreter);

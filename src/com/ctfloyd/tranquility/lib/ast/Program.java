@@ -23,7 +23,7 @@ public class Program extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) throws Exception {
+    public Value interpret(AstInterpreter interpreter) {
         Value lastValue = Value.undefined();
         for (AstNode child : children) {
             lastValue = child.interpret(interpreter);

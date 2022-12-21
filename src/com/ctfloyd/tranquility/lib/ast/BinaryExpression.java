@@ -19,20 +19,8 @@ public class BinaryExpression extends AstNode {
         this.operator = operator;
     }
 
-    public AstNode getLeft() {
-        return left;
-    }
-
-    public AstNode getRight() {
-        return right;
-    }
-
-    public BinaryExpressionOperator getOperator() {
-        return operator;
-    }
-
     @Override
-    public Value interpret(AstInterpreter interpreter) throws Exception {
+    public Value interpret(AstInterpreter interpreter) throws RuntimeException {
         if (operator == BinaryExpressionOperator.PLUS) {
             Value leftValue = left.interpret(interpreter);
             Value rightValue = right.interpret(interpreter);

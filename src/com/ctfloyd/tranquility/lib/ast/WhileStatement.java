@@ -18,7 +18,7 @@ public class WhileStatement extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) throws Exception {
+    public Value interpret(AstInterpreter interpreter) {
         while(test.interpret(interpreter).asBoolean()) {
             interpreter.enterScope();
             body.interpret(interpreter);

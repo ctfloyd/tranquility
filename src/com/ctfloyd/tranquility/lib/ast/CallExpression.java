@@ -1,11 +1,6 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.Argument;
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.Function;
-import com.ctfloyd.tranquility.lib.interpret.JsObject;
-import com.ctfloyd.tranquility.lib.interpret.NativeFunction;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.interpret.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +21,7 @@ public class CallExpression extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) throws Exception {
+    public Value interpret(AstInterpreter interpreter) {
         Value unknownValue = callee.interpret(interpreter);
         ASSERT(unknownValue.isObject());
         JsObject object = unknownValue.asObject();

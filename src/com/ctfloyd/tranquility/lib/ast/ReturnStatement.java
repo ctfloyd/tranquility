@@ -24,7 +24,7 @@ public class ReturnStatement extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) throws Exception {
+    public Value interpret(AstInterpreter interpreter) {
         return argument.interpret(interpreter);
     }
 

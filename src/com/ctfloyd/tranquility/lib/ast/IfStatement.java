@@ -22,7 +22,7 @@ public class IfStatement extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) throws Exception {
+    public Value interpret(AstInterpreter interpreter) {
         Value result = test.interpret(interpreter);
         ASSERT(result.isBoolean());
         Value value = Value.undefined();

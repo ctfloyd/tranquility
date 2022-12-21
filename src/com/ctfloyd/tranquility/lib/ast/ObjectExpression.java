@@ -18,7 +18,7 @@ public class ObjectExpression extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) throws Exception {
+    public Value interpret(AstInterpreter interpreter) {
         JsObject object = new JsObject();
         for (Map.Entry<Identifier, AstNode> entry : properties.entrySet()) {
             object.put(entry.getKey().getName(), entry.getValue().interpret(interpreter));

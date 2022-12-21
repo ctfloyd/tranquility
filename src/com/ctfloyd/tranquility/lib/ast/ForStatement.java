@@ -24,7 +24,7 @@ public class ForStatement extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) throws Exception {
+    public Value interpret(AstInterpreter interpreter) {
         interpreter.enterScope();
         initializer.interpret(interpreter);
         while (test.interpret(interpreter).asBoolean()) {

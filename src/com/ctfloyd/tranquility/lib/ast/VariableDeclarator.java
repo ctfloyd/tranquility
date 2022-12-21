@@ -29,7 +29,7 @@ public class VariableDeclarator extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) throws Exception {
+    public Value interpret(AstInterpreter interpreter) {
         Value variableValue = Value.undefined();
         if (value != null) {
             variableValue = value.interpret(interpreter);
