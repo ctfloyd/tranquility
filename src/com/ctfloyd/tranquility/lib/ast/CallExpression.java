@@ -30,8 +30,6 @@ public class CallExpression extends AstNode {
         Value thisValue = Value.undefined();
         if (callee.isMemberExpression()) {
             thisValue = ((MemberExpression)callee).getObject().interpret(interpreter);
-            System.out.println(((MemberExpression) callee).getObject());
-            System.out.println("This value is: " + thisValue);
             ASSERT(thisValue.isObject());
         }
 
