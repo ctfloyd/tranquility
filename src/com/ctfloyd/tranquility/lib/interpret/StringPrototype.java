@@ -32,7 +32,7 @@ public class StringPrototype extends JsObject {
         StringObject stringObject = (StringObject) unknown.asObject();
         String string = stringObject.getString();
 
-        Value separatorValue = arguments.get(0);
+        Value separatorValue = arguments.size() >= 1 ? arguments.get(0) : Value.undefined();
         ASSERT(separatorValue.isUndefined() || separatorValue.isObject());
         String separator = "undefined";
         if (!separatorValue.isUndefined()){
