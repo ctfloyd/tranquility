@@ -46,9 +46,17 @@ public class BinaryExpression extends AstNode {
         } else if (operator == BinaryExpressionOperator.LESS_THAN) {
             Value leftValue = left.interpret(interpreter);
             Value rightValue = right.interpret(interpreter);
+            // FIXME: Types should be coerced
             ASSERT(leftValue.isNumber());
             ASSERT(rightValue.isNumber());
             return Value.bool(leftValue.asDouble() < rightValue.asDouble());
+        } else if (operator == BinaryExpressionOperator.LESS_THAN_EQUALS) {
+            Value leftValue = left.interpret(interpreter);
+            Value rightValue = right.interpret(interpreter);
+            // FIXME: Types should be coerced
+            ASSERT(leftValue.isNumber());
+            ASSERT(rightValue.isNumber());
+            return Value.bool(leftValue.asDouble() <= rightValue.asDouble());
         } else {
             throw new UnsupportedOperationException("NOT IMPLEMENTED");
         }

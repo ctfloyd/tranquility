@@ -220,6 +220,9 @@ public class Parser {
         } else if (type == TokenType.LESS_THAN) {
             consume(TokenType.LESS_THAN);
             return new BinaryExpression(leftHandSide, parseExpression(), BinaryExpressionOperator.LESS_THAN);
+        } else if (type == TokenType.LESS_THAN_EQUALS) {
+            consume(TokenType.LESS_THAN_EQUALS);
+            return new BinaryExpression(leftHandSide, parseExpression(), BinaryExpressionOperator.LESS_THAN_EQUALS);
         } else if (type == TokenType.ASSIGNMENT) {
             consume(TokenType.ASSIGNMENT);
             ASSERT(leftHandSide.isIdentifier());
@@ -304,6 +307,7 @@ public class Parser {
                 type == TokenType.PERIOD ||
                 type == TokenType.LEFT_PARENTHESIS ||
                 type == TokenType.LESS_THAN ||
+                type == TokenType.LESS_THAN_EQUALS ||
                 type == TokenType.ASSIGNMENT;
     }
 
