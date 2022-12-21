@@ -14,6 +14,7 @@ public class ArrayObject extends JsObject {
     public static ArrayObject create(AstInterpreter interpreter, List<Value> values) {
         ArrayObject arrayObject = new ArrayObject(values);
         arrayObject.setPrototype(interpreter.getBuiltinPrototype("Array"));
+        arrayObject.enumerateProperties();
         return arrayObject;
     }
 
@@ -23,6 +24,7 @@ public class ArrayObject extends JsObject {
 
     public void add(Value value) {
         array.add(value);
+        enumerateProperties();
     }
 
     public int length() {
@@ -31,5 +33,11 @@ public class ArrayObject extends JsObject {
 
     public boolean isArray() {
         return true;
+    }
+
+    private void enumerateProperties() {
+        for (int i = 0; i < length(); i++) {
+            put("" + i, getValueAtIndex(i));
+        }
     }
 }

@@ -167,8 +167,23 @@ public class Parser {
     }
 
     private AstNode parseMemberExpression(AstNode leftHandSide) {
-        consume(TokenType.PERIOD);
-        Identifier identifier = new Identifier(consume(TokenType.IDENTIFIER).getValue());
+        if (match(TokenType.PERIOD)) {
+            consume(TokenType.PERIOD);
+        } else {
+            consume(TokenType.LEFT_SQUARE_BRACKET);
+        }
+
+        Identifier identifier = null;
+        if (match(TokenType.IDENTIFIER)) {
+            identifier = new Identifier(consume(TokenType.IDENTIFIER).getValue());
+        } else if (match(TokenType.NUMERIC_LITERAL)) {
+            identifier = new Identifier(consume(TokenType.NUMERIC_LITERAL).getValue());
+        }
+
+        if (match(TokenType.RIGHT_SQUARE_BRACKET)) {
+            consume(TokenType.RIGHT_SQUARE_BRACKET);
+        }
+
         MemberExpression memberExpression = new MemberExpression(leftHandSide, identifier);
         if (matchesSecondaryExpression()) {
             return parseSecondaryExpression(memberExpression);
@@ -235,7 +250,7 @@ public class Parser {
             return new AssignmentExpression((Identifier) leftHandSide, parseExpression(), AssignmentExpressionOperator.EQUALS);
         } else if (type == TokenType.LEFT_PARENTHESIS) {
             return parseCallExpression(leftHandSide);
-        } else if (type == TokenType.PERIOD) {
+        } else if (type == TokenType.PERIOD || type == TokenType.LEFT_SQUARE_BRACKET) {
             return parseMemberExpression(leftHandSide);
         } else {
             ASSERT(false, "Do not know how to handle token: " + currentToken + " for parsing secondary expression.");
@@ -311,6 +326,7 @@ public class Parser {
                 type == TokenType.COMMENT ||
                 type == TokenType.EQUALITY ||
                 type == TokenType.PERIOD ||
+                type == TokenType.LEFT_SQUARE_BRACKET ||
                 type == TokenType.LEFT_PARENTHESIS ||
                 type == TokenType.LESS_THAN ||
                 type == TokenType.LESS_THAN_EQUALS ||
