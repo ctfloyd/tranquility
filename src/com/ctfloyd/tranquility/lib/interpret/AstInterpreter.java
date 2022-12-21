@@ -13,6 +13,7 @@ public class AstInterpreter {
         globalObject = new GlobalObject();
         prototypes = new HashMap<>();
         prototypes.put("String", new StringPrototype());
+        prototypes.put("Array", new ArrayPrototype());
         scopes = new ArrayDeque<>();
         thisStack = new Stack<>();
     }
