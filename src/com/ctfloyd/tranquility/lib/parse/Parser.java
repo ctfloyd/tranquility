@@ -239,14 +239,21 @@ public class Parser {
 
         Map<Identifier, AstNode> properties = new HashMap<>();
         while (!done() && !match(TokenType.RIGHT_CURLY_BRACE)) {
-            // FIXME: This shouldn't be as strict as an identifier
-            Identifier property = new Identifier(consume(TokenType.IDENTIFIER).getValue());
-            consume(TokenType.COLON);
-            AstNode value = parseExpression();
-            properties.put(property, value);
+            parseObjectProperty(properties);
+            if (match(TokenType.COMMA)) {
+                consume(TokenType.COMMA);
+            }
         }
         consume(TokenType.RIGHT_CURLY_BRACE);
         return new ObjectExpression(properties);
+    }
+
+    private void parseObjectProperty(Map<Identifier, AstNode> properties) {
+        // FIXME: This shouldn't be as strict as an identifier
+        Identifier property = new Identifier(consume(TokenType.IDENTIFIER).getValue());
+        consume(TokenType.COLON);
+        AstNode value = parseExpression();
+        properties.put(property, value);
     }
 
     private boolean match(TokenType tokenType) {
