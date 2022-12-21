@@ -314,6 +314,7 @@ public class Parser {
                 type == TokenType.FUNCTION ||
                 type == TokenType.RETURN ||
                 type == TokenType.VAR ||
+                type == TokenType.IF ||
                 type == TokenType.FOR;
     }
 
