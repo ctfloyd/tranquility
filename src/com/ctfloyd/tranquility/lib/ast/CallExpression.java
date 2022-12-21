@@ -2,9 +2,9 @@ package com.ctfloyd.tranquility.lib.ast;
 
 import com.ctfloyd.tranquility.lib.interpret.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
@@ -37,34 +37,29 @@ public class CallExpression extends AstNode {
             interpreter.pushThisValue(thisValue);
         }
 
+        List<Value> evaluatedArguments = new ArrayList<>();
+        for (AstNode node : arguments) {
+            evaluatedArguments.add(node.interpret(interpreter));
+        }
+
+        Value returnValue;
         if (object.isNativeFunction()) {
-            List<Value> jsValues = arguments.stream().map(argument -> {
-                try {
-                    return argument.interpret(interpreter);
-                } catch (Exception e) {
-                    return Value.undefined();
-                }
-            }).collect(Collectors.toList());
-            Value result = ((NativeFunction)object).call(interpreter, jsValues);
-            if (!thisValue.isUndefined()) {
-                interpreter.popThisValue();
+            returnValue = ((NativeFunction)object).call(interpreter, evaluatedArguments);
+        } else {
+            Function function = (Function) object;
+            ASSERT(function.getNumberOfArguments() == arguments.size());
+            interpreter.enterScope();
+            for (int i = 0; i < arguments.size(); i++) {
+                interpreter.setIdentifier(function.getArgumentNameAt(i), Optional.ofNullable(evaluatedArguments.get(i)));
             }
-            return result;
+            returnValue = ((Function)object).getBody().interpret(interpreter);
+            interpreter.leaveScope();
         }
 
-
-        Function function = (Function) object;
-        ASSERT(function.getNumberOfArguments() == arguments.size());
-        interpreter.enterScope();
-        for (int i = 0; i < arguments.size(); i++) {
-            AstNode node = arguments.get(i);
-            interpreter.setIdentifier(function.getArgumentNameAt(i), Optional.ofNullable(node.interpret(interpreter)));
-        }
-        Value returnValue = ((Function)object).getBody().interpret(interpreter);
         if (!thisValue.isUndefined()) {
             interpreter.popThisValue();
         }
-        interpreter.leaveScope();
+
         return returnValue;
     }
 
