@@ -1,8 +1,8 @@
 package com.ctfloyd.tranquility.lib.interpret;
 
-public class GlobalScope extends Scope {
+public class GlobalObject extends JsObject {
 
-    public GlobalScope() {
+    public GlobalObject() {
         put("console", Value.object(new ConsoleObject()));
     }
 

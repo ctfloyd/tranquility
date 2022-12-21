@@ -34,8 +34,14 @@ public class Value {
         return new Value(ValueType.UNDEFINED);
     }
 
+    public static Value nullValue() { return new Value(ValueType.NULL); }
+
     public static Value number(Double value) {
         return new Value(ValueType.NUMBER, value);
+    }
+
+    public static Value number(int value) {
+        return number((double) value);
     }
 
     public static Value string(String value) { return new Value(ValueType.STRING, value); }

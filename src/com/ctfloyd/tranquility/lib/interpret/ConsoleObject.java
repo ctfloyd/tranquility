@@ -30,7 +30,7 @@ public class ConsoleObject extends JsObject {
         put("warn", Value.object(new NativeFunction(this::warn)));
     }
 
-    public Value assertImpl(List<Value> arguments) {
+    public Value assertImpl(AstInterpreter interpreter, List<Value> arguments) {
         ASSERT(arguments.get(0).isBoolean());
         boolean condition = arguments.get(0).asBoolean();
         List<Value> data = arguments.subList(1, arguments.size());
@@ -70,25 +70,25 @@ public class ConsoleObject extends JsObject {
 
     // TODO: 1.1.2 clear(): https://console.spec.whatwg.org/#clear
 
-    public Value debug(List<Value> arguments) {
+    public Value debug(AstInterpreter interpreter, List<Value> arguments) {
         // 1.1.3 Perform Logger("debug", data).
         logImpl(LogLevel.DEBUG, arguments);
         return Value.undefined();
     }
 
-    public Value error(List<Value> arguments) {
+    public Value error(AstInterpreter interpreter, List<Value> arguments) {
         // 1.1.4 Perform Logger("error", data).
         logImpl(LogLevel.ERROR, arguments);
         return Value.undefined();
     }
 
-    public Value info(List<Value> arguments) {
+    public Value info(AstInterpreter interpreter, List<Value> arguments) {
         // 1.1.5 Perform Logger("info", data).
         logImpl(LogLevel.INFO, arguments);
         return Value.undefined();
     }
 
-    public Value log(List<Value> arguments) {
+    public Value log(AstInterpreter interpreter, List<Value> arguments) {
         // 1.1.6 Perform Logger("log", data).
         logImpl(LogLevel.LOG, arguments);
         return Value.undefined();
@@ -97,7 +97,7 @@ public class ConsoleObject extends JsObject {
     // TODO: 1.1.7  table(tabularData, properties) - https://console.spec.whatwg.org/#table
     // TODO: 1.1.8  trace(...data) - https://console.spec.whatwg.org/#trace
 
-    public Value warn(List<Value> arguments) {
+    public Value warn(AstInterpreter interpreter, List<Value> arguments) {
         // 1.1.9 Perform Logger("warn", data).
         logImpl(LogLevel.WARN, arguments);
         return Value.undefined();

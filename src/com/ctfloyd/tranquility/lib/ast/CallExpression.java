@@ -27,6 +27,18 @@ public class CallExpression extends AstNode {
         JsObject object = unknownValue.asObject();
         ASSERT(object.isFunction() || object.isNativeFunction());
 
+        Value thisValue = Value.undefined();
+        if (callee.isMemberExpression()) {
+            thisValue = ((MemberExpression)callee).getObject().interpret(interpreter);
+            System.out.println(((MemberExpression) callee).getObject());
+            System.out.println("This value is: " + thisValue);
+            ASSERT(thisValue.isObject());
+        }
+
+        if (!thisValue.isUndefined()) {
+            interpreter.pushThisValue(thisValue);
+        }
+
         if (object.isNativeFunction()) {
             List<Value> jsValues = arguments.stream().map(argument -> {
                 try {
@@ -35,7 +47,11 @@ public class CallExpression extends AstNode {
                     return Value.undefined();
                 }
             }).collect(Collectors.toList());
-            return ((NativeFunction)object).call(jsValues);
+            Value result = ((NativeFunction)object).call(interpreter, jsValues);
+            if (!thisValue.isUndefined()) {
+                interpreter.popThisValue();
+            }
+            return result;
         }
 
 
@@ -47,6 +63,9 @@ public class CallExpression extends AstNode {
             interpreter.setIdentifier(function.getArgumentNameAt(i), Optional.ofNullable(node.interpret(interpreter)));
         }
         Value returnValue = ((Function)object).getBody().interpret(interpreter);
+        if (!thisValue.isUndefined()) {
+            interpreter.popThisValue();
+        }
         interpreter.leaveScope();
         return returnValue;
     }

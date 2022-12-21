@@ -19,6 +19,7 @@ public class AstNode {
         }
     }
 
+    public boolean isMemberExpression() { return false; }
     public boolean isIdentifier() {
         return false;
     }

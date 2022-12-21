@@ -1,17 +1,40 @@
 package com.ctfloyd.tranquility.lib.interpret;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.Optional;
+import java.util.*;
 
 public class AstInterpreter {
 
+    private final Map<String, JsObject> prototypes;
     private final Deque<Scope> scopes;
+    private final Stack<Value> thisStack;
+    private final GlobalObject globalObject;
 
     public AstInterpreter() {
+        globalObject = new GlobalObject();
+        prototypes = new HashMap<>();
+        prototypes.put("String", new StringPrototype());
         scopes = new ArrayDeque<>();
-        scopes.add(new GlobalScope());
+        thisStack = new Stack<>();
+    }
+
+    public JsObject getBuiltinPrototype(String builtin) {
+        return prototypes.getOrDefault(builtin, null);
+    }
+
+    public void pushThisValue(Value value) {
+        thisStack.add(value);
+    }
+
+    public void popThisValue() {
+        thisStack.pop();
+    }
+
+    public Value getThisValue() {
+        if (thisStack.isEmpty()) {
+            return Value.object(globalObject);
+        }
+
+        return thisStack.peek();
     }
 
     public void enterScope() {
@@ -26,6 +49,8 @@ public class AstInterpreter {
         Optional<Scope> identifierScope = getIdentifierScope(identifier);
         if (identifierScope.isPresent()) {
             return identifierScope.get().get(identifier);
+        } else if (!globalObject.get(identifier).isUndefined()){
+            return globalObject.get(identifier);
         }
         return Value.undefined();
     }
@@ -38,6 +63,7 @@ public class AstInterpreter {
                 return Optional.of(scope);
             }
         }
+
         return Optional.empty();
     }
 
@@ -52,12 +78,13 @@ public class AstInterpreter {
         return false;
     }
 
-    public void setIdentifier(String identifier, Optional<Value> value) {
-        Scope scope = getIdentifierScope(identifier).orElseGet(this::getCurrentScope);
-        if (value.isPresent()) {
-            scope.put(identifier, value.get());
+    public void setIdentifier(String identifier, Optional<Value> valueOptional) {
+        Optional<Scope> scope = getIdentifierScope(identifier);
+        Value value = valueOptional.orElseGet(Value::undefined);
+        if (scope.isPresent()) {
+            scope.get().put(identifier, value);
         } else {
-            scope.put(identifier, Value.undefined());
+            globalObject.put(identifier, value);
         }
     }
 
