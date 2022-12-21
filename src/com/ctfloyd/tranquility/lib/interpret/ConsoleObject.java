@@ -109,35 +109,55 @@ public class ConsoleObject extends JsObject {
         System.out.print(ANSI_YELLOW + "(JS Log) [" + logLevel.name() + "] ");
         if (arguments == null) {
             System.out.println("null");
-        }
-
-        for (Value value : arguments) {
-            if (value.isString()) {
-                System.out.print(value.asString());
+        } else {
+            for (Value value : arguments) {
+                if (value.isObject()) {
+                    if (value.asObject().isArray()) {
+                        ArrayObject array = (ArrayObject) value.asObject();
+                        System.out.print("Array [");
+                        int size = array.length();
+                        for (int i = 0; i < size; i++) {
+                            String stringValue = getStringRepresentationForValue(array.getValueAtIndex(i));
+                            if (i == size - 1) {
+                                System.out.print(stringValue);
+                            } else {
+                                System.out.print(stringValue + ", ");
+                            }
+                        }
+                        System.out.print("]");
+                    } else {
+                        System.out.print("[object Object]");
+                    }
+                } else {
+                    System.out.print(getStringRepresentationForValue(value));
+                }
+                System.out.print(" ");
             }
-
-            if (value.isNumber()) {
-                System.out.print(value.asDouble());
-            }
-
-            if (value.isBoolean()) {
-                System.out.print(value.asBoolean());
-            }
-
-            if (value.isNull()) {
-                System.out.print("null");
-            }
-
-            if (value.isUndefined()) {
-                System.out.print("undefined");
-            }
-
-            if (value.isObject()) {
-                System.out.print("[object Object]");
-            }
-
-            System.out.print(" ");
         }
         System.out.println(ANSI_RESET);
+    }
+
+    private String getStringRepresentationForValue(Value value) {
+        if (value.isString()) {
+            return "\"" + value.asString() + "\"";
+        }
+
+        if (value.isNumber()) {
+            return value.asDouble().toString();
+        }
+
+        if (value.isBoolean()) {
+            return value.asBoolean() ? "true" : "false";
+        }
+
+        if (value.isNull()) {
+            return "null";
+        }
+
+        if (value.isUndefined()) {
+            return "undefined";
+        }
+
+        return "???";
     }
 }

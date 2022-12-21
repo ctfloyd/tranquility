@@ -17,6 +17,10 @@ public class ArrayObject extends JsObject {
         return arrayObject;
     }
 
+    public Value getValueAtIndex(int index) {
+        return array.get(index);
+    }
+
     public void add(Value value) {
         array.add(value);
     }
