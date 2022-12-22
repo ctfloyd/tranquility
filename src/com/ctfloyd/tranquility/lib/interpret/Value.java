@@ -110,8 +110,17 @@ public class Value {
     }
 
     public String asString() {
-        ASSERT(this.type == ValueType.STRING);
-        return stringValue;
+        ASSERT(this.type == ValueType.STRING || this.type == ValueType.NUMBER);
+        if (this.type == ValueType.STRING) {
+            return stringValue;
+        } else {
+            boolean isWhole = Math.floor(number) == number.doubleValue();
+            if (isWhole) {
+                return "" + asInteger();
+            } else {
+                return "" + asBoolean();
+            }
+        }
     }
 
     public boolean asBoolean() {

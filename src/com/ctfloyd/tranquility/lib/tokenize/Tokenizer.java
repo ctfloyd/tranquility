@@ -168,7 +168,7 @@ public class Tokenizer {
                 continue;
             }
 
-            if (inScratchSpace && isStartOfKeywordOrReservedWord(token) || isValidIdentifier(token) || isValidStartOfLiteral(token)) {
+            if (inScratchSpace && token != END_OF_FILE_CHARACTER) {
                 appendScratch(token);
                 continue;
             }

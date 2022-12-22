@@ -28,9 +28,7 @@ public class ForStatement extends AstNode {
         interpreter.enterScope();
         initializer.interpret(interpreter);
         while (test.interpret(interpreter).asBoolean()) {
-            interpreter.enterScope();
             body.interpret(interpreter);
-            interpreter.leaveScope();
             update.interpret(interpreter);
         }
         interpreter.leaveScope();

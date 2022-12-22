@@ -2,6 +2,7 @@ package com.ctfloyd.tranquility.lib.parse;
 
 import com.ctfloyd.tranquility.lib.ast.*;
 import com.ctfloyd.tranquility.lib.common.NumberUtils;
+import com.ctfloyd.tranquility.lib.common.StringUtils;
 import com.ctfloyd.tranquility.lib.tokenize.Token;
 import com.ctfloyd.tranquility.lib.tokenize.TokenStream;
 import com.ctfloyd.tranquility.lib.tokenize.TokenType;
@@ -167,9 +168,11 @@ public class Parser {
     }
 
     private AstNode parseMemberExpression(AstNode leftHandSide) {
+        boolean computed = false;
         if (match(TokenType.PERIOD)) {
             consume(TokenType.PERIOD);
         } else {
+            computed = true;
             consume(TokenType.LEFT_SQUARE_BRACKET);
         }
 
@@ -184,7 +187,7 @@ public class Parser {
             consume(TokenType.RIGHT_SQUARE_BRACKET);
         }
 
-        MemberExpression memberExpression = new MemberExpression(leftHandSide, identifier);
+        MemberExpression memberExpression = new MemberExpression(leftHandSide, identifier, computed);
         if (matchesSecondaryExpression()) {
             return parseSecondaryExpression(memberExpression);
         }
@@ -213,7 +216,8 @@ public class Parser {
             ASSERT(value != null);
             return new NumericLiteral(value.doubleValue());
         } else if (type == TokenType.STRING_LITERAL) {
-            return new StringLiteral(consume().getValue());
+            String value = StringUtils.parse(consume().getValue());
+            return new StringLiteral(value);
         } else if (type == TokenType.BOOLEAN_LITERAL) {
             return new BooleanLiteral(Boolean.parseBoolean(consume().getValue()));
         } else if (type == TokenType.LEFT_CURLY_BRACE) {

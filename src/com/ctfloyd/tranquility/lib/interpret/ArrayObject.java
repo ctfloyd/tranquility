@@ -39,5 +39,6 @@ public class ArrayObject extends JsObject {
         for (int i = 0; i < length(); i++) {
             put("" + i, getValueAtIndex(i));
         }
+        put("length", Value.number(length()));
     }
 }

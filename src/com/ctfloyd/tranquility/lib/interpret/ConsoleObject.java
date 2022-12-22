@@ -112,7 +112,9 @@ public class ConsoleObject extends JsObject {
         } else {
             for (Value value : arguments) {
                 if (value.isObject()) {
-                    if (value.asObject().isArray()) {
+                    if (value.asObject().isStringObject()) {
+                       System.out.print(((StringObject)value.asObject()).getString());
+                    } else if (value.asObject().isArray()) {
                         ArrayObject array = (ArrayObject) value.asObject();
                         System.out.print("Array [");
                         int size = array.length();

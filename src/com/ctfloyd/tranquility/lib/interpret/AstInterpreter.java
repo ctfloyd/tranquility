@@ -76,20 +76,29 @@ public class AstInterpreter {
                 return true;
             }
         }
-        return false;
+        return !globalObject.get(identifier).isUndefined();
     }
 
     public void setIdentifier(String identifier, Optional<Value> valueOptional) {
-        Optional<Scope> scope = getIdentifierScope(identifier);
+        Optional<Scope> identifierScope = getIdentifierScope(identifier);
         Value value = valueOptional.orElseGet(Value::undefined);
-        if (scope.isPresent()) {
-            scope.get().put(identifier, value);
+        if (identifierScope.isPresent()) {
+            identifierScope.get().put(identifier, value);
         } else {
-            globalObject.put(identifier, value);
+            if (!globalObject.get(identifier).isUndefined()) {
+                globalObject.put(identifier, value);
+            } else {
+                Optional<Scope> currentScope = getCurrentScope();
+                if (currentScope.isPresent()) {
+                    currentScope.get().put(identifier, value);
+                } else {
+                    globalObject.put(identifier, value);
+                }
+            }
         }
     }
 
-    public Scope getCurrentScope() {
-        return scopes.peekLast();
+    public Optional<Scope> getCurrentScope() {
+        return Optional.ofNullable(scopes.peekLast());
     }
 }

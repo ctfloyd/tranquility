@@ -30,6 +30,10 @@ public class CallExpression extends AstNode {
         Value thisValue = Value.undefined();
         if (callee.isMemberExpression()) {
             thisValue = ((MemberExpression)callee).getObject().interpret(interpreter);
+            if (thisValue.isString()) {
+                // FIXME: Promotion shouldn't occur here
+                thisValue = Value.object(StringObject.create(interpreter, thisValue.asString()));
+            }
             ASSERT(thisValue.isObject());
         }
 
