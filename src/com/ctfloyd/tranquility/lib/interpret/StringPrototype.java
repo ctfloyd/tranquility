@@ -11,6 +11,7 @@ public class StringPrototype extends JsObject {
     public StringPrototype() {
         put("length", Value.object(new NativeFunction(this::length)));
         put("split", Value.object(new NativeFunction(this::split)));
+        put("at", Value.object(new NativeFunction(this::at)));
         put("charAt", Value.object(new NativeFunction(this::charAt)));
     }
 
@@ -112,6 +113,37 @@ public class StringPrototype extends JsObject {
         return Value.object(ArrayObject.create(interpreter, substrings));
     }
 
+    // https://tc39.es/ecma262/#sec-string.prototype.at
+    private Value at(AstInterpreter interpreter, List<Value> arguments) {
+        // 1.  Let O be the RequireObjectCoercible (this value).
+        Value unknown = interpreter.getThisValue();
+        ASSERT(unknown.isObject());
+        ASSERT(unknown.asObject().isStringObject());
+        StringObject stringObject = (StringObject) unknown.asObject();
+        // 2. Let S be ? ToString(O);
+        String string = stringObject.getString();
+        // 3. Let len be the length of S
+        int len = string.length();
+        // FIXME: Infinity isn't implemented yet
+        // 4. Let relativeIndex be ? ToIntegerOrInfinity(index)
+        int relativeIndex = arguments.size() >= 1 ? arguments.get(0).asInteger() : Integer.MAX_VALUE;
+        // 5. If relativeIndex >= 0, then
+        int k;
+        if (relativeIndex >= 0) {
+            // a. let k be relativeIndex
+            k = relativeIndex;
+        } else {
+            // 6. Else, a. Let k ben len + relativeIndex
+            k = len + relativeIndex;
+        }
+        // 7. If k < 0 or k >= len, return undefined
+        if (k < 0 || k >= len) {
+            return Value.undefined();
+        }
+        // 8. Return the substring of S from k to k + 1
+        return Value.string(string.substring(k, k + 1));
+    }
+
     // https://tc39.es/ecma262/#sec-string.prototype.charAt
     private Value charAt(AstInterpreter interpreter, List<Value> arguments) {
         // 1.  Let O be the RequireObjectCoercible (this value).
@@ -133,5 +165,4 @@ public class StringPrototype extends JsObject {
         // 6. Return the substring of S from position to position + 1
         return Value.string(string.substring(position, position + 1));
     }
-
 }
