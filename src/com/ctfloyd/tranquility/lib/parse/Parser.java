@@ -29,11 +29,15 @@ public class Parser {
         Program program = new Program();
         consume();
         while (!done()) {
+            if (match(TokenType.SEMICOLON) || match(TokenType.COMMENT) || match(TokenType.MULTI_LINE_COMMENT)) {
+                consume();
+                if (done()) {
+                    break;
+                }
+            }
+
             AstNode node = parseStatement();
             program.addChild(node);
-            if (match(TokenType.SEMICOLON)) {
-                consume(TokenType.SEMICOLON);
-            }
         }
         return program;
     }
@@ -327,7 +331,6 @@ public class Parser {
         return type == TokenType.PLUS ||
                 type == TokenType.MINUS ||
                 type == TokenType.MULTIPLY ||
-                type == TokenType.COMMENT ||
                 type == TokenType.EQUALITY ||
                 type == TokenType.PERIOD ||
                 type == TokenType.LEFT_SQUARE_BRACKET ||
