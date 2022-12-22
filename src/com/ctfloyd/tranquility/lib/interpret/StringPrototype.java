@@ -14,6 +14,7 @@ public class StringPrototype extends JsObject {
         put("at", Value.object(new NativeFunction(this::at)));
         put("charAt", Value.object(new NativeFunction(this::charAt)));
         put("endsWith", Value.object(new NativeFunction(this::endsWith)));
+        put("includes", Value.object(new NativeFunction(this::includes)));
     }
 
     private Value length(AstInterpreter interpreter, List<Value> arguments) {
@@ -212,5 +213,34 @@ public class StringPrototype extends JsObject {
         String substring = string.substring(start, end);
         // 14. If substring is searchStr, return true
         return Value.bool(substring.equals(searchString));
+    }
+
+    // https://tc39.es/ecma262/#sec-string.prototype.includes
+    private Value includes(AstInterpreter interpreter, List<Value> arguments) {
+        // 1.  Let O be the RequireObjectCoercible (this value).
+        Value unknown = interpreter.getThisValue();
+        ASSERT(unknown.isObject());
+        ASSERT(unknown.asObject().isStringObject());
+        StringObject stringObject = (StringObject) unknown.asObject();
+        // 2. Let S be ? ToString(O);
+        String string = stringObject.getString();
+        // FIXME: 3 and 4 ask about RegExp
+        // 5. Let searchStr be ? ToString(searchString);
+        String searchString = ((StringObject) arguments.get(0).asObject()).getString();
+        // 6. Let pos be ? ToIntegerOrInfinity(position);
+        // FIXME: Infinity not implemented
+        int pos = arguments.size() == 2 ? arguments.get(1).isUndefined() ? 0 : arguments.get(1).asInteger() : 0;
+        // 7. Assert: If position is undefined, then pos is 0
+        if (arguments.size() < 2 || arguments.get(1).isUndefined()) {
+            ASSERT(pos == 0);
+        }
+        // 8. Let len be the length of S
+        int len = string.length();
+        // 9. Let start be the result of clamping pos between 0 and len
+        int start = Math.max(0, Math.min(pos, len));
+        // 10. Let index be StringIndexOf(S, searchStr, start)
+        int index = string.indexOf(searchString, start);
+        // 11. If is not -1 return true - 12. Return false
+        return Value.bool(index != -1);
     }
 }
