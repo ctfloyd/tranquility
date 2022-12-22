@@ -226,6 +226,9 @@ public class Parser {
             return new BooleanLiteral(Boolean.parseBoolean(consume().getValue()));
         } else if (type == TokenType.LEFT_CURLY_BRACE) {
             return parseObjectExpression();
+        } else if (type == TokenType.MINUS) {
+            consume(TokenType.MINUS);
+            return new UnaryExpression(parseExpression(), true, UnaryExpressionOperator.MINUS);
         } else {
             ASSERT(false, "Not implemented, cannot handle token: " + currentToken + " for primary expression.");
             return null;
@@ -322,7 +325,8 @@ public class Parser {
                 type == TokenType.NEW ||
                 type == TokenType.LEFT_CURLY_BRACE ||
                 type == TokenType.LEFT_SQUARE_BRACKET ||
-                type == TokenType.LEFT_PARENTHESIS;
+                type == TokenType.LEFT_PARENTHESIS ||
+                type == TokenType.MINUS;
     }
 
     private boolean matchesSecondaryExpression() {
