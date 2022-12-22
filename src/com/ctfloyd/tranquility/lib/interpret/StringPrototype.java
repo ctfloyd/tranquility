@@ -11,6 +11,7 @@ public class StringPrototype extends JsObject {
     public StringPrototype() {
         put("length", Value.object(new NativeFunction(this::length)));
         put("split", Value.object(new NativeFunction(this::split)));
+        put("charAt", Value.object(new NativeFunction(this::charAt)));
     }
 
     private Value length(AstInterpreter interpreter, List<Value> arguments) {
@@ -109,6 +110,28 @@ public class StringPrototype extends JsObject {
         substrings.add(Value.string(substring));
         // 17. Return CreateArrayFromList(substrings);
         return Value.object(ArrayObject.create(interpreter, substrings));
+    }
+
+    // https://tc39.es/ecma262/#sec-string.prototype.charAt
+    private Value charAt(AstInterpreter interpreter, List<Value> arguments) {
+        // 1.  Let O be the RequireObjectCoercible (this value).
+        Value unknown = interpreter.getThisValue();
+        ASSERT(unknown.isObject());
+        ASSERT(unknown.asObject().isStringObject());
+        StringObject stringObject = (StringObject) unknown.asObject();
+        // 2. Let S be ? ToString(O);
+        String string = stringObject.getString();
+        // FIXME: Infinity isn't implemented yet
+        // 3. Let position be ? ToIntegerOrInfinity(pos)
+        int position = arguments.size() >= 1 ? arguments.get(0).asInteger() : Integer.MAX_VALUE;
+        // 4. Let size be the length of S
+        int size = string.length();
+        // 5. If position < 0 or position >= size, return the empty String.
+        if (position < 0 || position >= size) {
+            return Value.string("");
+        }
+        // 6. Return the substring of S from position to position + 1
+        return Value.string(string.substring(position, position + 1));
     }
 
 }
