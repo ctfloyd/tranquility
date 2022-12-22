@@ -13,6 +13,7 @@ public class StringPrototype extends JsObject {
         put("split", Value.object(new NativeFunction(this::split)));
         put("at", Value.object(new NativeFunction(this::at)));
         put("charAt", Value.object(new NativeFunction(this::charAt)));
+        put("endsWith", Value.object(new NativeFunction(this::endsWith)));
     }
 
     private Value length(AstInterpreter interpreter, List<Value> arguments) {
@@ -164,5 +165,52 @@ public class StringPrototype extends JsObject {
         }
         // 6. Return the substring of S from position to position + 1
         return Value.string(string.substring(position, position + 1));
+    }
+
+    // https://tc39.es/ecma262/#sec-string.prototype.endsWith
+    private Value endsWith(AstInterpreter interpreter, List<Value> arguments) {
+        if (arguments.size() < 1) {
+            throw new RuntimeException("endsWith: Incorrect number of arguments.");
+        }
+
+        // 1.  Let O be the RequireObjectCoercible (this value).
+        Value unknown = interpreter.getThisValue();
+        ASSERT(unknown.isObject());
+        ASSERT(unknown.asObject().isStringObject());
+        StringObject stringObject = (StringObject) unknown.asObject();
+        // 2. Let S be ? ToString(O);
+        String string = stringObject.getString();
+        // FIXME: 3 and 4 ask about RegExp
+        // 5. Let searchStr be ? ToString(searchString);
+        String searchString = ((StringObject) arguments.get(0).asObject()).getString();
+        // 6. Let len be the length of S
+        int len = string.length();
+        // FIXME: Infinity is not implemented yet
+        // 7. If endPosition is undefined, let pos be len; else let pos b ? ToIntegerOrInfinity(endPosition);
+        Value endPositionValue = arguments.size() == 2 ? arguments.get(1) : Value.undefined();
+        int pos;
+        if (endPositionValue.isUndefined()) {
+            pos = len;
+        } else {
+            pos = endPositionValue.asInteger();
+        }
+        // 8. Let end be the result of clamping pos between 0 and len.
+        int end = Math.max(0, Math.min(pos, len));
+        // 9. Let searchLength be the length of searchString
+        int searchLength = searchString.length();
+        // 10. If searchLength = 0, return true
+        if (searchLength == 0) {
+            return Value.bool(true);
+        }
+        // 11. Let start be end - searchLength
+        int start = end - searchLength;
+        // 12. If start < 0, return false
+        if (start < 0) {
+            return Value.bool(false);
+        }
+        // 13. Let substring be the substring of S from start to end
+        String substring = string.substring(start, end);
+        // 14. If substring is searchStr, return true
+        return Value.bool(substring.equals(searchString));
     }
 }
