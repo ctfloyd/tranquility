@@ -214,13 +214,13 @@ public class Value {
     }
 
     // https://tc39.es/ecma262/#sec-topropertykey
-    public String toPropertyKey() {
+    public String toPropertyKey(AstInterpreter interpreter) {
         // 1. Let key be ? ToPrimitive(argument, string);
         Value key = toPrimitive("string");
         // TODO: 2. If key is a symbol, then
             // a. Return key
         // 3. Return !ToString(key)
-        return key._toString();
+        return key._toString(interpreter);
     }
 
     public Value toPrimitive() {
@@ -242,13 +242,13 @@ public class Value {
     }
 
     // https://tc39.es/ecma262/#sec-tostring
-    public String _toString() {
+    public String _toString(AstInterpreter interpreter) {
         // 1. If argument is a String, return argument
         if (isString()) {
             return asString();
         }
 
-        // TODO: 2. If argument is a smybol, throw a typeError Exception
+        // TODO: 2. If argument is a symbol, throw a typeError Exception
         // 3. If argument is undefined, return "undefined"
         if (isUndefined()) {
             return "undefined";
@@ -277,7 +277,7 @@ public class Value {
         ASSERT(!primitiveValue.isObject());
 
         // 12. Return ? ToString(primValue)
-        return primitiveValue._toString();
+        return primitiveValue._toString(interpreter);
     }
 
     @Override

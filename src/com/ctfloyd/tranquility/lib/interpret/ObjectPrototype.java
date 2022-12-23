@@ -13,7 +13,7 @@ public class ObjectPrototype extends JsObject {
     // https://tc39.es/ecma262/#sec-object.prototype.hasownproperty
     private Value hasOwnProperty(AstInterpreter interpreter, List<Value> arguments) {
         // 1. Let P be ? ToPropertyKey(V)
-        String property = arguments.get(0).toPropertyKey();
+        String property = arguments.get(0).toPropertyKey(interpreter);
         // 2. Let O be ? ToObject(this value)
         JsObject object = interpreter.getThisValue().toObject(interpreter);
         // 3. Return HasOwnProperty(O, P)
