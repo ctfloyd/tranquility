@@ -29,7 +29,7 @@ public class CallExpression extends AstNode {
 
         Value thisValue = Value.undefined();
         if (callee.isMemberExpression()) {
-            thisValue = ObjectOperation.toObject(interpreter, ((MemberExpression)callee).getObject().interpret(interpreter));
+            thisValue = ((MemberExpression)callee).getObject().interpret(interpreter).toObject(interpreter);
         }
 
         if (!thisValue.isUndefined()) {

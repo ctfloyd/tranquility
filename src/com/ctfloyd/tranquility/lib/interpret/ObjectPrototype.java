@@ -18,7 +18,7 @@ public class ObjectPrototype extends JsObject {
         // 2. Let O be ? ToObject(this value)
         JsObject object = interpreter.getThisValue().asObject();
         // 3. Return HasOwnProperty(O, P)
-        return ObjectOperation.hasOwnProperty(object, property);
+        return object.hasOwnProperty(property);
     }
 
     // https://tc39.es/ecma262/#sec-object.prototype.isprototypeof
@@ -30,7 +30,7 @@ public class ObjectPrototype extends JsObject {
         }
 
         // 2. Let O be ? ToObject(this value).
-        Value o = ObjectOperation.toObject(interpreter, interpreter.getThisValue());
+        Value o = interpreter.getThisValue().toObject(interpreter);
         // 3. Repeat
         while (true) {
             // a. Set V to ? V.[[GetPrototypeOf]]();
@@ -40,7 +40,7 @@ public class ObjectPrototype extends JsObject {
                 return Value._false();
             }
             // c. If SameValue(O, V) is true, return true
-            if (ComparisonOperation.sameValue(o, v).asBoolean()) {
+            if (o.sameValue(v).asBoolean()) {
                 return Value._true();
             }
         }

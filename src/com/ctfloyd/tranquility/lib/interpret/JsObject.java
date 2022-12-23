@@ -24,8 +24,16 @@ public class JsObject {
         return object;
     }
 
-    public Map<String, Value> getProperties() {
-        return properties;
+    // https://tc39.es/ecma262/#sec-hasownproperty
+    public Value hasOwnProperty(String property) {
+        // 1. Let desc be ?O.[[GetOwnProperty]](P).
+        Value desc = get(property);
+        // 2. If desc is undefined, return false.
+        if (desc.isUndefined()) {
+            return Value._false();
+        }
+        // 3. Return true
+        return Value._true();
     }
 
     public Value get(String propertyName) {
