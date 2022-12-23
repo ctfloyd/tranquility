@@ -20,7 +20,7 @@ public class JsObject {
     public static JsObject create(AstInterpreter interpreter, Map<String, Value> properties) {
         JsObject object = new JsObject();
         properties.forEach(object::put);
-        object.setPrototype(interpreter.getBuiltinPrototype(BuiltinPrototype.OBJECT));
+        object.setPrototypeOf(interpreter.getBuiltinPrototype(BuiltinPrototype.OBJECT));
         return object;
     }
 
@@ -64,7 +64,7 @@ public class JsObject {
 
         if (propertyName.equals(PROTOTYPE_PROPERTY)) {
             ASSERT(value.isObject());
-            setPrototype(value.asObject());
+            setPrototypeOf(value.asObject());
             return;
         }
 
@@ -79,7 +79,7 @@ public class JsObject {
         return Value.object(prototype);
     }
 
-    public void setPrototype(JsObject prototype) {
+    public void setPrototypeOf(JsObject prototype) {
         this.prototype = prototype;
     }
 
