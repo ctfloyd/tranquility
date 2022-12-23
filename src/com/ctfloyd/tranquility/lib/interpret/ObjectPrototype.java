@@ -44,7 +44,7 @@ public class ObjectPrototype extends JsObject {
                 return Value._false();
             }
             // c. If SameValue(O, V) is true, return true
-            if (o.sameValue(v).asBoolean()) {
+            if (o.sameValue(v)) {
                 return Value._true();
             }
         }
