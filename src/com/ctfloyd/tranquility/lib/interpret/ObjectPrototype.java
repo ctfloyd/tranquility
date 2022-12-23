@@ -1,7 +1,5 @@
 package com.ctfloyd.tranquility.lib.interpret;
 
-import java.util.List;
-
 // https://tc39.es/ecma262/#sec-properties-of-the-object-prototype-object
 public class ObjectPrototype extends JsObject {
 
@@ -11,9 +9,9 @@ public class ObjectPrototype extends JsObject {
     }
 
     // https://tc39.es/ecma262/#sec-object.prototype.hasownproperty
-    private Value hasOwnProperty(AstInterpreter interpreter, List<Value> arguments) {
+    private Value hasOwnProperty(AstInterpreter interpreter, ArgumentList arguments) {
         // 1. Let P be ? ToPropertyKey(V)
-        String property = arguments.get(0).toPropertyKey(interpreter);
+        String property = arguments.getFirstArgument().toPropertyKey(interpreter);
         // 2. Let O be ? ToObject(this value)
         JsObject object = interpreter.getThisValue().toObject(interpreter);
         // 3. Return HasOwnProperty(O, P)
@@ -21,9 +19,9 @@ public class ObjectPrototype extends JsObject {
     }
 
     // https://tc39.es/ecma262/#sec-object.prototype.isprototypeof
-    private Value isPrototypeOf(AstInterpreter interpreter, List<Value> arguments) {
+    private Value isPrototypeOf(AstInterpreter interpreter, ArgumentList arguments) {
         // 1. If V is not an Object, return false
-        Value v = arguments.get(0);
+        Value v = arguments.getFirstArgument();
         if (!v.isObject()) {
             return Value._false();
         }

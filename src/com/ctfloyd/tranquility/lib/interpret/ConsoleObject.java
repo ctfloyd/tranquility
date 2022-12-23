@@ -1,7 +1,5 @@
 package com.ctfloyd.tranquility.lib.interpret;
 
-import java.util.List;
-
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
 /**
@@ -30,10 +28,10 @@ public class ConsoleObject extends JsObject {
         putNativeFunction("warn", this::warn);
     }
 
-    public Value _assert(AstInterpreter interpreter, List<Value> arguments) {
-        ASSERT(arguments.get(0).isBoolean());
-        boolean condition = arguments.get(0).asBoolean();
-        List<Value> data = arguments.subList(1, arguments.size());
+    public Value _assert(AstInterpreter interpreter, ArgumentList arguments) {
+        ASSERT(arguments.getFirstArgument().isBoolean());
+        boolean condition = arguments.getFirstArgument().asBoolean();
+        ArgumentList data = arguments.subList(1, arguments.size());
 
         // 1.1 If condition is true, return.
         if (condition) {
@@ -46,20 +44,20 @@ public class ConsoleObject extends JsObject {
 
         // 3. If data is empty, append message to data
         if (data.isEmpty()) {
-            data.add(valueMessage);
+            data.addArgument(valueMessage);
         } else {
             // 4. Otherwise
             // 4.1 Let first be data[0]
-            Value first = data.get(0);
+            Value first = data.getFirstArgument();
             // If Type(first) is not String, then prepend message to data.
             if (!first.isString()) {
-                data.add(0, valueMessage);
+                data.prepend(valueMessage);
             } else {
                 // 4.3 Otherwise
                 // 4.3.1 Let concat be the concatenation of message, COLON, SPACE, and first.
                 Value concat = Value.string(message + ": " + first.asString());
                 // 4.3.2. Set data[0] to concat
-                data.set(0, concat);
+                data.overwriteArgumentAt(0, concat);
             }
         }
 
@@ -70,25 +68,25 @@ public class ConsoleObject extends JsObject {
 
     // TODO: 1.1.2 clear(): https://console.spec.whatwg.org/#clear
 
-    public Value debug(AstInterpreter interpreter, List<Value> arguments) {
+    public Value debug(AstInterpreter interpreter, ArgumentList arguments) {
         // 1.1.3 Perform Logger("debug", data).
         logImpl(LogLevel.DEBUG, arguments);
         return Value.undefined();
     }
 
-    public Value error(AstInterpreter interpreter, List<Value> arguments) {
+    public Value error(AstInterpreter interpreter, ArgumentList arguments) {
         // 1.1.4 Perform Logger("error", data).
         logImpl(LogLevel.ERROR, arguments);
         return Value.undefined();
     }
 
-    public Value info(AstInterpreter interpreter, List<Value> arguments) {
+    public Value info(AstInterpreter interpreter, ArgumentList arguments) {
         // 1.1.5 Perform Logger("info", data).
         logImpl(LogLevel.INFO, arguments);
         return Value.undefined();
     }
 
-    public Value log(AstInterpreter interpreter, List<Value> arguments) {
+    public Value log(AstInterpreter interpreter, ArgumentList arguments) {
         // 1.1.6 Perform Logger("log", data).
         logImpl(LogLevel.LOG, arguments);
         return Value.undefined();
@@ -97,7 +95,7 @@ public class ConsoleObject extends JsObject {
     // TODO: 1.1.7  table(tabularData, properties) - https://console.spec.whatwg.org/#table
     // TODO: 1.1.8  trace(...data) - https://console.spec.whatwg.org/#trace
 
-    public Value warn(AstInterpreter interpreter, List<Value> arguments) {
+    public Value warn(AstInterpreter interpreter, ArgumentList arguments) {
         // 1.1.9 Perform Logger("warn", data).
         logImpl(LogLevel.WARN, arguments);
         return Value.undefined();
@@ -105,7 +103,7 @@ public class ConsoleObject extends JsObject {
 
     // TODO: 1.1.10, 1.1.11
 
-    private void logImpl(LogLevel logLevel, List<Value> arguments) {
+    private void logImpl(LogLevel logLevel, ArgumentList arguments) {
         System.out.print(ANSI_YELLOW + "(JS Log) [" + logLevel.name() + "] ");
         if (arguments == null) {
             System.out.println("null");

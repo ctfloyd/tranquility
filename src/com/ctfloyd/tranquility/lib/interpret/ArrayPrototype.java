@@ -1,7 +1,5 @@
 package com.ctfloyd.tranquility.lib.interpret;
 
-import java.util.List;
-
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
 // https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array-objects
@@ -12,7 +10,7 @@ public class ArrayPrototype extends JsObject {
     }
 
     // https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype.push
-    private Value push(AstInterpreter interpreter, List<Value> items) {
+    private Value push(AstInterpreter interpreter, ArgumentList items) {
         // 1. Let O be ? ToObject(this value).
         JsObject object = interpreter.getThisValue().toObject(interpreter);
         ASSERT(object.isArray());

@@ -1,7 +1,5 @@
 package com.ctfloyd.tranquility.lib.interpret;
 
-import java.util.List;
-
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
 public class NativeFunction extends JsObject {
@@ -13,7 +11,7 @@ public class NativeFunction extends JsObject {
         this.function = function;
     }
 
-    public Value call(AstInterpreter interpreter, List<Value> arguments) {
+    public Value call(AstInterpreter interpreter, ArgumentList arguments) {
         return function.apply(interpreter, arguments);
     }
 

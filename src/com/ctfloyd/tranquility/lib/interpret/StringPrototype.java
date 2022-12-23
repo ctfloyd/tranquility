@@ -16,7 +16,7 @@ public class StringPrototype extends JsObject {
         putNativeFunction("includes", this::includes);
     }
 
-    private Value split(AstInterpreter interpreter, List<Value> arguments) {
+    private Value split(AstInterpreter interpreter, ArgumentList arguments) {
         Value unknown = interpreter.getThisValue();
         ASSERT(unknown.isObject());
         ASSERT(unknown.asObject().isStringObject());
@@ -24,7 +24,7 @@ public class StringPrototype extends JsObject {
         StringObject stringObject = (StringObject) unknown.asObject();
         String string = stringObject.getString();
 
-        Value separatorValue = arguments.size() >= 1 ? arguments.get(0) : Value.undefined();
+        Value separatorValue = arguments.getFirstArgument();
         ASSERT(separatorValue.isUndefined() || separatorValue.isString());
         String separator = "undefined";
         if (!separatorValue.isUndefined()){
@@ -33,7 +33,7 @@ public class StringPrototype extends JsObject {
 
         // 4. If limit is undefined, let lim be 2^32 - 1; else let lim be limit.
         int limit = Integer.MAX_VALUE;
-        Value limitValue = arguments.size() == 2 ? arguments.get(1) : Value.undefined();
+        Value limitValue = arguments.getSecondArgument();
         if (!limitValue.isUndefined()) {
             limit = limitValue.asInteger();
         }
@@ -103,7 +103,7 @@ public class StringPrototype extends JsObject {
     }
 
     // https://tc39.es/ecma262/#sec-string.prototype.at
-    private Value at(AstInterpreter interpreter, List<Value> arguments) {
+    private Value at(AstInterpreter interpreter, ArgumentList argumentList) {
         // 1.  Let O be the RequireObjectCoercible (this value).
         Value unknown = interpreter.getThisValue();
         ASSERT(unknown.isObject());
@@ -115,7 +115,7 @@ public class StringPrototype extends JsObject {
         int len = string.length();
         // FIXME: Infinity isn't implemented yet
         // 4. Let relativeIndex be ? ToIntegerOrInfinity(index)
-        int relativeIndex = arguments.size() >= 1 ? arguments.get(0).asInteger() : Integer.MAX_VALUE;
+        int relativeIndex = argumentList.getFirstArgumentOr(Value.number(Integer.MAX_VALUE)).asInteger();
         // 5. If relativeIndex >= 0, then
         int k;
         if (relativeIndex >= 0) {
@@ -134,7 +134,7 @@ public class StringPrototype extends JsObject {
     }
 
     // https://tc39.es/ecma262/#sec-string.prototype.charAt
-    private Value charAt(AstInterpreter interpreter, List<Value> arguments) {
+    private Value charAt(AstInterpreter interpreter, ArgumentList arguments) {
         // 1.  Let O be the RequireObjectCoercible (this value).
         Value unknown = interpreter.getThisValue();
         ASSERT(unknown.isObject());
@@ -144,7 +144,7 @@ public class StringPrototype extends JsObject {
         String string = stringObject.getString();
         // FIXME: Infinity isn't implemented yet
         // 3. Let position be ? ToIntegerOrInfinity(pos)
-        int position = arguments.size() >= 1 ? arguments.get(0).asInteger() : Integer.MAX_VALUE;
+        int position = arguments.getFirstArgumentOr(Value.number(Integer.MAX_VALUE)).asInteger();
         // 4. Let size be the length of S
         int size = string.length();
         // 5. If position < 0 or position >= size, return the empty String.
@@ -156,7 +156,7 @@ public class StringPrototype extends JsObject {
     }
 
     // https://tc39.es/ecma262/#sec-string.prototype.endsWith
-    private Value endsWith(AstInterpreter interpreter, List<Value> arguments) {
+    private Value endsWith(AstInterpreter interpreter, ArgumentList arguments) {
         // 1.  Let O be the RequireObjectCoercible (this value).
         Value unknown = interpreter.getThisValue();
         ASSERT(unknown.isObject());
@@ -166,13 +166,12 @@ public class StringPrototype extends JsObject {
         String string = stringObject.getString();
         // FIXME: 3 and 4 ask about RegExp
         // 5. Let searchStr be ? ToString(searchString);
-        Value searchStringArgument = arguments.size() >= 1 ? arguments.get(0) : Value.undefined();
-        String searchString = searchStringArgument._toString(interpreter);
+        String searchString = arguments.getFirstArgument()._toString(interpreter);
         // 6. Let len be the length of S
         int len = string.length();
         // FIXME: Infinity is not implemented yet
         // 7. If endPosition is undefined, let pos be len; else let pos b ? ToIntegerOrInfinity(endPosition);
-        Value endPositionValue = arguments.size() == 2 ? arguments.get(1) : Value.undefined();
+        Value endPositionValue = arguments.getSecondArgument();
         int pos;
         if (endPositionValue.isUndefined()) {
             pos = len;
@@ -200,7 +199,7 @@ public class StringPrototype extends JsObject {
     }
 
     // https://tc39.es/ecma262/#sec-string.prototype.includes
-    private Value includes(AstInterpreter interpreter, List<Value> arguments) {
+    private Value includes(AstInterpreter interpreter, ArgumentList arguments) {
         // 1.  Let O be the RequireObjectCoercible (this value).
         Value unknown = interpreter.getThisValue();
         ASSERT(unknown.isObject());
@@ -210,12 +209,12 @@ public class StringPrototype extends JsObject {
         String string = stringObject.getString();
         // FIXME: 3 and 4 ask about RegExp
         // 5. Let searchStr be ? ToString(searchString);
-        String searchString = arguments.get(0).asString();
+        String searchString = arguments.getFirstArgument()._toString(interpreter);
         // 6. Let pos be ? ToIntegerOrInfinity(position);
         // FIXME: Infinity not implemented
-        int pos = arguments.size() == 2 ? arguments.get(1).isUndefined() ? 0 : arguments.get(1).asInteger() : 0;
+        int pos = arguments.getFirstArgumentOr(Value.number(0)).asInteger();
         // 7. Assert: If position is undefined, then pos is 0
-        if (arguments.size() < 2 || arguments.get(1).isUndefined()) {
+        if (arguments.getSecondArgument().isUndefined()) {
             ASSERT(pos == 0);
         }
         // 8. Let len be the length of S

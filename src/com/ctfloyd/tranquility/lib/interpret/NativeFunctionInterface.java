@@ -1,8 +1,6 @@
 package com.ctfloyd.tranquility.lib.interpret;
 
-import java.util.List;
-
 @FunctionalInterface
 public interface NativeFunctionInterface {
-    Value apply(AstInterpreter interpreter, List<Value> arguments);
+    Value apply(AstInterpreter interpreter, ArgumentList arguments);
 }

@@ -2,7 +2,7 @@ package com.ctfloyd.tranquility.lib.ast;
 
 import com.ctfloyd.tranquility.lib.interpret.*;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,9 +36,9 @@ public class CallExpression extends AstNode {
             interpreter.pushThisValue(thisValue);
         }
 
-        List<Value> evaluatedArguments = new ArrayList<>();
+        ArgumentList evaluatedArguments = new ArgumentList(Collections.emptyList());
         for (AstNode node : arguments) {
-            evaluatedArguments.add(node.interpret(interpreter));
+            evaluatedArguments.addArgument(node.interpret(interpreter));
         }
 
         Value returnValue;
@@ -49,7 +49,7 @@ public class CallExpression extends AstNode {
             ASSERT(function.getNumberOfArguments() == arguments.size());
             interpreter.enterScope();
             for (int i = 0; i < arguments.size(); i++) {
-                interpreter.setIdentifier(function.getArgumentNameAt(i), Optional.ofNullable(evaluatedArguments.get(i)));
+                interpreter.setIdentifier(function.getArgumentNameAt(i), Optional.ofNullable(evaluatedArguments.getArgumentAt(i)));
             }
             returnValue = ((Function)object).getBody().interpret(interpreter);
             interpreter.leaveScope();
