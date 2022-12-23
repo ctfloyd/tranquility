@@ -6,6 +6,7 @@ public class StringObject extends JsObject {
 
     private StringObject(String string) {
         this.string = string;
+        put("length", Value.number(this.string.length()));
     }
 
     public static StringObject create(AstInterpreter interpreter, String string)  {

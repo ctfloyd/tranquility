@@ -9,23 +9,11 @@ import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 public class StringPrototype extends JsObject {
 
     public StringPrototype() {
-        putNativeFunction("length", this::length);
         putNativeFunction("split", this::split);
         putNativeFunction("at", this::at);
         putNativeFunction("charAt", this::charAt);
         putNativeFunction("endsWith", this::endsWith);
         putNativeFunction("includes", this::includes);
-    }
-
-    private Value length(AstInterpreter interpreter, List<Value> arguments) {
-        ASSERT(arguments.isEmpty());
-        Value value = interpreter.getThisValue();
-        ASSERT(value != null);
-        ASSERT(value.isObject());
-        ASSERT(value.asObject().isStringObject());
-        StringObject stringObject = (StringObject) value.asObject();
-        int length = stringObject.getString().length();
-        return Value.number(length);
     }
 
     private Value split(AstInterpreter interpreter, List<Value> arguments) {
