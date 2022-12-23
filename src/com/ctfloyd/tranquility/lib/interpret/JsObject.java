@@ -46,7 +46,7 @@ public class JsObject {
         while (value == null && currentProtoType != null) {
             value = currentProtoType.get(propertyName);
 
-            Value prototypeValue = prototype.getPrototype();
+            Value prototypeValue = prototype.getPrototypeOf();
             if (prototypeValue.isNull()) {
                 currentProtoType = null;
             } else {
@@ -71,7 +71,7 @@ public class JsObject {
         properties.put(propertyName, value);
     }
 
-    public Value getPrototype() {
+    public Value getPrototypeOf() {
         if (prototype == null) {
             return Value.nullValue();
         }

@@ -34,7 +34,7 @@ public class ObjectPrototype extends JsObject {
         // 3. Repeat
         while (true) {
             // a. Set V to ? V.[[GetPrototypeOf]]();
-            v = v.asObject().getPrototype();
+            v = v.asObject().getPrototypeOf();
             // b. If V is null, return false
             if (v.isNull()) {
                 return Value._false();
