@@ -213,6 +213,73 @@ public class Value {
         return asObject() == y.asObject();
     }
 
+    // https://tc39.es/ecma262/#sec-topropertykey
+    public String toPropertyKey() {
+        // 1. Let key be ? ToPrimitive(argument, string);
+        Value key = toPrimitive("string");
+        // TODO: 2. If key is a symbol, then
+            // a. Return key
+        // 3. Return !ToString(key)
+        return key._toString();
+    }
+
+    public Value toPrimitive() {
+        return toPrimitive(null);
+    }
+
+    // TODO: Don't reference the preferred type by string
+    public Value toPrimitive(String preferredType) {
+        // 1. If input is an Object, then
+        if (isObject()) {
+            // TODO: Implement according to specification
+            // a. Let exoticToPrim be ? GetMethod(input, @@toPrimitive).
+            if (asObject().isStringObject()) {
+                return Value.string(((StringObject) asObject()).getString());
+            }
+        }
+
+        return this;
+    }
+
+    // https://tc39.es/ecma262/#sec-tostring
+    public String _toString() {
+        // 1. If argument is a String, return argument
+        if (isString()) {
+            return asString();
+        }
+
+        // TODO: 2. If argument is a smybol, throw a typeError Exception
+        // 3. If argument is undefined, return "undefined"
+        if (isUndefined()) {
+            return "undefined";
+        }
+        // 4. If argument is null, return "null"
+        if (isNull()) {
+            return "null";
+        }
+
+        // 5. If argument is true, return "true"
+        // 6. If argument is false, return "false"
+        if (isBoolean()) {
+            return asBoolean() ? "true" : "false";
+        }
+
+        // TODO: 7. If argument is a Number, return Number::toString(10);
+        // TODO: 8. If argument is a BigInt, return BigInt::toString(10);
+
+        // 9. Assert: argument is an Object
+        ASSERT(isObject());
+
+        // 10: Let primValue be ? ToPrimitive(string);
+        Value primitiveValue = toPrimitive("string");
+
+        // 11. Assert primValue is not an Object
+        ASSERT(!primitiveValue.isObject());
+
+        // 12. Return ? ToString(primValue)
+        return primitiveValue._toString();
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", Value.class.getSimpleName() + "[", "]")
