@@ -15,7 +15,7 @@ public class BooleanLiteral extends AstNode {
 
     @Override
     public Value interpret(AstInterpreter interpreter) {
-        return Value.bool(value);
+        return Value._boolean(value);
     }
 
     @Override

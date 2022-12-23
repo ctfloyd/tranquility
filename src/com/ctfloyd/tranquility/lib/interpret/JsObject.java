@@ -13,6 +13,21 @@ public class JsObject {
     private final Map<String, Value> properties = new HashMap<>();
     private JsObject prototype;
 
+    protected JsObject() {
+
+    }
+
+    public static JsObject create(AstInterpreter interpreter, Map<String, Value> properties) {
+        JsObject object = new JsObject();
+        properties.forEach(object::put);
+        object.setPrototype(interpreter.getBuiltinPrototype("Object"));
+        return object;
+    }
+
+    public Map<String, Value> getProperties() {
+        return properties;
+    }
+
     public Value get(String propertyName) {
         Value value = properties.get(propertyName);
         if (value != null) {

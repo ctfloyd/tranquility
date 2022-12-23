@@ -14,6 +14,7 @@ public class AstInterpreter {
         prototypes = new HashMap<>();
         prototypes.put("String", new StringPrototype());
         prototypes.put("Array", new ArrayPrototype());
+        prototypes.put("Object", new ObjectPrototype());
         scopes = new ArrayDeque<>();
         thisStack = new Stack<>();
     }

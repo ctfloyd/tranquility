@@ -59,7 +59,7 @@ public class BinaryExpression extends AstNode {
         // FIXME: Types should be coerced
         ASSERT(leftValue.isNumber());
         ASSERT(rightValue.isNumber());
-        return Value.bool(leftValue.asDouble() < rightValue.asDouble());
+        return Value._boolean(leftValue.asDouble() < rightValue.asDouble());
     }
 
     private Value lessThanEquals(AstInterpreter interpreter) {
@@ -68,7 +68,7 @@ public class BinaryExpression extends AstNode {
         // FIXME: Types should be coerced
         ASSERT(leftValue.isNumber());
         ASSERT(rightValue.isNumber());
-        return Value.bool(leftValue.asDouble() <= rightValue.asDouble());
+        return Value._boolean(leftValue.asDouble() <= rightValue.asDouble());
     }
 
     private Value greaterThan(AstInterpreter interpreter) {
@@ -77,7 +77,7 @@ public class BinaryExpression extends AstNode {
         // FIXME: Types should be coerced
         ASSERT(leftValue.isNumber());
         ASSERT(rightValue.isNumber());
-        return Value.bool(leftValue.asDouble() > rightValue.asDouble());
+        return Value._boolean(leftValue.asDouble() > rightValue.asDouble());
     }
 
     private Value greaterThanEquals(AstInterpreter interpreter) {
@@ -86,7 +86,7 @@ public class BinaryExpression extends AstNode {
         // FIXME: Types should be coerced
         ASSERT(leftValue.isNumber());
         ASSERT(rightValue.isNumber());
-        return Value.bool(leftValue.asDouble() >= rightValue.asDouble());
+        return Value._boolean(leftValue.asDouble() >= rightValue.asDouble());
     }
 
     @Override

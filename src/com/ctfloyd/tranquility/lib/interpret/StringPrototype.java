@@ -201,18 +201,18 @@ public class StringPrototype extends JsObject {
         int searchLength = searchString.length();
         // 10. If searchLength = 0, return true
         if (searchLength == 0) {
-            return Value.bool(true);
+            return Value._boolean(true);
         }
         // 11. Let start be end - searchLength
         int start = end - searchLength;
         // 12. If start < 0, return false
         if (start < 0) {
-            return Value.bool(false);
+            return Value._boolean(false);
         }
         // 13. Let substring be the substring of S from start to end
         String substring = string.substring(start, end);
         // 14. If substring is searchStr, return true
-        return Value.bool(substring.equals(searchString));
+        return Value._boolean(substring.equals(searchString));
     }
 
     // https://tc39.es/ecma262/#sec-string.prototype.includes
@@ -241,6 +241,6 @@ public class StringPrototype extends JsObject {
         // 10. Let index be StringIndexOf(S, searchStr, start)
         int index = string.indexOf(searchString, start);
         // 11. If is not -1 return true - 12. Return false
-        return Value.bool(index != -1);
+        return Value._boolean(index != -1);
     }
 }

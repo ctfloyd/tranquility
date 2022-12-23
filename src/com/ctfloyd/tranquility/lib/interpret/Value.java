@@ -46,7 +46,9 @@ public class Value {
 
     public static Value string(String value) { return new Value(ValueType.STRING, value); }
 
-    public static Value bool(boolean value) { return new Value(ValueType.BOOLEAN, value); }
+    public static Value _boolean(boolean value) { return new Value(ValueType.BOOLEAN, value); }
+    public static Value _true() { return _boolean(true); }
+    public static Value _false() { return _boolean(false); }
 
     public Value(ValueType type, Object value)  {
         this.type = type;

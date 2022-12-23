@@ -4,6 +4,7 @@ import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
 import com.ctfloyd.tranquility.lib.interpret.JsObject;
 import com.ctfloyd.tranquility.lib.interpret.Value;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
@@ -19,7 +20,7 @@ public class ObjectExpression extends AstNode {
 
     @Override
     public Value interpret(AstInterpreter interpreter) {
-        JsObject object = new JsObject();
+        JsObject object = JsObject.create(interpreter, Collections.emptyMap());
         for (Map.Entry<Identifier, AstNode> entry : properties.entrySet()) {
             object.put(entry.getKey().getName(), entry.getValue().interpret(interpreter));
         }
