@@ -157,10 +157,6 @@ public class StringPrototype extends JsObject {
 
     // https://tc39.es/ecma262/#sec-string.prototype.endsWith
     private Value endsWith(AstInterpreter interpreter, List<Value> arguments) {
-        if (arguments.size() < 1) {
-            throw new RuntimeException("endsWith: Incorrect number of arguments.");
-        }
-
         // 1.  Let O be the RequireObjectCoercible (this value).
         Value unknown = interpreter.getThisValue();
         ASSERT(unknown.isObject());
@@ -170,7 +166,8 @@ public class StringPrototype extends JsObject {
         String string = stringObject.getString();
         // FIXME: 3 and 4 ask about RegExp
         // 5. Let searchStr be ? ToString(searchString);
-        String searchString = arguments.get(0).asString();
+        Value searchStringArgument = arguments.size() >= 1 ? arguments.get(0) : Value.undefined();
+        String searchString = searchStringArgument._toString(interpreter);
         // 6. Let len be the length of S
         int len = string.length();
         // FIXME: Infinity is not implemented yet
