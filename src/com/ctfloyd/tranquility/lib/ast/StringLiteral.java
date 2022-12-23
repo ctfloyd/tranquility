@@ -1,7 +1,6 @@
 package com.ctfloyd.tranquility.lib.ast;
 
 import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.StringObject;
 import com.ctfloyd.tranquility.lib.interpret.Value;
 
 import java.util.StringJoiner;
@@ -16,8 +15,7 @@ public class StringLiteral extends AstNode {
 
     @Override
     public Value interpret(AstInterpreter interpreter) {
-        // FIXME: Don't always promote a string literal to its object
-        return Value.object(StringObject.create(interpreter, value));
+        return Value.string(value);
     }
 
     @Override

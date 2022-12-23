@@ -1,9 +1,6 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.JsObject;
-import com.ctfloyd.tranquility.lib.interpret.StringObject;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.interpret.*;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
@@ -31,11 +28,7 @@ public class MemberExpression extends AstNode {
 
     @Override
     public Value interpret(AstInterpreter interpreter) {
-        Value unknownValue = object.interpret(interpreter);
-        if (unknownValue.isString()) {
-            // FIXME: String promotion probably shouldn't happen here.
-            unknownValue = Value.object(StringObject.create(interpreter, unknownValue.asString()));
-        }
+        Value unknownValue = ObjectOperation.toObject(interpreter, object.interpret(interpreter));
         ASSERT(unknownValue.isObject(), "Left hand side of a member expression should be an object.");
         JsObject object = unknownValue.asObject();
 

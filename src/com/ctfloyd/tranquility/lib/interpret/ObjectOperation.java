@@ -1,7 +1,5 @@
 package com.ctfloyd.tranquility.lib.interpret;
 
-import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
-
 public class ObjectOperation {
 
     public static Value hasOwnProperty(JsObject object, String property) {
@@ -49,8 +47,7 @@ public class ObjectOperation {
             return value;
         }
 
-        ASSERT(false);
-        return null;
+        throw new RuntimeException("NO");
     }
 
 }

@@ -37,11 +37,10 @@ public class StringPrototype extends JsObject {
         String string = stringObject.getString();
 
         Value separatorValue = arguments.size() >= 1 ? arguments.get(0) : Value.undefined();
-        ASSERT(separatorValue.isUndefined() || separatorValue.isObject());
+        ASSERT(separatorValue.isUndefined() || separatorValue.isString());
         String separator = "undefined";
         if (!separatorValue.isUndefined()){
-            ASSERT(separatorValue.asObject().isStringObject());
-            separator = ((StringObject)separatorValue.asObject()).getString();
+            separator = separatorValue.asString();
         }
 
         // 4. If limit is undefined, let lim be 2^32 - 1; else let lim be limit.
@@ -183,7 +182,7 @@ public class StringPrototype extends JsObject {
         String string = stringObject.getString();
         // FIXME: 3 and 4 ask about RegExp
         // 5. Let searchStr be ? ToString(searchString);
-        String searchString = ((StringObject) arguments.get(0).asObject()).getString();
+        String searchString = arguments.get(0).asString();
         // 6. Let len be the length of S
         int len = string.length();
         // FIXME: Infinity is not implemented yet
@@ -226,7 +225,7 @@ public class StringPrototype extends JsObject {
         String string = stringObject.getString();
         // FIXME: 3 and 4 ask about RegExp
         // 5. Let searchStr be ? ToString(searchString);
-        String searchString = ((StringObject) arguments.get(0).asObject()).getString();
+        String searchString = arguments.get(0).asString();
         // 6. Let pos be ? ToIntegerOrInfinity(position);
         // FIXME: Infinity not implemented
         int pos = arguments.size() == 2 ? arguments.get(1).isUndefined() ? 0 : arguments.get(1).asInteger() : 0;
