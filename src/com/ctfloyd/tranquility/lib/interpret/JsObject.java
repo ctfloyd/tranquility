@@ -20,7 +20,7 @@ public class JsObject {
     public static JsObject create(AstInterpreter interpreter, Map<String, Value> properties) {
         JsObject object = new JsObject();
         properties.forEach(object::put);
-        object.setPrototype(interpreter.getBuiltinPrototype("Object"));
+        object.setPrototype(interpreter.getBuiltinPrototype(BuiltinPrototype.OBJECT));
         return object;
     }
 

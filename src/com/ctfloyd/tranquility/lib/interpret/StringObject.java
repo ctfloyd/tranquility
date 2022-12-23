@@ -13,7 +13,7 @@ public class StringObject extends JsObject {
 
     public static StringObject create(AstInterpreter interpreter, String string)  {
         StringObject stringObject = new StringObject(string);
-        stringObject.setPrototype(interpreter.getBuiltinPrototype("String"));
+        stringObject.setPrototype(interpreter.getBuiltinPrototype(BuiltinPrototype.STRING));
         return stringObject;
     }
 

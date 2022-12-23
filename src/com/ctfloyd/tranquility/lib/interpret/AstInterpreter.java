@@ -4,7 +4,7 @@ import java.util.*;
 
 public class AstInterpreter {
 
-    private final Map<String, JsObject> prototypes;
+    private final Map<BuiltinPrototype, JsObject> prototypes;
     private final Deque<Scope> scopes;
     private final Stack<Value> thisStack;
     private final GlobalObject globalObject;
@@ -12,15 +12,15 @@ public class AstInterpreter {
     public AstInterpreter() {
         globalObject = new GlobalObject();
         prototypes = new HashMap<>();
-        prototypes.put("String", new StringPrototype());
-        prototypes.put("Array", new ArrayPrototype());
-        prototypes.put("Object", new ObjectPrototype());
+        prototypes.put(BuiltinPrototype.STRING, new StringPrototype());
+        prototypes.put(BuiltinPrototype.ARRAY, new ArrayPrototype());
+        prototypes.put(BuiltinPrototype.OBJECT, new ObjectPrototype());
         scopes = new ArrayDeque<>();
         thisStack = new Stack<>();
     }
 
-    public JsObject getBuiltinPrototype(String builtin) {
-        return prototypes.getOrDefault(builtin, null);
+    public JsObject getBuiltinPrototype(BuiltinPrototype prototype) {
+        return prototypes.getOrDefault(prototype, null);
     }
 
     public void pushThisValue(Value value) {

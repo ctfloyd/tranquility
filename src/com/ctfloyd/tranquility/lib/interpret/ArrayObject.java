@@ -13,7 +13,7 @@ public class ArrayObject extends JsObject {
 
     public static ArrayObject create(AstInterpreter interpreter, List<Value> values) {
         ArrayObject arrayObject = new ArrayObject(values);
-        arrayObject.setPrototype(interpreter.getBuiltinPrototype("Array"));
+        arrayObject.setPrototype(interpreter.getBuiltinPrototype(BuiltinPrototype.ARRAY));
         arrayObject.enumerateProperties();
         return arrayObject;
     }
