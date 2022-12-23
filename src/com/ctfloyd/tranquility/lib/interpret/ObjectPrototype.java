@@ -16,7 +16,7 @@ public class ObjectPrototype extends JsObject {
         // FIXME: This isn't spec compliant.
         String property = ((StringObject) arguments.get(0).asObject()).getString();
         // 2. Let O be ? ToObject(this value)
-        JsObject object = interpreter.getThisValue().asObject();
+        JsObject object = interpreter.getThisValue().toObject(interpreter);
         // 3. Return HasOwnProperty(O, P)
         return object.hasOwnProperty(property);
     }
@@ -30,7 +30,7 @@ public class ObjectPrototype extends JsObject {
         }
 
         // 2. Let O be ? ToObject(this value).
-        Value o = interpreter.getThisValue().toObject(interpreter);
+        Value o = Value.object(interpreter.getThisValue().toObject(interpreter));
         // 3. Repeat
         while (true) {
             // a. Set V to ? V.[[GetPrototypeOf]]();

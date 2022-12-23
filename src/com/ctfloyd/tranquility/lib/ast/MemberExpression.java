@@ -28,9 +28,7 @@ public class MemberExpression extends AstNode {
 
     @Override
     public Value interpret(AstInterpreter interpreter) {
-        Value unknownValue = object.interpret(interpreter).toObject(interpreter);
-        ASSERT(unknownValue.isObject(), "Left hand side of a member expression should be an object.");
-        JsObject object = unknownValue.asObject();
+        JsObject object = this.object.interpret(interpreter).toObject(interpreter);
 
         Value propertyName;
         if (isComputed()) {

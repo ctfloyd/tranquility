@@ -144,7 +144,7 @@ public class Value {
 
 
     // https://tc39.es/ecma262/#sec-toobject
-    public Value toObject(AstInterpreter interpreter) {
+    public JsObject toObject(AstInterpreter interpreter) {
         if (isUndefined()) {
             // TODO: This should be a TypeError exception
             throw new RuntimeException("TypeError: value is undefined.");
@@ -166,13 +166,13 @@ public class Value {
         }
 
         if (isString()) {
-            return Value.object(StringObject.create(interpreter, asString()));
+            return StringObject.create(interpreter, asString());
         }
 
         // TODO: Implement symbol and big int
 
         if (isObject()) {
-            return this;
+            return asObject();
         }
 
         throw new RuntimeException("NO");
