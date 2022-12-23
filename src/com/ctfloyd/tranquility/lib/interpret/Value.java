@@ -130,6 +130,18 @@ public class Value {
         return bool;
     }
 
+    public ValueType getType() {
+        return type;
+    }
+
+    public boolean sameTypeAs(Value other) {
+        if (other == null) {
+            return false;
+        }
+
+        return type.equals(other.getType());
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", Value.class.getSimpleName() + "[", "]")
