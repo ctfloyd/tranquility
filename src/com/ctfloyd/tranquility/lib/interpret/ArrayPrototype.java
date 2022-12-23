@@ -14,10 +14,9 @@ public class ArrayPrototype extends JsObject {
     // https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype.push
     private Value push(AstInterpreter interpreter, List<Value> items) {
         // 1. Let O be ? ToObject(this value).
-        Value unknown = interpreter.getThisValue();
-        ASSERT(unknown.isObject());
-        ASSERT(unknown.asObject().isArray());
-        ArrayObject o = (ArrayObject) unknown.asObject();
+        JsObject object = interpreter.getThisValue().toObject(interpreter);
+        ASSERT(object.isArray());
+        ArrayObject o = (ArrayObject) object;
 
         // 2. Let len be ? LengthOfArrayLike(O).
         int len = o.length();
