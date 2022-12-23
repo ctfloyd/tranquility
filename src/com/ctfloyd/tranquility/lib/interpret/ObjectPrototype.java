@@ -2,6 +2,8 @@ package com.ctfloyd.tranquility.lib.interpret;
 
 import java.util.List;
 
+import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
+
 // https://tc39.es/ecma262/#sec-properties-of-the-object-prototype-object
 public class ObjectPrototype extends JsObject {
 
@@ -14,7 +16,9 @@ public class ObjectPrototype extends JsObject {
     private Value hasOwnProperty(AstInterpreter interpreter, List<Value> arguments) {
         // 1. Let P be ? ToPropertyKey(V)
         // FIXME: This isn't spec compliant.
-        String property = ((StringObject) arguments.get(0).asObject()).getString();
+        Value value  = arguments.get(0);
+        ASSERT(value.isString());
+        String property = value.asString();
         // 2. Let O be ? ToObject(this value)
         JsObject object = interpreter.getThisValue().toObject(interpreter);
         // 3. Return HasOwnProperty(O, P)
