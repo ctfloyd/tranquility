@@ -22,15 +22,15 @@ public class ConsoleObject extends JsObject {
     }
 
     public ConsoleObject() {
-        put("assert", Value.object(new NativeFunction(this::assertImpl)));
-        put("debug", Value.object(new NativeFunction(this::debug)));
-        put("error", Value.object(new NativeFunction(this::error)));
-        put("info", Value.object(new NativeFunction(this::info)));
-        put("log", Value.object(new NativeFunction(this::log)));
-        put("warn", Value.object(new NativeFunction(this::warn)));
+        putNativeFunction("assert", this::_assert);
+        putNativeFunction("debug", this::debug);
+        putNativeFunction("error", this::error);
+        putNativeFunction("info", this::info);
+        putNativeFunction("log", this::log);
+        putNativeFunction("warn", this::warn);
     }
 
-    public Value assertImpl(AstInterpreter interpreter, List<Value> arguments) {
+    public Value _assert(AstInterpreter interpreter, List<Value> arguments) {
         ASSERT(arguments.get(0).isBoolean());
         boolean condition = arguments.get(0).asBoolean();
         List<Value> data = arguments.subList(1, arguments.size());

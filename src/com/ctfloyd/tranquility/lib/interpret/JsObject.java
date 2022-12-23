@@ -75,6 +75,10 @@ public class JsObject {
         this.prototype = prototype;
     }
 
+    protected void putNativeFunction(String name, NativeFunctionInterface function) {
+        put(name, Value.object(new NativeFunction(function)));
+    }
+
     public boolean isFunction() { return false; }
     public boolean isArray() { return false; }
     public boolean isNativeFunction() { return false; }

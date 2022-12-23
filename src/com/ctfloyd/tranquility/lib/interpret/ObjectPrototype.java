@@ -6,8 +6,8 @@ import java.util.List;
 public class ObjectPrototype extends JsObject {
 
     public ObjectPrototype() {
-        put("hasOwnProperty", Value.object(new NativeFunction(this::hasOwnProperty)));
-        put("isPrototypeOf", Value.object(new NativeFunction(this::isPrototypeOf)));
+        putNativeFunction("hasOwnProperty", this::hasOwnProperty);
+        putNativeFunction("isPrototypeOf", this::isPrototypeOf);
     }
 
     // https://tc39.es/ecma262/#sec-object.prototype.hasownproperty

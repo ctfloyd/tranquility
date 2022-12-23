@@ -8,7 +8,7 @@ import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 public class ArrayPrototype extends JsObject {
 
     public ArrayPrototype() {
-        put("push", Value.object(new NativeFunction(this::push)));
+        putNativeFunction("push", this::push);
     }
 
     // https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype.push

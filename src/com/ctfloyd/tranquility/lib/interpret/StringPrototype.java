@@ -9,12 +9,12 @@ import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 public class StringPrototype extends JsObject {
 
     public StringPrototype() {
-        put("length", Value.object(new NativeFunction(this::length)));
-        put("split", Value.object(new NativeFunction(this::split)));
-        put("at", Value.object(new NativeFunction(this::at)));
-        put("charAt", Value.object(new NativeFunction(this::charAt)));
-        put("endsWith", Value.object(new NativeFunction(this::endsWith)));
-        put("includes", Value.object(new NativeFunction(this::includes)));
+        putNativeFunction("length", this::length);
+        putNativeFunction("split", this::split);
+        putNativeFunction("at", this::at);
+        putNativeFunction("charAt", this::charAt);
+        putNativeFunction("endsWith", this::endsWith);
+        putNativeFunction("includes", this::includes);
     }
 
     private Value length(AstInterpreter interpreter, List<Value> arguments) {
