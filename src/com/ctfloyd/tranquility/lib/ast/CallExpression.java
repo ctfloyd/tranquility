@@ -51,7 +51,7 @@ public class CallExpression extends AstNode {
             for (int i = 0; i < arguments.size(); i++) {
                 interpreter.setIdentifier(function.getArgumentNameAt(i), Optional.ofNullable(evaluatedArguments.getArgumentAt(i)));
             }
-            returnValue = ((Function)object).getBody().interpret(interpreter);
+            returnValue = ((Function)object).call(interpreter);;
             interpreter.leaveScope();
         }
 

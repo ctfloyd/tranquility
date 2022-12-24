@@ -15,6 +15,7 @@ public class AstInterpreter {
         prototypes.put(BuiltinPrototype.STRING, new StringPrototype());
         prototypes.put(BuiltinPrototype.ARRAY, new ArrayPrototype());
         prototypes.put(BuiltinPrototype.OBJECT, new ObjectPrototype());
+        prototypes.put(BuiltinPrototype.NUMBER, new NumberPrototype());
         scopes = new ArrayDeque<>();
         thisStack = new Stack<>();
     }

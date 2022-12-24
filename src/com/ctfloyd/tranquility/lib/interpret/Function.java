@@ -16,7 +16,6 @@ public class Function extends JsObject {
         super();
         ASSERT(name != null);
         ASSERT(!name.isEmpty());
-        ASSERT(body != null);
         ASSERT(argumentNames != null);
         this.name = name;
         this.body = body;
@@ -38,5 +37,9 @@ public class Function extends JsObject {
 
     public String getArgumentNameAt(int i) {
         return argumentNames.get(i);
+    }
+
+    public Value call(AstInterpreter interpreter) {
+        return body.interpret(interpreter);
     }
 }
