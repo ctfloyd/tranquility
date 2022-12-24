@@ -23,5 +23,6 @@ public class AstNode {
     public boolean isIdentifier() {
         return false;
     }
+    public boolean isExpression() { return false; }
 
 }

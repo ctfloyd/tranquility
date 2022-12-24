@@ -4,7 +4,7 @@ import com.ctfloyd.tranquility.lib.interpret.*;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
-public class MemberExpression extends AstNode {
+public class MemberExpression extends Expression {
 
     private final AstNode object;
     private final Identifier property;
@@ -39,6 +39,19 @@ public class MemberExpression extends AstNode {
         return object.get(propertyName.asString());
     }
 
+    @Override
+    public Reference getReference(AstInterpreter interpreter) {
+        Value object = this.object.interpret(interpreter);
+
+        Value propertyName;
+        if (isComputed()) {
+            propertyName = property.interpret(interpreter);
+        } else {
+            propertyName = Value.string(property.getName());
+        }
+
+        return new Reference(object, propertyName.asString(), false, interpreter.getThisValue());
+    }
 
     @Override
     public void dump(int indent) {

@@ -257,8 +257,8 @@ public class Parser {
             return new BinaryExpression(leftHandSide, parseExpression(), BinaryExpressionOperator.GREATER_THAN_EQUALS);
         } else if (type == TokenType.ASSIGNMENT) {
             consume(TokenType.ASSIGNMENT);
-            ASSERT(leftHandSide.isIdentifier());
-            return new AssignmentExpression((Identifier) leftHandSide, parseExpression(), AssignmentExpressionOperator.EQUALS);
+            ASSERT(leftHandSide.isExpression());
+            return new AssignmentExpression((Expression) leftHandSide, parseExpression(), AssignmentExpressionOperator.EQUALS);
         } else if (type == TokenType.LEFT_PARENTHESIS) {
             return parseCallExpression(leftHandSide);
         } else if (type == TokenType.PERIOD || type == TokenType.LEFT_SQUARE_BRACKET) {
