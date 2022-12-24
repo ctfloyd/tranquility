@@ -47,7 +47,12 @@ public class VariableDeclarator extends AstNode {
         System.out.println("[Name] (" + name + ")");
         printIndent(indent + 1);
         System.out.println("[Value] {");
-        value.dump(indent + 1);
+        if (value != null) {
+            value.dump(indent + 1);
+        } else {
+            printIndent(indent + 1);
+            System.out.println("undefined");
+        }
         printIndent(indent + 1);
         System.out.println("}");
         printIndent(indent);

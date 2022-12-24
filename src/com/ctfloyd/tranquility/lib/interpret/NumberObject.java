@@ -41,8 +41,12 @@ public class NumberObject extends JsObject {
         return number;
     }
 
+    public double getValue() {
+        return value;
+    }
+
     @Override
-    public boolean isNumber() {
+    public boolean isNumberObject() {
         return true;
     }
 

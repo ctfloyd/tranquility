@@ -279,6 +279,28 @@ public class Value {
         return primitiveValue._toString(interpreter);
     }
 
+    // https://tc39.es/ecma262/#sec-isintegralnumber
+    public boolean isIntegralNumber(AstInterpreter interpreter) {
+        // 1. If argument is not a Number, return false
+        if (isUndefined() || isNull()) {
+            return false;
+        }
+
+        JsObject object = toObject(interpreter);
+        if (!object.isNumberObject()) {
+            return false;
+        }
+
+        // 2. If argument is not finite, return false
+        NumberObject number = (NumberObject) object;
+        if (number.isInfinite()) {
+            return false;
+        }
+
+        // 3. If floor(abs(R(argument))) !== abs(R(argument)), return false; 4. return true
+        return Math.floor(Math.abs(number.getValue())) == Math.abs(number.getValue());
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", Value.class.getSimpleName() + "[", "]")
