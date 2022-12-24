@@ -161,8 +161,7 @@ public class Value {
         }
 
         if (isNumber()) {
-            // TODO: Return a number object
-            throw new RuntimeException("NOT IMPLEMENTED");
+            return NumberObject.create(interpreter, asDouble());
         }
 
         if (isString()) {

@@ -91,5 +91,6 @@ public class JsObject {
     public boolean isArray() { return false; }
     public boolean isNativeFunction() { return false; }
     public boolean isStringObject() { return false; }
+    public boolean isNumber() { return false; }
 
 }

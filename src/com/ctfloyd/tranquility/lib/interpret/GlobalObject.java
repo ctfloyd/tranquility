@@ -1,7 +1,5 @@
 package com.ctfloyd.tranquility.lib.interpret;
 
-import java.util.Collections;
-
 public class GlobalObject extends JsObject {
 
     // 19.1 Value Properties of the Global Object
@@ -10,7 +8,7 @@ public class GlobalObject extends JsObject {
         put("console", Value.object(new ConsoleObject()));
         // 19.1.4
         put("undefined", Value.undefined());
-        put("Number", Value.object(new NumberConstructor(Collections.singletonList("value"))));
+        put("Number", Value.object(new NumberConstructor()));
     }
 
 }
