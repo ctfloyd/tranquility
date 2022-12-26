@@ -29,7 +29,7 @@ public class Identifier extends AstNode {
 
     @Override
     public Value interpret(AstInterpreter interpreter) {
-        return interpreter.getIdentifier(name);
+        return interpreter.getIdentifier(interpreter, name);
     }
 
     @Override

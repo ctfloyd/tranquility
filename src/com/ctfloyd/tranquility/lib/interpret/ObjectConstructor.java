@@ -2,12 +2,14 @@ package com.ctfloyd.tranquility.lib.interpret;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class ObjectConstructor extends Constructor {
 
     public ObjectConstructor() {
         super("Object", Collections.emptyList());
         putNativeFunction("assign", this::assign);
+        putNativeFunction("create", this::create);
     }
 
     @Override
@@ -16,13 +18,11 @@ public class ObjectConstructor extends Constructor {
 
         // FIXME: Make this follow spec better
         if (object == null) {
-            object = new JsObject();
-            object.setPrototypeOf(interpreter.getBuiltinPrototype(BuiltinPrototype.OBJECT));
+            JsObject.create(interpreter, Collections.emptyMap());
         }
 
         if (argument.isUndefined() || argument.isNull()) {
-            object = new JsObject();
-            object.setPrototypeOf(interpreter.getBuiltinPrototype(BuiltinPrototype.OBJECT));
+            JsObject.create(interpreter, Collections.emptyMap());
         } else {
             object = argument.toObject(interpreter);
         }
@@ -49,13 +49,11 @@ public class ObjectConstructor extends Constructor {
                 // iii. For each element nextKeys of keys, do
                 for (String nextKey : keys) {
                     // 1. Let desc be ? from.[[GetOwnProperty]](nextKey);.
-                    // FIXME: Use GetOwnProperty instead of inherited get
-                    Value desc = from.get(nextKey);
-                    // FIXME: Do the enumerable check:
+                    Optional<PropertyDescriptor> desc = from.getOwnProperty(interpreter, nextKey);
                     // 2. If desc is not undefined and desc.[[Enumerable]] is true, then
-                    if (!desc.isUndefined()) {
+                    if (desc.isPresent() && desc.get().isEnumerable()) {
                         // a. Let propValue be ? Get(from, nextKey).
-                        Value propValue = from.get(nextKey);
+                        Value propValue = from.get(interpreter, nextKey);
                         // b. Perform ? Set(to, nextKey, propValue, true).
                         to.put(nextKey, propValue);
                     }
@@ -64,6 +62,26 @@ public class ObjectConstructor extends Constructor {
         }
 
         return Value.object(to);
+    }
+
+    // https://tc39.es/ecma262/#sec-object.create
+    public Value create(AstInterpreter interpreter, ArgumentList arguments) {
+        Value o = arguments.getFirstArgument();
+        // 1. If O is not an Object and O is not null, throw a TypeError exception
+        // FIXME: Throw TypeError exception
+        if (!o.isObject() && !o.isNull()) {
+            throw new RuntimeException("TypeError: O is not an object and O is not null.");
+        }
+        // 2. Let obj be OrdinaryObjectCreate(O).
+        JsObject obj = JsObject.ordinaryObjectCreate(interpreter, o.asObject());
+        // 3. If Properties is not undefined, then
+        Value properties = arguments.getSecondArgument();
+        if (!properties.isUndefined()) {
+            // a. Return ? ObjectDefineProperties(obj, Properties).
+            obj.defineProperties(interpreter, properties);
+        }
+        // 4. Return obj.
+        return Value.object(obj);
     }
 
 }

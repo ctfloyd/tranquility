@@ -35,7 +35,7 @@ public class VariableDeclarator extends AstNode {
             variableValue = value.interpret(interpreter);
         }
 
-        interpreter.setIdentifier(name, Optional.of(variableValue));
+        interpreter.setIdentifier(interpreter, name, Optional.of(variableValue));
         return Value.undefined();
     }
 

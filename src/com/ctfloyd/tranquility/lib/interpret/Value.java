@@ -34,7 +34,7 @@ public class Value {
         return new Value(ValueType.UNDEFINED);
     }
 
-    public static Value nullValue() { return new Value(ValueType.NULL); }
+    public static Value _null() { return new Value(ValueType.NULL); }
 
     public static Value number(Double value) {
         return new Value(ValueType.NUMBER, value);
@@ -299,6 +299,60 @@ public class Value {
 
         // 3. If floor(abs(R(argument))) !== abs(R(argument)), return false; 4. return true
         return Math.floor(Math.abs(number.getValue())) == Math.abs(number.getValue());
+    }
+
+    // https://tc39.es/ecma262/#sec-topropertydescriptor
+    public PropertyDescriptor toPropertyDescriptor(AstInterpreter interpreter) {
+        // 1. If obj is not an Object, throw a TypeError exception.
+        if (!isObject()) {
+            // FIXME: Throw a TypeError
+            throw new RuntimeException("TypeError: Obj is not an object.");
+        }
+
+        // 2. Let desc bew a new Property Descriptor that initially has no fields.
+        PropertyDescriptor desc = new PropertyDescriptor(Value._null(), false, false, false);
+
+        JsObject obj = asObject();
+        // 3. Let hasEnumerable be ? HasProperty(Obj, "enumerable").
+        boolean hasEnumerable = obj.hasProperty(interpreter, "enumerable");
+        // 4. If hasEnumerable is true, then
+        if (hasEnumerable) {
+            // a. Let enumerable be ToBoolean(? Get(Obj, "enumerable")
+            boolean enumerable = obj.get(interpreter, "enumerable").asBoolean();
+            // b. Set desc.[[Enumerable]] to be enumerable
+            desc.setEnumerable(enumerable);
+        }
+        // 5. Let hasConfigurable be ? HasProperty(obj, "configurable")
+        boolean hasConfigurable = obj.hasProperty(interpreter, "configurable");
+        // 6. If hasConfigurable is true, then
+        if (hasConfigurable) {
+            // a. Let configurable be ToBoolean(? Get(Obj, "configurable")
+            boolean configurable = obj.get(interpreter, "configurable").asBoolean();
+            // b. Set desc.[[Configurable]] to be configurable
+            desc.setConfigurable(configurable);
+        }
+        // 7-14, Are the same as steps 1-6 but for properties: value, writable, get, and set respectively
+        boolean hasValue = obj.hasProperty(interpreter, "value");
+        if (hasValue) {
+            Value value = obj.get(interpreter, "value");
+            desc.set(interpreter, value);
+        }
+
+        boolean hasWritable = obj.hasProperty(interpreter, "writable");
+        if (hasWritable) {
+            boolean writable = obj.get(interpreter, "writable").asBoolean();
+            desc.setWritable(writable);
+        }
+
+        boolean hasGet = obj.hasProperty(interpreter, "get");
+        if (hasGet) {
+            Value getter = obj.get(interpreter, "get");
+            // FIXME: Do it
+            // b. If isCallable(getter) is false then getter is not undefined, throw a TypeError excepiton
+            // c. Set desc.setGetter
+        }
+        // FIXME: Implement 14-15
+        return desc;
     }
 
     @Override

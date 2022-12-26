@@ -3,6 +3,7 @@ package com.ctfloyd.tranquility.lib.interpret;
 import com.ctfloyd.tranquility.lib.ast.BlockStatement;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
@@ -39,7 +40,13 @@ public class Function extends JsObject {
         return argumentNames.get(i);
     }
 
-    public Value call(AstInterpreter interpreter) {
-        return body.interpret(interpreter);
+    public Value call(AstInterpreter interpreter, ArgumentList arguments) {
+        interpreter.enterScope();
+        for (int i = 0; i < arguments.size(); i++) {
+            interpreter.setIdentifier(interpreter, getArgumentNameAt(i), Optional.of(arguments.getArgumentAt(i)));
+        }
+        Value value =  body.interpret(interpreter);
+        interpreter.leaveScope();
+        return value;
     }
 }

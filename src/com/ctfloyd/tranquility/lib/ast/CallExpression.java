@@ -4,7 +4,6 @@ import com.ctfloyd.tranquility.lib.interpret.*;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
@@ -47,12 +46,7 @@ public class CallExpression extends AstNode {
         } else {
             Function function = (Function) object;
             ASSERT(function.getNumberOfArguments() == arguments.size());
-            interpreter.enterScope();
-            for (int i = 0; i < arguments.size(); i++) {
-                interpreter.setIdentifier(function.getArgumentNameAt(i), Optional.ofNullable(evaluatedArguments.getArgumentAt(i)));
-            }
-            returnValue = ((Function)object).call(interpreter);;
-            interpreter.leaveScope();
+            returnValue = ((Function)object).call(interpreter, evaluatedArguments);;
         }
 
         if (!thisValue.isUndefined()) {

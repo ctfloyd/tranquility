@@ -39,7 +39,7 @@ public class FunctionDeclaration extends AstNode {
     @Override
     public Value interpret(AstInterpreter interpreter) {
         Value value = Value.object(new Function(name, arguments, blockStatement));
-        interpreter.setIdentifier(name, Optional.of(value));
+        interpreter.setIdentifier(interpreter, name, Optional.of(value));
         return value;
     }
 }

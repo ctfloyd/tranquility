@@ -36,7 +36,7 @@ public class MemberExpression extends Expression {
         } else {
             propertyName = Value.string(property.getName());
         }
-        return object.get(propertyName.asString());
+        return object.get(interpreter, propertyName.asString());
     }
 
     @Override

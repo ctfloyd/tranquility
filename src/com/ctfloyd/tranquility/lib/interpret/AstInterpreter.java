@@ -48,12 +48,12 @@ public class AstInterpreter {
         scopes.pop();
     }
 
-    public Value getIdentifier(String identifier)  {
+    public Value getIdentifier(AstInterpreter interpreter, String identifier)  {
         Optional<Scope> identifierScope = getIdentifierScope(identifier);
         if (identifierScope.isPresent()) {
             return identifierScope.get().get(identifier);
-        } else if (!globalObject.get(identifier).isUndefined()){
-            return globalObject.get(identifier);
+        } else if (!globalObject.get(interpreter, identifier).isUndefined()){
+            return globalObject.get(interpreter, identifier);
         }
         return Value.undefined();
     }
@@ -70,24 +70,13 @@ public class AstInterpreter {
         return Optional.empty();
     }
 
-    public boolean hasIdentifier(String identifier) {
-        Iterator<Scope> backwards = scopes.descendingIterator();
-        while (backwards.hasNext()) {
-            Scope scope = backwards.next();
-            if (scope.has(identifier)) {
-                return true;
-            }
-        }
-        return !globalObject.get(identifier).isUndefined();
-    }
-
-    public void setIdentifier(String identifier, Optional<Value> valueOptional) {
+    public void setIdentifier(AstInterpreter interpreter, String identifier, Optional<Value> valueOptional) {
         Optional<Scope> identifierScope = getIdentifierScope(identifier);
         Value value = valueOptional.orElseGet(Value::undefined);
         if (identifierScope.isPresent()) {
             identifierScope.get().put(identifier, value);
         } else {
-            if (!globalObject.get(identifier).isUndefined()) {
+            if (!globalObject.get(interpreter, identifier).isUndefined()) {
                 globalObject.put(identifier, value);
             } else {
                 Optional<Scope> currentScope = getCurrentScope();
