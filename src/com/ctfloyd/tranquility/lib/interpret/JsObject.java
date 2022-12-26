@@ -1,8 +1,6 @@
 package com.ctfloyd.tranquility.lib.interpret;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
@@ -55,6 +53,24 @@ public class JsObject {
         }
 
         return Objects.requireNonNullElseGet(value, Value::undefined);
+    }
+
+    // https://tc39.es/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots-ownpropertykeys
+    public List<String> ownPropertyKeys() {
+        // 1. Let keys be a new empty List
+        List<String> keys = new ArrayList<>();
+        // FIXME: Override in ArrayObject
+        // 2. For each own property key P of O such that P is an array index, in ascending numeric index order, do
+            // a. Append P to keys
+        // FIXME: Going to need to store properties as a linked hash map in the future to retain insertion order
+        // 3. For each own property key P of O such that P is a String and P is not an array index, in ascending chronological
+        // order of property creation, do
+        // a. Append P to keys
+        keys.addAll(properties.keySet());
+        // FIXME: No symbols yet
+        // 4. For each own property key P of O such that P is a Symbol, in ascending chronological order of property creation, do
+        // a. Append P to keys
+        return keys;
     }
 
     public void put(String propertyName, Value value) {
