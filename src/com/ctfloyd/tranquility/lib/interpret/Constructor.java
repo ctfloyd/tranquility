@@ -9,4 +9,9 @@ public abstract class Constructor extends Function {
     }
 
     public abstract JsObject construct(AstInterpreter interpreter, ArgumentList arguments, JsObject object);
+
+    @Override
+    public boolean isConstructor() {
+        return true;
+    }
 }
