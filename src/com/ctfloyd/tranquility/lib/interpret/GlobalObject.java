@@ -9,6 +9,7 @@ public class GlobalObject extends JsObject {
         // 19.1.4
         put("undefined", Value.undefined());
         put("Number", Value.object(new NumberConstructor()));
+        put("Object", Value.object(new ObjectConstructor()));
     }
 
 }
