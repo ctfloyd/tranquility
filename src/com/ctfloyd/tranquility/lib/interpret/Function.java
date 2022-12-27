@@ -12,6 +12,7 @@ public class Function extends JsObject {
     private final String name;
     private List<String> argumentNames;
     private final BlockStatement body;
+    private JsObject homeObject;
 
     public Function(String name, List<String> argumentNames, BlockStatement body) {
         super();
@@ -26,6 +27,14 @@ public class Function extends JsObject {
     @Override
     public boolean isFunction() {
         return true;
+    }
+
+    public Optional<JsObject> getHomeObject() {
+        return Optional.ofNullable(homeObject);
+    }
+
+    public void setHomeObject(JsObject homeObject) {
+        this.homeObject = homeObject;
     }
 
     public BlockStatement getBody() {
