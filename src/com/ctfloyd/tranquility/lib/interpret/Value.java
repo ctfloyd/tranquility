@@ -314,7 +314,7 @@ public class Value {
 
         JsObject obj = asObject();
         // 3. Let hasEnumerable be ? HasProperty(Obj, "enumerable").
-        boolean hasEnumerable = obj.hasProperty(interpreter, "enumerable");
+        boolean hasEnumerable = obj.hasProperty("enumerable");
         // 4. If hasEnumerable is true, then
         if (hasEnumerable) {
             // a. Let enumerable be ToBoolean(? Get(Obj, "enumerable")
@@ -323,7 +323,7 @@ public class Value {
             desc.setEnumerable(enumerable);
         }
         // 5. Let hasConfigurable be ? HasProperty(obj, "configurable")
-        boolean hasConfigurable = obj.hasProperty(interpreter, "configurable");
+        boolean hasConfigurable = obj.hasProperty("configurable");
         // 6. If hasConfigurable is true, then
         if (hasConfigurable) {
             // a. Let configurable be ToBoolean(? Get(Obj, "configurable")
@@ -332,23 +332,23 @@ public class Value {
             desc.setConfigurable(configurable);
         }
         // 7-14, Are the same as steps 1-6 but for properties: value, writable, get, and set respectively
-        boolean hasValue = obj.hasProperty(interpreter, "value");
+        boolean hasValue = obj.hasProperty("value");
         if (hasValue) {
             Value value = obj.get(interpreter, "value");
             desc.setValue(value);
         }
 
-        boolean hasWritable = obj.hasProperty(interpreter, "writable");
+        boolean hasWritable = obj.hasProperty("writable");
         if (hasWritable) {
             boolean writable = obj.get(interpreter, "writable").asBoolean();
             desc.setWritable(writable);
         }
 
-        boolean hasGet = obj.hasProperty(interpreter, "get");
+        boolean hasGet = obj.hasProperty("get");
         if (hasGet) {
             Value getter = obj.get(interpreter, "get");
             // FIXME: Do it
-            // b. If isCallable(getter) is false then getter is not undefined, throw a TypeError excepiton
+            // b. If isCallable(getter) is false then getter is not undefined, throw a TypeError exception
             // c. Set desc.setGetter
         }
         // FIXME: Implement 14-15

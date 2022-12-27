@@ -49,13 +49,13 @@ public class ObjectConstructor extends Constructor {
                 // iii. For each element nextKeys of keys, do
                 for (String nextKey : keys) {
                     // 1. Let desc be ? from.[[GetOwnProperty]](nextKey);.
-                    Optional<PropertyDescriptor> desc = from.getOwnProperty(interpreter, nextKey);
+                    Optional<PropertyDescriptor> desc = from.getOwnProperty(nextKey);
                     // 2. If desc is not undefined and desc.[[Enumerable]] is true, then
                     if (desc.isPresent() && desc.get().isEnumerable()) {
                         // a. Let propValue be ? Get(from, nextKey).
                         Value propValue = from.get(interpreter, nextKey);
                         // b. Perform ? Set(to, nextKey, propValue, true).
-                        to.put(nextKey, propValue);
+                        to.set(nextKey, propValue, true);
                     }
                 }
             }

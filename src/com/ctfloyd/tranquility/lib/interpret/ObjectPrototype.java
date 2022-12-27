@@ -15,7 +15,7 @@ public class ObjectPrototype extends JsObject {
         // 2. Let O be ? ToObject(this value)
         JsObject object = interpreter.getThisValue().toObject(interpreter);
         // 3. Return HasOwnProperty(O, P)
-        return object.hasOwnProperty(interpreter, property);
+        return object.hasOwnProperty(property);
     }
 
     // https://tc39.es/ecma262/#sec-object.prototype.isprototypeof

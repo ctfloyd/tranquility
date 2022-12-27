@@ -10,14 +10,16 @@ public class ObjectEnvironment extends Environment {
     // Indicates whether this Environment Record is created for a with statement.
     private boolean withEnvironment;
 
-    // TODO: Determine if the interpreter is really needed. If so, consider a better factoring.
+    // TODO: See if the interpreter can be removed from the environment. It's a bit of a weird factoring. It's currently
+    // need for the get() method on a JsObject, because the internal slot [[Get]] method might have to be called
+    // to retrieve a value. If the call method didn't require the interpreter in some way, it could be remove! :)
     private AstInterpreter interpreter;
 
     @Override
     public boolean hasBinding(String bindingName) {
         // 1. Let bindingObject be envRec.[[bindingObject]]
         // 2. Let foundBinding be ? HasProperty(bindingObject, N).
-        boolean foundBinding = bindingObject.hasProperty(interpreter, bindingName);
+        boolean foundBinding = bindingObject.hasProperty(bindingName);
         // 3. If foundBinding is false, return false
         if (!foundBinding) {
             return false;
@@ -39,7 +41,7 @@ public class ObjectEnvironment extends Environment {
         // 1. Let bindingObject be envRec.[[BindingObject]]
         // 2. Perform ? DefinePropertyOrThrow(bindingObject, N, PropertyDescriptor { [[Value]]: undefined, [[Writable]]:
         //  true, [[Enumerable]]: true, [[Configurable]]: D}}
-        bindingObject.definePropertyOrThrow(interpreter, bindingName, new PropertyDescriptor(Value.undefined(), true, true, canDelete));
+        bindingObject.definePropertyOrThrow(bindingName, new PropertyDescriptor(Value.undefined(), true, true, canDelete));
         // 3. Return unused
     }
 
@@ -60,14 +62,14 @@ public class ObjectEnvironment extends Environment {
     public void setMutableBinding(String bindingName, Value value, boolean shouldThrowExceptions) {
         // 1. Let bindingObject be envRec.[[BindingObject]].
         // 2. Let stillExists be ? HasProperty(bindingObject, N).
-        boolean stillExists = bindingObject.hasProperty(interpreter, bindingName);
+        boolean stillExists = bindingObject.hasProperty(bindingName);
         // 3. If stillExists is false and S is true, throw a ReferenceError exception.
         if (!stillExists && shouldThrowExceptions) {
             // FIXME: Throw a ReferenceError
             throw new RuntimeException("ReferenceError");
         }
         // 4. Perform ? Set(bindingObject, N, V, S).
-        bindingObject.set(interpreter, bindingName, value, shouldThrowExceptions);
+        bindingObject.set(bindingName, value, shouldThrowExceptions);
         // 5. Return unused.
     }
 
@@ -75,7 +77,7 @@ public class ObjectEnvironment extends Environment {
     public Value getBindingValue(String bindingName, boolean shouldThrowReferenceErrorIfBindingDoesNotExist) {
         // 1. Let bindingObject be envRec.[[BindingObject]]
         // 2. Let value be ? HasProperty(bindingObject, N).
-        boolean value = bindingObject.hasProperty(interpreter, bindingName);
+        boolean value = bindingObject.hasProperty(bindingName);
         // 3. If value is false, then
         if (!value) {
             // a. If S is false, return undefined; otherwise throw a ReferenceErrorException.
@@ -94,7 +96,7 @@ public class ObjectEnvironment extends Environment {
     public boolean deleteBinding(String bindingName) {
         // 1. Let bindingObject be envRec.[[BindingObject]]
         // 2. Return ? bindingObject.[[Delete]](N).
-        return bindingObject.delete(interpreter, bindingName);
+        return bindingObject.delete(bindingName);
     }
 
     @Override
