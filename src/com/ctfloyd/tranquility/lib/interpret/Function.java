@@ -49,4 +49,8 @@ public class Function extends JsObject {
         interpreter.leaveScope();
         return value;
     }
+
+    public Value call(AstInterpreter interpreter) {
+        return call(interpreter, new ArgumentList());
+    }
 }

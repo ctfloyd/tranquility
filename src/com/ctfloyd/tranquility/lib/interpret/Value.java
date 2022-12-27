@@ -335,7 +335,7 @@ public class Value {
         boolean hasValue = obj.hasProperty(interpreter, "value");
         if (hasValue) {
             Value value = obj.get(interpreter, "value");
-            desc.set(interpreter, value);
+            desc.setValue(value);
         }
 
         boolean hasWritable = obj.hasProperty(interpreter, "writable");

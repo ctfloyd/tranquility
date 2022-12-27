@@ -11,9 +11,7 @@ public class JsObject {
     private final Map<String, PropertyDescriptor> properties = new HashMap<>();
     private JsObject prototype;
 
-    protected JsObject() {
-
-    }
+    protected JsObject() {}
 
     public static JsObject create(AstInterpreter interpreter, Map<String, PropertyDescriptor> properties) {
         JsObject object = new JsObject();
@@ -40,26 +38,134 @@ public class JsObject {
         return Value._true();
     }
 
+    // https://tc39.es/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots-get-p-receiver
+    public Value get(AstInterpreter interpreter, String propertyName, Value receiver) {
+        // FIXME: Do different things based whether this is an ordinary or exotic object.
+        // 1. Return ? OrdinaryGet(O, P, Receiver).
+        return ordinaryGet(interpreter, propertyName, receiver);
+    }
+
     public Value get(AstInterpreter interpreter, String propertyName) {
-        PropertyDescriptor descriptor = properties.get(propertyName);
-        if (descriptor != null) {
-            return descriptor.get(interpreter);
+        return ordinaryGet(interpreter, propertyName, Value.object(this));
+    }
+
+
+    // https://tc39.es/ecma262/#sec-ordinaryget
+    private Value ordinaryGet(AstInterpreter interpreter, String propertyName, Value receiver) {
+        // 1. Let desc be ? O.[[GetOwnProperty]](P).
+        Optional<PropertyDescriptor> desc = getOwnProperty(interpreter, propertyName);
+        // 2. if desc is undefined, then
+        if (desc.isEmpty()) {
+            // a. Let parent b ? O.[[GetPrototypeOf]]().
+            Value parent = getPrototypeOf();
+            // b. If parent is null, return undefined.
+            if (parent.isNull()) {
+                return Value.undefined();
+            }
+            // c. Return ? parent.[[Get]](P, receiver).
+            return parent.asObject().get(interpreter, propertyName, receiver);
         }
+        PropertyDescriptor descriptor = desc.get();
+        // 3. If isDataDescriptor(desc) is true, return desc.[[Value]]
+        if (descriptor.isDataDescriptor()) {
+            return descriptor.getValue();
+        }
+        // 4. Assert: IsAccessorDescriptor(desc) is true.
+        ASSERT(descriptor.isAccessorDescriptor());
+        // 5. Let getter be desc.[[Get]].
+        Optional<Function> getter = descriptor.getGet();
+        // 6. If getter is undefined, return undefined.
+        if (getter.isEmpty()) {
+            return Value.undefined();
+        }
+        // 7. Return ? Call(getter, Receiver).
+        return getter.get().call(interpreter, new ArgumentList(receiver));
+    }
 
-        Value value = null;
-        JsObject currentProtoType = prototype;
-        while (value == null && currentProtoType != null) {
-            value = currentProtoType.get(interpreter, propertyName);
+    // https://tc39.es/ecma262/#sec-object-environment-records
+    public void set(AstInterpreter interpreter, String propertyName, Value value, boolean shouldThrow)  {
+        // FIXME: Do different things based whether this is an ordinary or exotic object.
+        // 1. Let success be ? O.[[Set]](P, V, O).
+        boolean success = ordinarySet(interpreter, propertyName, value, Value.object(this));
+        // 2. If success is false and Throw is true, throw a TypeError exception.
+        if (!success && shouldThrow) {
+            // FIXME: Throw a TypeError exception.
+            throw new RuntimeException("TypeError");
+        }
+        // 3. Return unused
+    }
 
-            Value prototypeValue = prototype.getPrototypeOf();
-            if (prototypeValue.isNull()) {
-                currentProtoType = null;
+    // https://tc39.es/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots-set-p-v-receiver
+    public boolean set(AstInterpreter interpreter, String propertyName, Value value, Value receiver) {
+        // 1. Return ? ordinarySet(O, P, V, receiver).
+        return ordinarySet(interpreter, propertyName, value, receiver);
+    }
+
+    // https://tc39.es/ecma262/#sec-ordinaryset
+    private boolean ordinarySet(AstInterpreter interpreter, String propertyName, Value value, Value receiver) {
+        // 1. Let ownDesc be ? O.[[GetOwnProperty]](P).
+        Optional<PropertyDescriptor> ownDesc = getOwnProperty(interpreter, propertyName);
+        // 2. Return ? OrdinarySetWithOwnDescriptor(O, P, V, Receiver, ownDesc);
+        return ordinarySetWithOwnDescriptor(interpreter, propertyName, value, receiver, ownDesc);
+    }
+
+    // https://tc39.es/ecma262/#sec-ordinarysetwithowndescriptor
+    private boolean ordinarySetWithOwnDescriptor(AstInterpreter interpreter, String propertyName, Value value, Value receiver, Optional<PropertyDescriptor> descriptor) {
+        // 1. If ownDesc is undefined, then
+        PropertyDescriptor ownDesc = descriptor.orElse(null);
+        if (ownDesc == null) {
+            // a. Let parent be ? O.[[GetPrototypeOf]]().
+            Value parent = getPrototypeOf();
+            // b. If parent is not null, then
+            if (!parent.isNull()) {
+                // i. Return ? parent.[[Set]](P, V, Receiver).
+                parent.asObject().set(interpreter, propertyName, value, receiver);
             } else {
-                currentProtoType = prototypeValue.asObject();
+                // c. Else,
+                //   i. Set ownDesc to the PropertyDescriptor(undefined, true, true, true).
+                ownDesc = new PropertyDescriptor(Value.undefined(), true, true, true);
             }
         }
-
-        return Objects.requireNonNullElseGet(value, Value::undefined);
+        ASSERT(ownDesc != null);
+        // 2. If isDataDescriptor(ownDesc) is true, then
+        if (ownDesc.isDataDescriptor()) {
+            // a. If ownDesc.[[Writable]] is false, return false
+            if (!ownDesc.isWritable()) {
+                return false;
+            }
+            // b. If Receiver is not an Object, return false
+            if (!receiver.isObject()) {
+                return false;
+            }
+            // c. Let existingDescriptor be ? Receiver.[[GetOwnProperty]](P).
+            Optional<PropertyDescriptor> existingDescriptor = receiver.asObject().getOwnProperty(interpreter, propertyName);
+            // d. If existingDescriptor is not undefined, then
+            if (existingDescriptor.isPresent()) {
+                // i. if isAccessorDescriptor(existingDescriptor) is true, return false.
+                if (existingDescriptor.get().isAccessorDescriptor()) {
+                    return false;
+                }
+                // ii. if existingDescriptor.[[Writable]] is false, return false.
+                if (!existingDescriptor.get().isWritable()) {
+                    return false;
+                }
+                // iii. Let valueDesc be the PropertyDescriptor(V).
+                PropertyDescriptor valueDesc = new PropertyDescriptor(value);
+                // iv. Return ? Receiver.[[DefineOwnProperty]](P, valueDesc).
+                receiver.asObject().defineOwnProperty(interpreter, propertyName, valueDesc);
+            }
+        }
+        // 3. Assert isAccessorDescriptor(ownDesc) is true.
+        ASSERT(ownDesc.isAccessorDescriptor());
+        // 4. Let setter be ownDesc.[[Set]].
+        Optional<?> setter = ownDesc.getSet();
+        // 5. If setter is undefined, return false
+        if (!setter.isPresent()) {
+            return false;
+        }
+        // 6. Perform ? Call(setter, Receiver, << V >>).
+        // 7. Return true.
+        return true;
     }
 
     // https://tc39.es/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots-ownpropertykeys
@@ -126,6 +232,30 @@ public class JsObject {
         return false;
     }
 
+    // https://tc39.es/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots-delete-p
+    public boolean delete(AstInterpreter interpreter, String propertyName) {
+        return ordinaryDelete(interpreter, propertyName);
+    }
+
+    // https://tc39.es/ecma262/#sec-ordinarydelete
+    private boolean ordinaryDelete(AstInterpreter interpreter, String propertyName) {
+        // 1. Let desc be ? O.[[GetOwnProperty]](P).
+        Optional<PropertyDescriptor> desc = getOwnProperty(interpreter, propertyName);
+        // 2. If desc is undefined, return true
+        if (desc.isEmpty()) {
+            return true;
+        }
+        // 3. If desc.[[Configurable]] is true, then
+        if (desc.get().isConfigurable()) {
+            // a. Remove the own property with name P from O.
+            properties.remove(propertyName);
+            // b. Return true.
+            return true;
+        }
+        // 4. Return false.
+        return false;
+    }
+
     // https://tc39.es/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots-getownproperty-p
     public Optional<PropertyDescriptor> getOwnProperty(AstInterpreter interpreter, String propertyName) {
         // TODO: Handle differently based on whether or not the object is exotic
@@ -144,18 +274,19 @@ public class JsObject {
         // 3. Let X be O's own property whose key is P
         PropertyDescriptor x = properties.get(propertyName);
         // 4. If x is a data property, then
-        // FIXME: Implement this
-        if (true) {
+        if (x.isDataDescriptor()) {
             // a. Set D.[[Value]] to the value of X's [[Value]] attribute.
-            d.set(interpreter, x.get(interpreter));
+            d.setValue(x.getValue());
             // b. Set d.[[Writable]] to the value of X's [[Writable]] attribute
             d.setWritable(x.isWritable());
-        } else { // 5. Else,
-            // FIXME: Do this
+        } else {
+            // 5. Else,
             // a. Assert: X is an accessor property
-            //  ASSERT(x.isAccessorProperty());
+            ASSERT(x.isAccessorDescriptor());
             // b. Set D.[[Get]] to the value of X's [[Get]] attribute.
+            d.setGet(x.getGet().get());
             // c. Set D.[[Set]] to the value of X's [[Set]] attribute.
+            d.setSet(x.getSet().get());
         }
 
         // 6. Set D.[[Enumerable]] to the value of X's [[Enumerable]] attribute
@@ -181,7 +312,6 @@ public class JsObject {
             Optional<PropertyDescriptor> propDesc = props.getOwnProperty(interpreter, nextKey);
             // b. If propDesc is not undefined and propDesc.[[Enumerable]] is true, then
             if (propDesc.isPresent() && propDesc.get().isEnumerable()) {
-                // FIXME: We are never getting description objects here, instead we are getting the value.
                 // i. Let descObj be Get(props, nextKey);
                 Value descObj = props.get(interpreter, nextKey);
                 // ii. Let desc be ? ToPropertyDescriptor(descObj).
@@ -209,8 +339,8 @@ public class JsObject {
 
     public void put(AstInterpreter interpreter, String propertyName, PropertyDescriptor propertyDescriptor) {
         if (propertyName.equals(PROTOTYPE_PROPERTY)) {
-            ASSERT(propertyDescriptor.get(interpreter).isObject());
-            setPrototypeOf(propertyDescriptor.get(interpreter).asObject());
+            ASSERT(propertyDescriptor.getGet().get().call(interpreter).isObject());
+            setPrototypeOf(propertyDescriptor.getGet().get().call(interpreter).asObject());
             return;
         }
 
@@ -256,7 +386,7 @@ public class JsObject {
     public boolean isNumberObject() { return false; }
 
     // https://tc39.es/ecma262/#sec-definepropertyorthrow
-    private void definePropertyOrThrow(AstInterpreter interpreter, String property, PropertyDescriptor propertyDescriptor) {
+    public void definePropertyOrThrow(AstInterpreter interpreter, String property, PropertyDescriptor propertyDescriptor) {
         // 1. Let success be ? O.[[DefineOwnProperty]](P, desc).
         boolean success = defineOwnProperty(interpreter, property, propertyDescriptor);
         // 2. If success is false, throw a TypeError exception.

@@ -1,15 +1,17 @@
 package com.ctfloyd.tranquility.lib.interpret;
 
-import java.util.Collections;
+import java.util.Optional;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
 public class PropertyDescriptor {
 
-    private Value value = Value.undefined();
+    private Value value = null;
     private boolean writable = false;
     private boolean enumerable = false;
     private boolean configurable = false;
+    private Function get = null;
+    private Function set = null;
 
     public PropertyDescriptor(Value value, boolean writable, boolean enumerable, boolean configurable) {
         ASSERT(value != null);
@@ -19,27 +21,68 @@ public class PropertyDescriptor {
         this.configurable = configurable;
     }
 
-    public Value get(AstInterpreter interpreter) {
-        if (value.isObject() && value.asObject().isFunction()) {
-            return ((Function) value.asObject()).call(interpreter, new ArgumentList(Collections.emptyList()));
-        } else {
-            return value;
-        }
+    public PropertyDescriptor(Value value) {
+        this.value = value;
     }
 
-    public void set(AstInterpreter interpreter, Value value) {
-        if (!writable) {
-            // TODO: Throw a JS error
-            throw new RuntimeException("Property is not writable.");
+    // https://tc39.es/ecma262/#sec-isaccessordescriptor
+    public boolean isAccessorDescriptor() {
+        // 1. If Desc is undefined, return false
+        if (value == null) {
+            return false;
         }
+        // 2. If Desc has a [[Get]] field, return true.
+        if (getGet().isPresent()) {
+            return true;
+        }
+        // 3. If Desc has a [[Set]] field, return true.
+        if (getSet().isPresent()) {
+            return true;
+        }
+        // 4. Return false;
+        return false;
+    }
 
-        // FIXME: This doesn't seem like quite the correct behavior
-        if (value.isObject()) {
-            ASSERT(value.asObject().isFunction());
-            ((Function) value.asObject()).call(interpreter, new ArgumentList(Collections.singletonList(value)));
-        } else {
-            this.value = value;
+    // https://tc39.es/ecma262/#sec-isdatadescriptor
+    public boolean isDataDescriptor() {
+        // 1. If Desc is undefined, return false
+        if (value == null) {
+            return false;
         }
+        // 2. If Desc has a [[Value]] field, return true
+        if (value != null) {
+            return true;
+        }
+        // 3. If desc has a [[Writable]] field, return true.
+        if (writable) {
+            return true;
+        }
+        // 4. Return false
+        return false;
+    }
+
+    public Value getValue() {
+        return value;
+    }
+
+    public void setValue(Value value) {
+        this.value = value;
+    }
+
+    public Optional<Function> getGet() {
+        return Optional.ofNullable(get);
+    }
+
+    public void setGet(Function get) {
+        this.get = get;
+    }
+
+    public Optional<Function> getSet() {
+        return Optional.ofNullable(set);
+    }
+
+    public void setSet(Function set) {
+        this.set = set;
     }
 
     public boolean isWritable() {

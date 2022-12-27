@@ -7,6 +7,14 @@ public class ArgumentList implements Iterable<Value> {
 
     private final List<Value> arguments = new ArrayList<>();
 
+    public ArgumentList() {
+        this(Collections.emptyList());
+    }
+
+    public ArgumentList(Value... arguments) {
+        this(Arrays.asList(arguments));
+    }
+
     public ArgumentList(List<Value> arguments) {
         if (arguments != null) {
             arguments.forEach(this::addArgument);
