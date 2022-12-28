@@ -22,7 +22,7 @@ public class ObjectExpression extends AstNode {
     public Value interpret(AstInterpreter interpreter) {
         JsObject object = JsObject.create(interpreter, Collections.emptyMap());
         for (Map.Entry<Identifier, AstNode> entry : properties.entrySet()) {
-            object.put(entry.getKey().getName(), entry.getValue().interpret(interpreter));
+            object.set(entry.getKey().getName(), entry.getValue().interpret(interpreter), true);
         }
         return Value.object(object);
     }

@@ -37,8 +37,8 @@ public class ArrayObject extends JsObject {
 
     private void enumerateProperties() {
         for (int i = 0; i < length(); i++) {
-            put("" + i, getValueAtIndex(i));
+            set("" + i, getValueAtIndex(i), true);
         }
-        put("length", Value.number(length()));
+        set("length", Value.number(length()), true);
     }
 }

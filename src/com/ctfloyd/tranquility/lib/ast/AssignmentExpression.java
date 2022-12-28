@@ -30,7 +30,7 @@ public class AssignmentExpression extends AstNode {
             Value base = reference.getBase();
             ASSERT(base.isObject());
             JsObject object = base.asObject();
-            object.put(reference.getReferencedName(), value);
+            object.set(reference.getReferencedName(), value, true);
             return value;
         } else {
             throw new UnsupportedOperationException("Not implemented.");

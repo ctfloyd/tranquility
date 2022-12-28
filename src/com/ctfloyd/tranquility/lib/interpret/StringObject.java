@@ -8,7 +8,7 @@ public class StringObject extends JsObject {
         this.string = string;
 
         // https://tc39.es/ecma262/#sec-properties-of-string-instances-length
-        put("length", Value.number(this.string.length()));
+        set("length", Value.number(this.string.length()), true);
     }
 
     public static StringObject create(AstInterpreter interpreter, String string)  {

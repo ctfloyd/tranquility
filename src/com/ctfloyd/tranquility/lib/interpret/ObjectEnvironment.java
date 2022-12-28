@@ -15,6 +15,16 @@ public class ObjectEnvironment extends Environment {
     // to retrieve a value. If the call method didn't require the interpreter in some way, it could be remove! :)
     private AstInterpreter interpreter;
 
+    public ObjectEnvironment(AstInterpreter interpreter) {
+        this.interpreter = interpreter;
+        bindingObject = null;
+        withEnvironment = false;
+    }
+
+    public JsObject getBindingObject() {
+        return bindingObject;
+    }
+
     @Override
     public boolean hasBinding(String bindingName) {
         // 1. Let bindingObject be envRec.[[bindingObject]]

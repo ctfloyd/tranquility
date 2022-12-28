@@ -162,6 +162,12 @@ public class JsObject {
         // 3. Return unused.
     }
 
+    // https://tc39.es/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots-isextensible
+    public boolean isExtensible() {
+        // 1. Return OrdinaryIsExtensible(O).
+        return ordinaryIsExtensible();
+    }
+
     public Value getPrototypeOf() {
         if (prototype == null) {
             return Value._null();
@@ -368,6 +374,11 @@ public class JsObject {
         // 6. Perform ? Call(setter, Receiver, << V >>).
         // 7. Return true.
         return true;
+    }
+
+    private boolean ordinaryIsExtensible() {
+       // FIXME: Do the correct thing, it changes based on whether or not an object is exotic.
+        return false;
     }
 
 }

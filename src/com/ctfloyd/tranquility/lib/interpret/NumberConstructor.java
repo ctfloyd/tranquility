@@ -8,7 +8,7 @@ public class NumberConstructor extends Constructor {
 
     public NumberConstructor() {
         super("Number", Collections.singletonList("value"));
-        put("EPSILON", Value.number(EPSILON));
+        set("EPSILON", Value.number(EPSILON), true);
         putNativeFunction("isFinite", this::isFinite);
         putNativeFunction("isInteger", this::isInteger);
     }

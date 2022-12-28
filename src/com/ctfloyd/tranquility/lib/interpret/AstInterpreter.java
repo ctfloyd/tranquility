@@ -77,13 +77,13 @@ public class AstInterpreter {
             identifierScope.get().put(identifier, value);
         } else {
             if (!globalObject.get(interpreter, identifier).isUndefined()) {
-                globalObject.put(identifier, value);
+                globalObject.set(identifier, value, true);
             } else {
                 Optional<Scope> currentScope = getCurrentScope();
                 if (currentScope.isPresent()) {
                     currentScope.get().put(identifier, value);
                 } else {
-                    globalObject.put(identifier, value);
+                    globalObject.set(identifier, value, true);
                 }
             }
         }
