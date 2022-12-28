@@ -14,7 +14,7 @@ public class Realm {
 
     private AstInterpreter interpreter;
 
-    public Realm(AstInterpreter interpreter) {
+    private Realm(AstInterpreter interpreter) {
         this.interpreter = interpreter;
     }
 
