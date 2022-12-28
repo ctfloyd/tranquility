@@ -8,8 +8,6 @@ public class GlobalObject extends JsObject {
         set("console", Value.object(new ConsoleObject()), true);
         // 19.1.4
         set("undefined", Value.undefined(), true);
-        set("Number", Value.object(new NumberConstructor()), true);
-        set("Object", Value.object(new ObjectConstructor()), true);
     }
 
 }

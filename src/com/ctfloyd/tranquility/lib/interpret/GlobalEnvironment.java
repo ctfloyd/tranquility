@@ -12,11 +12,13 @@ public class GlobalEnvironment extends Environment {
     private final List<String> variableNames;
     private JsObject globalThisValue;
 
-    public GlobalEnvironment(AstInterpreter interpreter) {
-        objectRecord = new ObjectEnvironment(interpreter);
-        globalThisValue = null;
-        declarativeRecord = new DeclarativeEnvironment();
-        variableNames = new ArrayList<>();
+    // https://tc39.es/ecma262/#sec-newglobalenvironment
+    public GlobalEnvironment(AstInterpreter interpreter, JsObject globalObject, JsObject globalThisValue) {
+        this.objectRecord = new ObjectEnvironment(interpreter, globalObject, false, null);
+        this.declarativeRecord = new DeclarativeEnvironment(null);
+        this.globalThisValue = globalThisValue;
+        this.variableNames = new ArrayList<>();
+        this.outerEnvironment = null;
     }
 
     @Override

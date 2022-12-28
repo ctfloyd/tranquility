@@ -15,10 +15,12 @@ public class ObjectEnvironment extends Environment {
     // to retrieve a value. If the call method didn't require the interpreter in some way, it could be remove! :)
     private AstInterpreter interpreter;
 
-    public ObjectEnvironment(AstInterpreter interpreter) {
+    // https://tc39.es/ecma262/#sec-newobjectenvironment
+    public ObjectEnvironment(AstInterpreter interpreter, JsObject bindingObject, boolean withEnvironment, Environment outer) {
         this.interpreter = interpreter;
-        bindingObject = null;
-        withEnvironment = false;
+        this.bindingObject = bindingObject;
+        this.withEnvironment = withEnvironment;
+        this.outerEnvironment = outer;
     }
 
     public JsObject getBindingObject() {

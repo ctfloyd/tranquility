@@ -73,7 +73,7 @@ public class ObjectConstructor extends Constructor {
             throw new RuntimeException("TypeError: O is not an object and O is not null.");
         }
         // 2. Let obj be OrdinaryObjectCreate(O).
-        JsObject obj = JsObject.ordinaryObjectCreate(interpreter, o.asObject());
+        JsObject obj = JsObject.ordinaryObjectCreate(o.asObject());
         // 3. If Properties is not undefined, then
         Value properties = arguments.getSecondArgument();
         if (!properties.isUndefined()) {

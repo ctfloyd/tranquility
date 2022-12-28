@@ -12,8 +12,10 @@ import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
  */
 public class DeclarativeEnvironment extends Environment {
 
-    public DeclarativeEnvironment() {
-        bindings = new HashMap<>();
+    // https://tc39.es/ecma262/#sec-newdeclarativeenvironment
+    public DeclarativeEnvironment(Environment outerEnvironment) {
+        this.bindings = new HashMap<>();
+        this.outerEnvironment = outerEnvironment;
     }
 
     @Override

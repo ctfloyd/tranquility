@@ -19,7 +19,7 @@ public class JsObject {
         return object;
     }
 
-    public static JsObject ordinaryObjectCreate(AstInterpreter interpreter, JsObject prototype) {
+    public static JsObject ordinaryObjectCreate(JsObject prototype) {
         JsObject object = new JsObject();
         object.setPrototypeOf(prototype);
         return object;
