@@ -1,11 +1,10 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.Function;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.runtime.Function;
+import com.ctfloyd.tranquility.lib.runtime.Runtime;
+import com.ctfloyd.tranquility.lib.runtime.Value;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
@@ -37,9 +36,17 @@ public class FunctionDeclaration extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) {
-        Value value = Value.object(new Function(name, arguments, blockStatement));
-        interpreter.setIdentifier(interpreter, name, Optional.of(value));
+    public Value execute() {
+        Function f = new Function(name, arguments, blockStatement);
+        f.setRuntime(getRuntime());
+        Value value = Value.object(f);
+        getRuntime().getCurrentExecutionContext().getLexicalEnvironment().initializeBinding(name, value);
         return value;
+    }
+
+    @Override
+    public void setRuntime(Runtime runtime) {
+        super.setRuntime(runtime);
+        blockStatement.setRuntime(runtime);
     }
 }

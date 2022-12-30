@@ -46,7 +46,7 @@ public class Parser {
     // is being returned
     private AstNode parseStatement() {
         if (matchesExpression()) {
-            AstNode expression = parseExpression();
+            Expression expression = parseExpression();
             return new ExpressionStatement(expression);
         }
 
@@ -171,7 +171,7 @@ public class Parser {
         return new CallExpression(leftHandSide, arguments);
     }
 
-    private AstNode parseMemberExpression(AstNode leftHandSide) {
+    private Expression parseMemberExpression(Identifier leftHandSide) {
         boolean computed = false;
         if (match(TokenType.PERIOD)) {
             consume(TokenType.PERIOD);
@@ -198,19 +198,19 @@ public class Parser {
         return memberExpression;
     }
 
-    private AstNode parseExpression() {
-        AstNode expression = parsePrimaryExpression();
+    private Expression parseExpression() {
+        Expression expression = parsePrimaryExpression();
         if (matchesSecondaryExpression()) {
             expression = parseSecondaryExpression(expression);
         }
         return expression;
     }
 
-    private AstNode parsePrimaryExpression() {
+    private Expression parsePrimaryExpression() {
         TokenType type = currentToken.getType();
         if (type == TokenType.LEFT_PARENTHESIS) {
             consume(TokenType.LEFT_PARENTHESIS);
-            AstNode expression = parseExpression();
+            Expression expression = parseExpression();
             consume(TokenType.RIGHT_PARENTHESIS);
             return expression;
         } else if (type == TokenType.IDENTIFIER) {
@@ -235,7 +235,7 @@ public class Parser {
         }
     }
 
-    private AstNode parseSecondaryExpression(AstNode leftHandSide) {
+    private Expression parseSecondaryExpression(AstNode leftHandSide) {
         TokenType type = currentToken.getType();
         if (type == TokenType.PLUS) {
             consume();
@@ -258,18 +258,18 @@ public class Parser {
         } else if (type == TokenType.ASSIGNMENT) {
             consume(TokenType.ASSIGNMENT);
             ASSERT(leftHandSide.isExpression());
-            return new AssignmentExpression((Expression) leftHandSide, parseExpression(), AssignmentExpressionOperator.EQUALS);
+            return new AssignmentExpression((Expression) leftHandSide, (Expression) parseExpression(), AssignmentExpressionOperator.EQUALS);
         } else if (type == TokenType.LEFT_PARENTHESIS) {
             return parseCallExpression(leftHandSide);
         } else if (type == TokenType.PERIOD || type == TokenType.LEFT_SQUARE_BRACKET) {
-            return parseMemberExpression(leftHandSide);
+            return parseMemberExpression((Identifier) leftHandSide);
         } else {
             ASSERT(false, "Do not know how to handle token: " + currentToken + " for parsing secondary expression.");
             return null;
         }
     }
 
-    private AstNode parseObjectExpression() {
+    private ObjectLiteral parseObjectExpression() {
         consume(TokenType.LEFT_CURLY_BRACE);
 
         Map<Identifier, AstNode> properties = new HashMap<>();
@@ -280,7 +280,7 @@ public class Parser {
             }
         }
         consume(TokenType.RIGHT_CURLY_BRACE);
-        return new ObjectExpression(properties);
+        return new ObjectLiteral(properties);
     }
 
     private void parseObjectProperty(Map<Identifier, AstNode> properties) {

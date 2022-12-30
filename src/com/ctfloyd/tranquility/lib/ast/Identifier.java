@@ -1,13 +1,13 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.runtime.Reference;
+import com.ctfloyd.tranquility.lib.runtime.Value;
 
 import java.util.StringJoiner;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
-public class Identifier extends AstNode {
+public class Identifier extends Expression {
 
     private final String name;
 
@@ -28,8 +28,12 @@ public class Identifier extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) {
-        return interpreter.getIdentifier(interpreter, name);
+    public Value execute() {
+        throw new RuntimeException("NO");
+    }
+
+    public Reference getReference() {
+        return getRuntime().resolveBinding(name);
     }
 
     @Override

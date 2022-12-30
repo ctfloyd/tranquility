@@ -1,18 +1,18 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.runtime.Runtime;
+import com.ctfloyd.tranquility.lib.runtime.Value;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
-import java.util.function.Function;
+import java.util.concurrent.Callable;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
-public class BinaryExpression extends AstNode {
+public class BinaryExpression extends Expression {
 
-    private final Map<BinaryExpressionOperator, Function<AstInterpreter, Value>> HANDLERS = new HashMap<>();
+    private final Map<BinaryExpressionOperator, Callable<Value>> HANDLERS = new HashMap<>();
 
     private final AstNode left;
     private final AstNode right;
@@ -30,17 +30,39 @@ public class BinaryExpression extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) {
-        Function<AstInterpreter, Value> handler = HANDLERS.get(operator);
+    public Value execute() {
+        Callable<Value> handler = HANDLERS.get(operator);
         if (handler == null) {
             throw new UnsupportedOperationException("NOT IMPLEMENTED");
         }
-        return handler.apply(interpreter);
+        try {
+            return handler.call();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private Value plus(AstInterpreter interpreter) {
-        Value leftValue = left.interpret(interpreter);
-        Value rightValue = right.interpret(interpreter);
+    @Override
+    public void setRuntime(Runtime runtime) {
+        super.setRuntime(runtime);
+        left.setRuntime(runtime);
+        right.setRuntime(runtime);
+    }
+
+    private Value plus() {
+        Value leftValue;
+        if (left.isIdentifier()) {
+            leftValue = ((Identifier) left).getReference().getValue(getRealm());
+        } else {
+            leftValue = left.execute();
+        }
+
+        Value rightValue;
+        if (right.isIdentifier()) {
+            rightValue = ((Identifier) right).getReference().getValue(getRealm());
+        } else {
+            rightValue = right.execute();
+        }
         if (leftValue.isNumber() && rightValue.isNumber()) {
             return Value.add(leftValue, rightValue);
         } else if (leftValue.isString() && rightValue.isString()) {
@@ -53,36 +75,36 @@ public class BinaryExpression extends AstNode {
         }
     }
 
-    private Value lessThan(AstInterpreter interpreter) {
-        Value leftValue = left.interpret(interpreter);
-        Value rightValue = right.interpret(interpreter);
+    private Value lessThan() {
+        Value leftValue = left.execute();
+        Value rightValue = right.execute();
         // FIXME: Types should be coerced
         ASSERT(leftValue.isNumber());
         ASSERT(rightValue.isNumber());
         return Value._boolean(leftValue.asDouble() < rightValue.asDouble());
     }
 
-    private Value lessThanEquals(AstInterpreter interpreter) {
-        Value leftValue = left.interpret(interpreter);
-        Value rightValue = right.interpret(interpreter);
+    private Value lessThanEquals() {
+        Value leftValue = left.execute();
+        Value rightValue = right.execute();
         // FIXME: Types should be coerced
         ASSERT(leftValue.isNumber());
         ASSERT(rightValue.isNumber());
         return Value._boolean(leftValue.asDouble() <= rightValue.asDouble());
     }
 
-    private Value greaterThan(AstInterpreter interpreter) {
-        Value leftValue = left.interpret(interpreter);
-        Value rightValue = right.interpret(interpreter);
+    private Value greaterThan() {
+        Value leftValue = left.execute();
+        Value rightValue = right.execute();
         // FIXME: Types should be coerced
         ASSERT(leftValue.isNumber());
         ASSERT(rightValue.isNumber());
         return Value._boolean(leftValue.asDouble() > rightValue.asDouble());
     }
 
-    private Value greaterThanEquals(AstInterpreter interpreter) {
-        Value leftValue = left.interpret(interpreter);
-        Value rightValue = right.interpret(interpreter);
+    private Value greaterThanEquals() {
+        Value leftValue = left.execute();
+        Value rightValue = right.execute();
         // FIXME: Types should be coerced
         ASSERT(leftValue.isNumber());
         ASSERT(rightValue.isNumber());

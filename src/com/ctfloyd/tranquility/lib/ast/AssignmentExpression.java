@@ -1,19 +1,18 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.JsObject;
-import com.ctfloyd.tranquility.lib.interpret.Reference;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.runtime.JsObject;
+import com.ctfloyd.tranquility.lib.runtime.Reference;
+import com.ctfloyd.tranquility.lib.runtime.Value;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
-public class AssignmentExpression extends AstNode {
+public class AssignmentExpression extends Expression {
 
     private final Expression leftHandSide;
-    private final AstNode rightHandSide;
+    private final Expression rightHandSide;
     private final AssignmentExpressionOperator operator;
 
-    public AssignmentExpression(Expression leftHandSide, AstNode rightHandSide, AssignmentExpressionOperator operator) {
+    public AssignmentExpression(Expression leftHandSide, Expression rightHandSide, AssignmentExpressionOperator operator) {
         ASSERT(leftHandSide != null);
         ASSERT(rightHandSide != null);
         ASSERT(operator != null);
@@ -23,11 +22,12 @@ public class AssignmentExpression extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) {
-        Reference reference = leftHandSide.getReference(interpreter);
-        Value value = rightHandSide.interpret(interpreter);
+    public Value execute() {
+        // AssignmentExpression : LeftHandSideExpression = AssignmentExpression
+        Reference reference = leftHandSide.getReference();
+        Value value = rightHandSide.execute();
         if (operator == AssignmentExpressionOperator.EQUALS) {
-            Value base = reference.getBase();
+            Value base = reference.getValue(getRealm());
             ASSERT(base.isObject());
             JsObject object = base.asObject();
             object.set(reference.getReferencedName(), value, true);

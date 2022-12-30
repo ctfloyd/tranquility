@@ -1,9 +1,9 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.runtime.Reference;
+import com.ctfloyd.tranquility.lib.runtime.Runtime;
+import com.ctfloyd.tranquility.lib.runtime.Value;
 
-import java.util.Optional;
 import java.util.StringJoiner;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
@@ -28,15 +28,21 @@ public class VariableDeclarator extends AstNode {
         this.value = value;
     }
 
+    // https://tc39.es/ecma262/#sec-variable-statement-runtime-semantics-evaluation
     @Override
-    public Value interpret(AstInterpreter interpreter) {
-        Value variableValue = Value.undefined();
-        if (value != null) {
-            variableValue = value.interpret(interpreter);
-        }
-
-        interpreter.setIdentifier(interpreter, name, Optional.of(variableValue));
+    public Value execute() {
+        getRuntime().getCurrentExecutionContext().getLexicalEnvironment().createMutableBinding(name, false);
+        getRuntime().getCurrentExecutionContext().getLexicalEnvironment().initializeBinding(name, Value.undefined());
+        Reference leftHandSide = getRuntime().resolveBinding(name);
+        Value rightHandSide = value.execute();
+        leftHandSide.putValue(getRealm(), rightHandSide);
         return Value.undefined();
+    }
+
+    @Override
+    public void setRuntime(Runtime runtime) {
+        super.setRuntime(runtime);
+        value.setRuntime(runtime);
     }
 
     @Override

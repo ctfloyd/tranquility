@@ -1,7 +1,8 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.runtime.DeclarativeEnvironment;
+import com.ctfloyd.tranquility.lib.runtime.Environment;
+import com.ctfloyd.tranquility.lib.runtime.Value;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
@@ -24,14 +25,15 @@ public class ForStatement extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) {
-        interpreter.enterScope();
-        initializer.interpret(interpreter);
-        while (test.interpret(interpreter).asBoolean()) {
-            body.interpret(interpreter);
-            update.interpret(interpreter);
+    public Value execute() {
+        Environment env = new DeclarativeEnvironment(getRuntime().getCurrentExecutionContext().getLexicalEnvironment());
+        getRuntime().getCurrentExecutionContext().setLexicalEnvironment(env);
+        initializer.execute();
+        while (test.execute().asBoolean()) {
+            body.execute();
+            update.execute();
         }
-        interpreter.leaveScope();
+        getRuntime().getCurrentExecutionContext().setLexicalEnvironment(env.getOuterEnvironment());
         return Value.undefined();
     }
 

@@ -1,11 +1,10 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.runtime.Value;
 
 import java.util.StringJoiner;
 
-public class StringLiteral extends AstNode {
+public class StringLiteral extends Expression {
 
     private final String value;
 
@@ -14,7 +13,7 @@ public class StringLiteral extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) {
+    public Value execute() {
         return Value.string(value);
     }
 

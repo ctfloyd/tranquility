@@ -1,11 +1,11 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.runtime.RuntimeDependency;
+import com.ctfloyd.tranquility.lib.runtime.Value;
 
-public class AstNode {
+public class AstNode extends RuntimeDependency {
 
-    public Value interpret(AstInterpreter interpreter) throws RuntimeException {
+    public Value execute() throws RuntimeException {
         throw new RuntimeException("Not implemented");
     }
 
@@ -24,5 +24,5 @@ public class AstNode {
         return false;
     }
     public boolean isExpression() { return false; }
-
+    public boolean isObjectLiteral() { return false; }
 }

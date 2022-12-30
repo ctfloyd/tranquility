@@ -1,11 +1,10 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.runtime.Value;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
-public class UnaryExpression extends AstNode {
+public class UnaryExpression extends Expression {
 
     private final UnaryExpressionOperator operator;
     private final boolean prefix;
@@ -20,10 +19,10 @@ public class UnaryExpression extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) throws RuntimeException {
+    public Value execute() throws RuntimeException {
         if (operator == UnaryExpressionOperator.MINUS) {
             if (prefix) {
-                Value value = argument.interpret(interpreter);
+                Value value = argument.execute();
                 if (value.isNumber()) {
                     return Value.number(-1 * value.asDouble());
                 }

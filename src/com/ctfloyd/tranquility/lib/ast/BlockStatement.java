@@ -1,7 +1,7 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.runtime.Runtime;
+import com.ctfloyd.tranquility.lib.runtime.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +18,20 @@ public class BlockStatement extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) {
+    public Value execute() {
         Value lastValue = Value.undefined();
         for (AstNode child : children) {
-            lastValue = child.interpret(interpreter);
+            lastValue = child.execute();
         }
         return lastValue;
+    }
+
+    @Override
+    public void setRuntime(Runtime runtime) {
+        super.setRuntime(runtime);
+        for (AstNode child : children) {
+            child.setRuntime(runtime);
+        }
     }
 
     @Override

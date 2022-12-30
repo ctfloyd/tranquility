@@ -1,7 +1,8 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.runtime.DeclarativeEnvironment;
+import com.ctfloyd.tranquility.lib.runtime.Environment;
+import com.ctfloyd.tranquility.lib.runtime.Value;
 
 import java.util.StringJoiner;
 
@@ -22,18 +23,20 @@ public class IfStatement extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) {
-        Value result = test.interpret(interpreter);
+    public Value execute() {
+        Value result = test.execute();
         ASSERT(result.isBoolean());
         Value value = Value.undefined();
         if (result.asBoolean()) {
-            interpreter.enterScope();
-            value = body.interpret(interpreter);
-            interpreter.leaveScope();
+            Environment env = new DeclarativeEnvironment(getRuntime().getCurrentExecutionContext().getLexicalEnvironment());
+            getRuntime().getCurrentExecutionContext().setLexicalEnvironment(env);
+            value = body.execute();
+            getRuntime().getCurrentExecutionContext().setLexicalEnvironment(env.getOuterEnvironment());
         } else if (alternate != null){
-            interpreter.enterScope();
-            value = alternate.interpret(interpreter);
-            interpreter.leaveScope();
+            Environment env = new DeclarativeEnvironment(getRuntime().getCurrentExecutionContext().getLexicalEnvironment());
+            getRuntime().getCurrentExecutionContext().setLexicalEnvironment(env);
+            value = alternate.execute();
+            getRuntime().getCurrentExecutionContext().setLexicalEnvironment(env.getOuterEnvironment());
         }
         return value;
     }

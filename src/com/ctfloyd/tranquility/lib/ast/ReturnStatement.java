@@ -1,13 +1,13 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.runtime.Runtime;
+import com.ctfloyd.tranquility.lib.runtime.Value;
 
 import java.util.StringJoiner;
 
 public class ReturnStatement extends AstNode {
 
-    private AstNode argument;
+    private final AstNode argument;
 
     public ReturnStatement(AstNode argument) {
         // argument can be null if it's a void return
@@ -24,8 +24,14 @@ public class ReturnStatement extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) {
-        return argument.interpret(interpreter);
+    public Value execute() {
+        return argument.execute();
+    }
+
+    @Override
+    public void setRuntime(Runtime runtime) {
+        super.setRuntime(runtime);
+        argument.setRuntime(runtime);
     }
 
     @Override

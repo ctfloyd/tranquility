@@ -1,15 +1,15 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.runtime.Runtime;
+import com.ctfloyd.tranquility.lib.runtime.Value;
 
 import java.util.StringJoiner;
 
 public class ExpressionStatement extends AstNode {
 
-    private final AstNode expression;
+    private final Expression expression;
 
-    public ExpressionStatement(AstNode expression) {
+    public ExpressionStatement(Expression expression) {
         this.expression = expression;
     }
 
@@ -17,8 +17,15 @@ public class ExpressionStatement extends AstNode {
         return expression;
     }
 
-    public Value interpret(AstInterpreter interpreter) {
-        return expression.interpret(interpreter);
+    @Override
+    public Value execute() {
+        return expression.execute();
+    }
+
+    @Override
+    public void setRuntime(Runtime runtime) {
+        super.setRuntime(runtime);
+        expression.setRuntime(runtime);
     }
 
     @Override

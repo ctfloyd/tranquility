@@ -1,7 +1,8 @@
 package com.ctfloyd.tranquility.lib.ast;
 
-import com.ctfloyd.tranquility.lib.interpret.AstInterpreter;
-import com.ctfloyd.tranquility.lib.interpret.Value;
+import com.ctfloyd.tranquility.lib.runtime.DeclarativeEnvironment;
+import com.ctfloyd.tranquility.lib.runtime.Environment;
+import com.ctfloyd.tranquility.lib.runtime.Value;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
@@ -18,11 +19,12 @@ public class WhileStatement extends AstNode {
     }
 
     @Override
-    public Value interpret(AstInterpreter interpreter) {
-        while(test.interpret(interpreter).asBoolean()) {
-            interpreter.enterScope();
-            body.interpret(interpreter);
-            interpreter.leaveScope();
+    public Value execute() {
+        while(test.execute().asBoolean()) {
+            Environment env = new DeclarativeEnvironment(getRuntime().getCurrentExecutionContext().getLexicalEnvironment());
+            getRuntime().getCurrentExecutionContext().setLexicalEnvironment(env);
+            body.execute();
+            getRuntime().getCurrentExecutionContext().setLexicalEnvironment(env.getOuterEnvironment());
         }
         return Value.undefined();
     }
