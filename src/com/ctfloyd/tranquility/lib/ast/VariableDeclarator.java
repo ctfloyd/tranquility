@@ -31,8 +31,6 @@ public class VariableDeclarator extends AstNode {
     // https://tc39.es/ecma262/#sec-variable-statement-runtime-semantics-evaluation
     @Override
     public Value execute() {
-        getRuntime().getCurrentExecutionContext().getLexicalEnvironment().createMutableBinding(name, false);
-        getRuntime().getCurrentExecutionContext().getLexicalEnvironment().initializeBinding(name, Value.undefined());
         Reference leftHandSide = getRuntime().resolveBinding(name);
         Value rightHandSide = value.execute();
         leftHandSide.putValue(getRealm(), rightHandSide);

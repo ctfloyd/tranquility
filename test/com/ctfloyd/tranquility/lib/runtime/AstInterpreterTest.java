@@ -1,15 +1,6 @@
 package com.ctfloyd.tranquility.lib.runtime;
 
-import com.ctfloyd.tranquility.lib.ast.BinaryExpression;
-import com.ctfloyd.tranquility.lib.ast.BinaryExpressionOperator;
-import com.ctfloyd.tranquility.lib.ast.BlockStatement;
-import com.ctfloyd.tranquility.lib.ast.CallExpression;
-import com.ctfloyd.tranquility.lib.ast.ExpressionStatement;
-import com.ctfloyd.tranquility.lib.ast.FunctionDeclaration;
-import com.ctfloyd.tranquility.lib.ast.Identifier;
-import com.ctfloyd.tranquility.lib.ast.NumericLiteral;
-import com.ctfloyd.tranquility.lib.ast.Program;
-import com.ctfloyd.tranquility.lib.ast.ReturnStatement;
+import com.ctfloyd.tranquility.lib.ast.*;
 import com.ctfloyd.tranquility.lib.test.Suite;
 import com.ctfloyd.tranquility.lib.test.Test;
 
@@ -25,7 +16,7 @@ public class AstInterpreterTest {
         Program program = new Program();
         BinaryExpression expression = new BinaryExpression(new NumericLiteral(100), new NumericLiteral(50), BinaryExpressionOperator.PLUS);
         ExpressionStatement statement = new ExpressionStatement(expression);
-        program.addChild(statement);
+        program.addStatement(statement);
 
         Runtime interpreter = new Runtime();
         Value finalValue = program.execute();
@@ -52,8 +43,8 @@ public class AstInterpreterTest {
         CallExpression callExpression = new CallExpression(new Identifier("foo"), Collections.emptyList());
         ExpressionStatement callStatement = new ExpressionStatement(callExpression);
 
-        program.addChild(functionDeclaration);
-        program.addChild(callStatement);
+        program.addStatement(functionDeclaration);
+        program.addStatement(callStatement);
 
         Runtime runtime = new Runtime();
         Value result = program.execute();

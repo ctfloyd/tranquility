@@ -25,4 +25,5 @@ public class AstNode extends RuntimeDependency {
     }
     public boolean isExpression() { return false; }
     public boolean isObjectLiteral() { return false; }
+    public boolean isScopeNode() { return false; }
 }

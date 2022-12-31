@@ -31,12 +31,7 @@ public class Realm {
         executionContextStack.add(newContext);
         realm.setRealmGlobalObject(null, null);
         JsObject globalObject = realm.setDefaultGlobalBindings();
-
         realm.globalEnvironment.initializeBinding("console", Value.object(new ConsoleObject()));
-
-        // FIXME: Not specification
-        newContext.setLexicalEnvironment(realm.globalEnvironment);
-        newContext.setVariableEnvironment(realm.globalEnvironment);
         return realm;
     }
 

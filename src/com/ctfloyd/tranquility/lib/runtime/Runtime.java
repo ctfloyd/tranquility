@@ -39,4 +39,8 @@ public class Runtime {
         // TODO: strict mode determination
         return environment.getIdentifierReference(name, false);
     }
+
+    public void pushExecutionContext(ExecutionContext executionContext) {
+        executionContextStack.push(executionContext);
+    }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
-public class BlockStatement extends AstNode {
+public class BlockStatement extends Scope {
 
     private final List<AstNode> children = new ArrayList<>();
 

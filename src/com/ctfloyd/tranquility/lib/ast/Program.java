@@ -6,26 +6,22 @@ import com.ctfloyd.tranquility.lib.runtime.Value;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Program extends AstNode {
+public class Program extends Scope {
 
-    private final List<AstNode> children;
+    private final List<AstNode> statements;
 
     public Program() {
-        children = new ArrayList<>();
+        statements = new ArrayList<>();
     }
 
-    public List<AstNode> getChildren() {
-        return children;
-    }
-
-    public void addChild(AstNode child) {
-        children.add(child);
+    public void addStatement(AstNode statement) {
+        statements.add(statement);
     }
 
     @Override
     public Value execute() {
         Value lastValue = Value.undefined();
-        for (AstNode child : children) {
+        for (AstNode child : statements) {
             lastValue = child.execute();
         }
         return lastValue;
@@ -34,7 +30,7 @@ public class Program extends AstNode {
     @Override
     public void setRuntime(Runtime runtime) {
         super.setRuntime(runtime);
-        for (AstNode child : children) {
+        for (AstNode child : statements) {
             child.setRuntime(runtime);
         }
     }
@@ -43,8 +39,10 @@ public class Program extends AstNode {
     public void dump(int indent) {
         printIndent(indent);
         System.out.println("Program (");
-        children.forEach(child -> child.dump(indent + 1));
+        statements.forEach(child -> child.dump(indent + 1));
         printIndent(indent);
         System.out.println(")");
     }
+
+
 }

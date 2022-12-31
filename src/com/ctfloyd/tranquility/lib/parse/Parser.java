@@ -19,6 +19,7 @@ public class Parser {
     private final TokenStream tokenStream;
     private Token currentToken;
     private Token previousToken;
+    private Scope currentScope;
 
     public Parser(TokenStream tokenStream) {
         ASSERT(tokenStream != null);
@@ -27,6 +28,7 @@ public class Parser {
 
     public Program parse() {
         Program program = new Program();
+        currentScope = program;
         consume();
         while (!done()) {
             if (match(TokenType.SEMICOLON) || match(TokenType.COMMENT) || match(TokenType.MULTI_LINE_COMMENT)) {
@@ -37,7 +39,7 @@ public class Parser {
             }
 
             AstNode node = parseStatement();
-            program.addChild(node);
+            program.addStatement(node);
         }
         return program;
     }
@@ -124,6 +126,7 @@ public class Parser {
     private VariableDeclarator parseVariableDeclarator() {
         consume(TokenType.VAR);
         String variableName = consume(TokenType.IDENTIFIER).getValue();
+        currentScope.addVariableDeclaredNames(variableName);
 
         if (match(TokenType.ASSIGNMENT)) {
             consume(TokenType.ASSIGNMENT);
@@ -136,6 +139,7 @@ public class Parser {
 
     private BlockStatement parseBlockStatement() {
         BlockStatement block = new BlockStatement();
+        currentScope = block;
         consume(TokenType.LEFT_CURLY_BRACE);
         while (!done() && !match(TokenType.RIGHT_CURLY_BRACE)) {
             if (matchesStatement()) {
