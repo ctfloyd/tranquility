@@ -5,7 +5,8 @@ import java.util.List;
 public abstract class Constructor extends Function {
 
     public Constructor(String name, List<String> argumentNames) {
-        super(name, argumentNames, null);
+        super();
+//        super(name, argumentNames, null);
     }
 
     public abstract JsObject construct(Realm realm, ArgumentList arguments, JsObject object);

@@ -55,7 +55,7 @@ public class Reference {
         return thisValue != null;
     }
 
-    public Value getValue(Realm realm){
+    public Value getValue(Realm realm) {
         if (isUnresolvableReference()) {
             // FIMXE: Throw
             throw new RuntimeException("ReferenceError");

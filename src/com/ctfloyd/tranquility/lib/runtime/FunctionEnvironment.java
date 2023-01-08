@@ -18,6 +18,12 @@ public class FunctionEnvironment extends DeclarativeEnvironment {
         super(outerEnvironment);
     }
 
+    public FunctionEnvironment(Function function, JsObject newTarget) {
+        super(function.getEnvironment());
+        this.functionObject = function;
+        this.newTarget = newTarget;
+    }
+
     public Value bindThisValue(Value thisValue) {
         // 1. Assert: envRec.[[ThisBindingStatus]] is not lexical
         ASSERT(thisBindingStatus != BindingStatus.LEXICAL);

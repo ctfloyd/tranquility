@@ -9,7 +9,7 @@ public class ExecutionContext {
     private Realm realm;
     private Function function;
 
-    private Value thisValue;
+    private Value thisValue = Value.undefined();
 
     public Realm getRealm() {
         return realm;
@@ -48,6 +48,9 @@ public class ExecutionContext {
     }
 
     public void setThisValue(Value thisValue) {
+        if (thisValue == null) {
+            throw new RuntimeException("Tried to set this value to Java null.");
+        }
         this.thisValue = thisValue;
     }
 

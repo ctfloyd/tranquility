@@ -43,4 +43,8 @@ public class Runtime {
     public void pushExecutionContext(ExecutionContext executionContext) {
         executionContextStack.push(executionContext);
     }
+
+    public ExecutionContext popExecutionContext() {
+        return executionContextStack.pop();
+    }
 }

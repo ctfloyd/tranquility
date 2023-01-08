@@ -44,7 +44,8 @@ public class CallExpression extends Expression {
         ArgumentList evaluatedArguments = new ArgumentList(Collections.emptyList());
         for (AstNode node : arguments) {
             if (node.isIdentifier()) {
-               evaluatedArguments.addArgument(((Identifier) node).getReference().getValue(getRealm()));
+               Reference reference = ((Identifier) node).getReference();
+               evaluatedArguments.addArgument(reference.getValue(getRealm()));
             } else {
                 evaluatedArguments.addArgument(node.execute());
             }
@@ -55,12 +56,11 @@ public class CallExpression extends Expression {
             returnValue = ((NativeFunction)object).call(evaluatedArguments);
         } else {
             Function function = (Function) object;
-            ASSERT(function.getNumberOfArguments() == arguments.size());
-            returnValue = ((Function)object).call(evaluatedArguments);
+            returnValue = function.call(evaluatedArguments);
         }
 
         if (!thisValue.isUndefined()) {
-            getRuntime().setThisValue(null);
+            getRuntime().setThisValue(Value.undefined());
         }
 
         return returnValue;

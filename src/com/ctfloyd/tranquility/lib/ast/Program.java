@@ -22,6 +22,10 @@ public class Program extends Scope {
     public Value execute() {
         Value lastValue = Value.undefined();
         for (AstNode child : statements) {
+            if (child.isFunctionDeclaration()) {
+                continue;
+            }
+
             lastValue = child.execute();
         }
         return lastValue;

@@ -25,6 +25,10 @@ public class JsObject extends RuntimeDependency {
         return object;
     }
 
+    public static JsObject ordinaryObjectCreate(JsObject prototype, List<String> additionalInternalSlotsList) {
+        return ordinaryObjectCreate(prototype);
+    }
+
     // https://tc39.es/ecma262/#sec-hasownproperty
     public Value hasOwnProperty(String property) {
         // 1. Let desc be ?O.[[GetOwnProperty]](P).
@@ -299,15 +303,38 @@ public class JsObject extends RuntimeDependency {
     private boolean ordinaryDefineOwnProperty(String propertyName, PropertyDescriptor propertyDescriptor) {
         // 1. Let current be ? O.[[GetOwnProperty]](P).
         Optional<PropertyDescriptor> current = getOwnProperty(propertyName);
-        // FIXME: isExtensible is not implemented
         // 2. Let extensible be ? isExtensible(O).
-        // FIXME: The following function is not implemented.
+        boolean extensible = isExtensible();
         // 3. Return ValidateAndApplyPropertyDescriptor(O, P, extensible, Desc, current).
-        if (current.isPresent()) {
-            properties.put(propertyName, current.get());
-        } else {
-            properties.put(propertyName, propertyDescriptor);
+        return validateAndApplyPropertyDescriptor(propertyName, extensible, propertyDescriptor, current);
+    }
+
+    private boolean validateAndApplyPropertyDescriptor(String propertyName, boolean extensible, PropertyDescriptor propertyDescriptor, Optional<PropertyDescriptor> currentDescriptorOptional) {
+        if (currentDescriptorOptional.isEmpty()) {
+            if (!extensible) {
+                return false;
+            }
+            if (propertyDescriptor.isAccessorDescriptor()) {
+                throw new RuntimeException("need to implement");
+            } else {
+                PropertyDescriptor newDesc = new PropertyDescriptor(propertyDescriptor.getValue(),
+                        propertyDescriptor.isWritable(), propertyDescriptor.isEnumerable(), propertyDescriptor.isConfigurable());
+                properties.put(propertyName, newDesc);
+            }
+            return true;
         }
+
+        PropertyDescriptor currentDescriptor = currentDescriptorOptional.get();
+        if (currentDescriptor.isDataDescriptor() && propertyDescriptor.isAccessorDescriptor()) {
+            throw new RuntimeException("need to implement");
+        } else if (currentDescriptor.isAccessorDescriptor() && propertyDescriptor.isDataDescriptor()) {
+            throw new RuntimeException("need to implement");
+        } else {
+            // FIXME: This logic definitely is not correct
+            currentDescriptor.setValue(propertyDescriptor.getValue());
+            properties.put(propertyName, currentDescriptor);
+        }
+
         return true;
     }
 
@@ -362,7 +389,7 @@ public class JsObject extends RuntimeDependency {
                 // iii. Let valueDesc be the PropertyDescriptor(V).
                 PropertyDescriptor valueDesc = new PropertyDescriptor(value);
                 // iv. Return ? Receiver.[[DefineOwnProperty]](P, valueDesc).
-                receiver.asObject().defineOwnProperty(propertyName, valueDesc);
+                return receiver.asObject().defineOwnProperty(propertyName, valueDesc);
             } else {
                 // e. Else,
                 // i. Assert: Receiver does not currently have a property P
@@ -392,7 +419,7 @@ public class JsObject extends RuntimeDependency {
 
     private boolean ordinaryIsExtensible() {
        // FIXME: Do the correct thing, it changes based on whether or not an object is exotic.
-        return false;
+        return true;
     }
 
     @Override

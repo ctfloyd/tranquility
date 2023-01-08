@@ -7,6 +7,7 @@ public class Scope extends AstNode {
 
     private final List<String> lexicallyDeclaredNames = new ArrayList<>();
     private final List<String> variableDeclaredNames = new ArrayList<>();
+    private final List<AstNode> variableScopedDeclarations = new ArrayList<>();
 
     public List<String> getLexicallyDeclaredNames() {
         return lexicallyDeclaredNames;
@@ -24,6 +25,15 @@ public class Scope extends AstNode {
     public String addVariableDeclaredNames(String variableDeclaredName) {
         variableDeclaredNames.add(variableDeclaredName);
         return variableDeclaredName;
+    }
+
+    public AstNode addVariableScopeDeclaration(AstNode node) {
+        variableScopedDeclarations.add(node);
+        return node;
+    }
+
+    public List<AstNode> getVariableScopedDeclarations() {
+        return variableScopedDeclarations;
     }
 
     @Override

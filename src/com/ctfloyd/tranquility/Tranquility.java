@@ -12,6 +12,7 @@ public class Tranquility {
         String fileContents = Files.readString(Paths.get("input/test.js"));
         Runtime runtime = new Runtime();
         Script script = Script.parseScript(fileContents.toCharArray(), runtime.getRealm(), runtime);
+        script.dump();
         script.evaluate();
     }
 

@@ -74,6 +74,7 @@ public class Parser {
     private FunctionDeclaration parseFunctionDeclaration() {
         consume(TokenType.FUNCTION);
         String functionName = consume(TokenType.IDENTIFIER).getValue();
+        currentScope.addVariableDeclaredNames(functionName);
         consume(TokenType.LEFT_PARENTHESIS);
 
         List<String> arguments = new ArrayList<>();
@@ -85,7 +86,11 @@ public class Parser {
         }
         consume(TokenType.RIGHT_PARENTHESIS);
         BlockStatement functionBody = parseBlockStatement();
-        return new FunctionDeclaration(functionName, arguments, functionBody);
+
+        FunctionDeclaration declaration = new FunctionDeclaration(functionName, arguments, functionBody);
+        currentScope.addVariableScopeDeclaration(declaration);
+
+        return declaration;
     }
 
     private ForStatement parseForStatement() {
@@ -138,6 +143,7 @@ public class Parser {
     }
 
     private BlockStatement parseBlockStatement() {
+        Scope oldScope = currentScope;
         BlockStatement block = new BlockStatement();
         currentScope = block;
         consume(TokenType.LEFT_CURLY_BRACE);
@@ -151,6 +157,7 @@ public class Parser {
             }
         }
         consume(TokenType.RIGHT_CURLY_BRACE);
+        currentScope = oldScope;
         return block;
     }
 
