@@ -86,7 +86,7 @@ public class Script {
             // FIXME: It could be more than just a function declaration, i.e. GeneratorDeclaration, AsyncFunctionDeclaration, ...
             ASSERT(node.isFunctionDeclaration());
             FunctionDeclaration functionDeclaration = (FunctionDeclaration) node;
-            String fn = functionDeclaration.getName();
+            String fn = functionDeclaration.getStringValue();
             if (!declaredFunctionNames.contains(fn)) {
                 boolean fnDefinable = environment.canDeclareGlobalFunction(fn);
                 if (!fnDefinable) {
@@ -118,7 +118,7 @@ public class Script {
 
         Environment privateEnv = null;
         for (FunctionDeclaration f : functionsToInitialize) {
-            String fn = f.getName();
+            String fn = f.getStringValue();
             JsObject fo = f.instantiate(environment, privateEnv);
             fo.setRuntime(runtime);
             environment.createGlobalFunctionBinding(fn, Value.object(fo), false);

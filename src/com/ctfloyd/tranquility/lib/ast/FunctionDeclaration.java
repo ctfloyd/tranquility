@@ -8,9 +8,9 @@ import java.util.List;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
-public class FunctionDeclaration extends AstNode {
+public class FunctionDeclaration extends AstNode implements BoundName {
 
-    private final String name;
+    private final BindingIdentifier bindingIdentifier;
     private final List<String> argumentNames;
     private final BlockStatement blockStatement;
 
@@ -19,13 +19,18 @@ public class FunctionDeclaration extends AstNode {
         ASSERT(!name.isEmpty());
         ASSERT(blockStatement != null);
         ASSERT(argumentNames != null);
-        this.name = name;
+        this.bindingIdentifier = new BindingIdentifier(name);
         this.blockStatement = blockStatement;
         this.argumentNames = argumentNames;
     }
 
-    public String getName() {
-        return name;
+    public String getStringValue() {
+        return bindingIdentifier.getStringValue();
+    }
+
+    @Override
+    public List<String> getBoundNames() {
+        return bindingIdentifier.getBoundNames();
     }
 
     // https://tc39.es/ecma262/#sec-runtime-semantics-instantiateordinaryfunctionobject
@@ -43,7 +48,7 @@ public class FunctionDeclaration extends AstNode {
         printIndent(indent);
         System.out.println("FunctionDeclaration (");
         printIndent(indent + 1);
-        System.out.println("Name: " + name);
+        System.out.println("Name: " + getStringValue());
         blockStatement.dump(indent + 1);
         printIndent(indent);
         System.out.println(")");

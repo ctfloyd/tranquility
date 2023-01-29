@@ -40,7 +40,7 @@ public class MemberExpression extends Expression {
 //            propertyName = Value.string(property.getName());
 //        }
         JsObject object = reference.getValue(getRealm()).asObject();
-        return object.get(property.getName());
+        return object.get(property.getStringValue());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class MemberExpression extends Expression {
         if (isComputed()) {
             propertyName = property.execute();
         } else {
-            propertyName = Value.string(property.getName());
+            propertyName = Value.string(property.getStringValue());
         }
 
         return new Reference(baseValue, propertyName.asString(), false, null);

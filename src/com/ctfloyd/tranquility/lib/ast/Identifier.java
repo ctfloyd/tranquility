@@ -7,24 +7,18 @@ import java.util.StringJoiner;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 
-public class Identifier extends Expression {
-
-    private final String name;
+public class Identifier extends BindingIdentifier {
 
     public Identifier(String name) {
+        super(name);
         ASSERT(name != null);
         ASSERT(!name.isEmpty());
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override
     public void dump(int indent) {
         printIndent(indent);
-        System.out.println("Identifier (Name:  " + name + ")");
+        System.out.println("Identifier (Name:  " + getStringValue() + ")");
     }
 
     @Override
@@ -33,7 +27,7 @@ public class Identifier extends Expression {
     }
 
     public Reference getReference() {
-        return getRuntime().resolveBinding(name);
+        return getRuntime().resolveBinding(getStringValue());
     }
 
     @Override
@@ -44,7 +38,7 @@ public class Identifier extends Expression {
     @Override
     public String toString() {
         return new StringJoiner(", ", Identifier.class.getSimpleName() + "[", "]")
-                .add("name='" + name + "'")
+                .add("name='" + getStringValue() + "'")
                 .toString();
     }
 }

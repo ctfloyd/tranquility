@@ -21,7 +21,7 @@ public class ObjectLiteral extends Expression {
     public Value execute() {
         JsObject object = JsObject.create(getRealm(), Collections.emptyMap());
         for (Map.Entry<Identifier, AstNode> entry : properties.entrySet()) {
-            object.set(entry.getKey().getName(), entry.getValue().execute(), true);
+            object.set(entry.getKey().getStringValue(), entry.getValue().execute(), true);
         }
         return Value.object(object);
     }

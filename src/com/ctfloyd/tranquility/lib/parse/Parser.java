@@ -128,7 +128,7 @@ public class Parser {
         }
     }
 
-    private VariableDeclarator parseVariableDeclarator() {
+    private VariableDeclaration parseVariableDeclarator() {
         consume(TokenType.VAR);
         String variableName = consume(TokenType.IDENTIFIER).getValue();
         currentScope.addVariableDeclaredNames(variableName);
@@ -136,10 +136,10 @@ public class Parser {
         if (match(TokenType.ASSIGNMENT)) {
             consume(TokenType.ASSIGNMENT);
             AstNode expression = parseExpression();
-            return new VariableDeclarator(variableName, expression);
+            return new VariableDeclaration(variableName, expression);
         }
 
-        return new VariableDeclarator(variableName);
+        return new VariableDeclaration(variableName);
     }
 
     private BlockStatement parseBlockStatement() {
