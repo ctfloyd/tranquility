@@ -21,17 +21,41 @@ public class Realm {
     // needed into a realm. Tranquility treats this specification as 0...N additional class fields and methods in the
     // realm.
 
-    public static Realm initializeHostDefinedRealm(Stack<ExecutionContext> executionContextStack) {
+    // https://tc39.es/ecma262/#sec-initializehostdefinedrealm
+    public static Realm initializeHostDefinedRealm(Stack<ExecutionContext> executionContextStack, boolean vanillaLogs) {
+        // 1. Let realm be CreateRealm()
         Realm realm = createRealm();
+        // 2. Let newContext be a new execution context.
         ExecutionContext newContext = new ExecutionContext();
+        // 3. Set the Function of newContext to null.
         newContext.setFunction(null);
+        // 4. Set the Reaml of newContext to realm.
         newContext.setRealm(realm);
 
-        // TODO: 5
+        // TODO: 5 Set the ScriptOrModule of newContext to null.
+
+        // 6. Push newContext onto the execution context stack; newContext is now the running execution context.
         executionContextStack.add(newContext);
-        realm.setRealmGlobalObject(null, null);
+
+        // 7. If the host requires use of an exotic object to serve as realm's global object, let global be such an object
+        // created in a host-defined manner. Otherwise, let global be undefined, indicating that an ordinary object
+        // should be created as the global object.
+        JsObject global = null;
+
+        // 8. If the host requires that the this binding in realm's global scope return an objet other than the global object,
+        // let thisValue be such an objet created in a host-defined manner. Otherwise, let thisValue be undefined, indicating
+        // that realm's global this binding should be the global object.
+        JsObject thisValue = null;
+
+        // 9 . Perform SetRealmGlobalObject(realm, global, thisValue).
+        realm.setRealmGlobalObject(global, thisValue);
+
+        // 10. Let globalObj be ? SetDefaultGlobalBindings(realm).
         JsObject globalObject = realm.setDefaultGlobalBindings();
-        realm.globalEnvironment.initializeBinding("console", Value.object(new ConsoleObject()));
+
+        // 11. Create any host-defined global object properties on globalObj.
+        globalObject.set("console", Value.object(new ConsoleObject(vanillaLogs)), false);
+
         return realm;
     }
 
@@ -103,13 +127,14 @@ public class Realm {
     public JsObject setDefaultGlobalBindings() {
         // FIXME: Implement this.
         // 1. Let global be realmRec.[[GlobalObject]].
+        JsObject global = getGlobalObject().orElseThrow();
         // 2. For each property of the GlobalObject specified in clause 19, do
         // a. Let name be the String value of the property name.
         // b. Let desc the the fully populated data Property Descriptor for the property, containing the specified
         // attributes for the property. For properties listed in 19.2, 19.3, or 19.4 the value of the [[Value]] attribute
         // is the corresponding intrinsic object from realmRec.
         // 3. Return global.
-        return globalObject;
+        return global;
     }
 
     public Optional<GlobalEnvironment> getGlobalEnvironment() {

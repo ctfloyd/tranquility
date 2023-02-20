@@ -11,7 +11,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TestRunner {
+public class JavaTestRunner {
 
     public static final String ANSI_GREEN = "\u001B[32m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -23,7 +23,7 @@ public class TestRunner {
         try {
             List<String> messages = getClasses(basePackage).stream()
                     .filter(clazz -> clazz.getAnnotationsByType(Suite.class).length > 0)
-                    .map(TestRunner::runSuite)
+                    .map(JavaTestRunner::runSuite)
                     .collect(Collectors.toList());
             messages.forEach(System.out::println);
         } catch (Exception ex) {

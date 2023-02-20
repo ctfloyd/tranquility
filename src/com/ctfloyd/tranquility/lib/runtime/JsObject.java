@@ -15,7 +15,7 @@ public class JsObject extends RuntimeDependency {
     public static JsObject create(Realm realm, Map<String, Value> properties) {
         JsObject object = new JsObject();
         properties.forEach((k, v) -> object.set(k, v, true));
-        object.setPrototypeOf(realm.getIntrinsics().get(Intrinsic.OBJECT));
+        object.setPrototypeOf(realm.getIntrinsics().get(Intrinsic.OBJECT).getPrototypeOf().asObject());
         return object;
     }
 

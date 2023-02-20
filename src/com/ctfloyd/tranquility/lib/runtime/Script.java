@@ -33,6 +33,10 @@ public class Script {
         return new Script(parseText(sourceText, "script"), false, realm, runtime);
     }
 
+    public static Script fromProgram(Program program, Realm realm, Runtime runtime) {
+        return new Script(program, false, realm, runtime);
+    }
+
     private static Program parseText(char[] sourceText, String goalSymbol) {
         Tokenizer tokenizer = new Tokenizer(sourceText);
         List<Token> tokens = tokenizer.tokenize();

@@ -7,9 +7,13 @@ public class Runtime {
     private final Stack<ExecutionContext> executionContextStack;
     private final Realm realm;
 
-    public Runtime() {
+    public Runtime(boolean vanillaLogs) {
         executionContextStack = new Stack<>();
-        realm = Realm.initializeHostDefinedRealm(executionContextStack);
+        realm = Realm.initializeHostDefinedRealm(executionContextStack, vanillaLogs);
+    }
+
+    public Runtime() {
+        this(false);
     }
 
     public ExecutionContext getCurrentExecutionContext() {

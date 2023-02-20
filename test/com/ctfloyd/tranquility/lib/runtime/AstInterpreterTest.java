@@ -18,8 +18,9 @@ public class AstInterpreterTest {
         ExpressionStatement statement = new ExpressionStatement(expression);
         program.addStatement(statement);
 
-        Runtime interpreter = new Runtime();
-        Value finalValue = program.execute();
+        Runtime runtime = new Runtime();
+        Script script = Script.fromProgram(program, runtime.getRealm(), runtime);
+        Value finalValue = script.evaluate();
         assertTrue("Value is not a number", finalValue.isNumber());
         assertTrue("Value is not '150'", finalValue.asDouble() == 150D);
     }
@@ -35,8 +36,7 @@ public class AstInterpreterTest {
         Program program = new Program();
         BlockStatement block = new BlockStatement();
         BinaryExpression expression = new BinaryExpression(new NumericLiteral(1), new NumericLiteral(2), BinaryExpressionOperator.PLUS);
-        ExpressionStatement statement = new ExpressionStatement(expression);
-        ReturnStatement returnStatement = new ReturnStatement(statement);
+        ReturnStatement returnStatement = new ReturnStatement(expression);
         block.addChild(returnStatement);
         FunctionDeclaration functionDeclaration = new FunctionDeclaration("foo", Collections.emptyList(), block);
 
@@ -45,9 +45,11 @@ public class AstInterpreterTest {
 
         program.addStatement(functionDeclaration);
         program.addStatement(callStatement);
+        program.addVariableScopeDeclaration(functionDeclaration);
 
         Runtime runtime = new Runtime();
-        Value result = program.execute();
+        Script script = Script.fromProgram(program, runtime.getRealm(), runtime);
+        Value result = script.evaluate();
         assertTrue("Value is not a number", result.isNumber());
         assertTrue("Value is not '3'", result.asDouble() == 3D);
     }

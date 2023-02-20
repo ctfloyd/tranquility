@@ -9,6 +9,7 @@ public class ConsoleObject extends JsObject {
 
     private static final String ANSI_YELLOW = "\u001B[33m";
     private static final String ANSI_RESET = "\u001B[0m";
+    private boolean vanillaLogs = false;
 
     private enum LogLevel {
         ASSERT,
@@ -20,6 +21,11 @@ public class ConsoleObject extends JsObject {
     }
 
     public ConsoleObject() {
+        this(false);
+    }
+
+    public ConsoleObject(boolean vanillaLogs) {
+        this.vanillaLogs = vanillaLogs;
         putNativeFunction("assert", this::_assert);
         putNativeFunction("debug", this::debug);
         putNativeFunction("error", this::error);
@@ -104,10 +110,14 @@ public class ConsoleObject extends JsObject {
     // TODO: 1.1.10, 1.1.11
 
     private void logImpl(LogLevel logLevel, ArgumentList arguments) {
-        System.out.print(ANSI_YELLOW + "(JS Log) [" + logLevel.name() + "] ");
+        if (!vanillaLogs) {
+            System.out.print(ANSI_YELLOW + "(JS Log) [" + logLevel.name() + "] ");
+        }
+
         if (arguments == null) {
             System.out.println("null");
         } else {
+            int argument = 0;
             for (Value value : arguments) {
                 if (value.isObject()) {
                     if (value.asObject().isStringObject()) {
@@ -131,15 +141,24 @@ public class ConsoleObject extends JsObject {
                 } else {
                     System.out.print(getStringRepresentationForValue(value));
                 }
-                System.out.print(" ");
+
+                if (argument != arguments.size() - 1) {
+                    System.out.print(" ");
+                }
+                argument++;
             }
         }
-        System.out.println(ANSI_RESET);
+
+        if (!vanillaLogs) {
+            System.out.print(ANSI_RESET);
+        }
+
+        System.out.println();
     }
 
     private String getStringRepresentationForValue(Value value) {
         if (value.isString()) {
-            return "\"" + value.asString() + "\"";
+            return value.asString();
         }
 
         if (value.isNumber()) {

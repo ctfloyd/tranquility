@@ -1,17 +1,19 @@
 package com.ctfloyd.tranquility.lib.runtime;
 
+import java.util.function.Supplier;
+
 public enum Intrinsic {
-    OBJECT("Object", new ObjectConstructor()),
-    NUMBER("Number", new NumberConstructor()),
-    STRING("String", new StringPrototype()),
-    ARRAY("Array", new ArrayPrototype());
+    OBJECT("Object", ObjectConstructor::new),
+    NUMBER("Number", NumberConstructor::new),
+    STRING("String", StringPrototype::new),
+    ARRAY("Array", ArrayPrototype::new);
 
     private final String globalName;
-    private final JsObject globalValue;
+    private final Supplier<JsObject> globalValueSupplier;
 
-    Intrinsic(String globalName, JsObject globalValue) {
+    Intrinsic(String globalName, Supplier<JsObject> globalValueSupplier) {
         this.globalName = globalName;
-        this.globalValue = globalValue;
+        this.globalValueSupplier = globalValueSupplier;
     }
 
     public String getGlobalName() {
@@ -19,6 +21,6 @@ public enum Intrinsic {
     }
 
     public JsObject getGlobalValue() {
-        return globalValue;
+        return globalValueSupplier.get();
     }
 }
