@@ -66,7 +66,7 @@ public class VariableDeclaration extends AstNode implements BoundName {
     @Override
     public void dump(int indent) {
         printIndent(indent);
-        System.out.println("VariableDeclarator (");
+        System.out.println("VariableDeclaration (");
         printIndent(indent + 1);
         System.out.println("[BindingIdentifier] (" + bindingIdentifier + ")");
         printIndent(indent + 1);

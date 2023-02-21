@@ -2,6 +2,7 @@ package com.ctfloyd.tranquility.lib.ast;
 
 import com.ctfloyd.tranquility.lib.runtime.JsObject;
 import com.ctfloyd.tranquility.lib.runtime.Reference;
+import com.ctfloyd.tranquility.lib.runtime.Runtime;
 import com.ctfloyd.tranquility.lib.runtime.Value;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
@@ -28,13 +29,23 @@ public class AssignmentExpression extends Expression {
         Value value = rightHandSide.execute();
         if (operator == AssignmentExpressionOperator.EQUALS) {
             Value base = reference.getValue(getRealm());
-            ASSERT(base.isObject());
-            JsObject object = base.asObject();
-            object.set(reference.getReferencedName(), value, true);
+            if (base.isObject()) {
+                JsObject object = base.asObject();
+                object.set(reference.getReferencedName(), value, true);
+            } else {
+                reference.putValue(getRealm(), value);
+            }
             return value;
         } else {
             throw new UnsupportedOperationException("Not implemented.");
         }
+    }
+
+    @Override
+    public void setRuntime(Runtime runtime) {
+        super.setRuntime(runtime);
+        leftHandSide.setRuntime(runtime);
+        rightHandSide.setRuntime(runtime);
     }
 
     @Override

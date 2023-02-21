@@ -76,7 +76,13 @@ public class BinaryExpression extends Expression {
     }
 
     private Value lessThan() {
-        Value leftValue = left.execute();
+        Value leftValue;
+        if (left.isIdentifier()) {
+            leftValue = ((Identifier) left).getReference().getValue(getRealm());
+        } else {
+            leftValue = left.execute();
+        }
+
         Value rightValue = right.execute();
         // FIXME: Types should be coerced
         ASSERT(leftValue.isNumber());

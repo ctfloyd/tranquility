@@ -393,7 +393,7 @@ public class JsObject extends RuntimeDependency {
             } else {
                 // e. Else,
                 // i. Assert: Receiver does not currently have a property P
-                ASSERT(!receiver.asObject().hasProperty(propertyName));
+                ASSERT(!receiver.asObject().hasOwnProperty(propertyName).asBoolean());
                 // ii. Return ? CreateDataProperty(Receiver, P, V).
                 return createDataProperty(propertyName, value);
             }

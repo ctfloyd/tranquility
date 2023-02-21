@@ -2,6 +2,7 @@ package com.ctfloyd.tranquility.lib.ast;
 
 import com.ctfloyd.tranquility.lib.runtime.DeclarativeEnvironment;
 import com.ctfloyd.tranquility.lib.runtime.Environment;
+import com.ctfloyd.tranquility.lib.runtime.Runtime;
 import com.ctfloyd.tranquility.lib.runtime.Value;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
@@ -35,6 +36,15 @@ public class ForStatement extends AstNode {
         }
         getRuntime().getCurrentExecutionContext().setLexicalEnvironment(env.getOuterEnvironment());
         return Value.undefined();
+    }
+
+    @Override
+    public void setRuntime(Runtime runtime) {
+        super.setRuntime(runtime);
+        initializer.setRuntime(runtime);
+        test.setRuntime(runtime);
+        update.setRuntime(runtime);
+        body.setRuntime(runtime);
     }
 
     @Override
