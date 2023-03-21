@@ -146,7 +146,7 @@ public class GlobalEnvironment extends Environment {
         return Value.undefined();
     }
 
-    public Value getThisBinding() {
+    public Value getGlobalThisValue() {
         // 1. Return envRec.[[GlobalThisValue]]
         return Value.object(globalThisValue);
     }
@@ -249,11 +249,12 @@ public class GlobalEnvironment extends Environment {
         PropertyDescriptor desc;
         if (existingProp.isEmpty() || existingProp.get().isConfigurable()) {
             // a. Let desc be the PropertyDescriptor { [[Value]]: V, [[Writable]]: true, [[Enumerable]]: true, [[Configurable]]: D }.
-            desc = new PropertyDescriptor(initializationValue, true, true, canDelete);
+            PropertyDescriptorConfigurable configurable = canDelete ? PropertyDescriptorConfigurable.YES : PropertyDescriptorConfigurable.NO;
+            desc = PropertyDescriptor.create(initializationValue, PropertyDescriptorWritable.YES, PropertyDescriptorEnumerable.YES, configurable);
         } else {
             // 5. Else,
             // a. Let desc be the PropertyDescriptor { [[Value]]: V }.
-            desc = new PropertyDescriptor(initializationValue);
+            desc = PropertyDescriptor.create(initializationValue);
         }
         // 6. Perform ? DefinePropertyOrThrow(globalObject, N, desc).
         globalObject.definePropertyOrThrow(variableName, desc);

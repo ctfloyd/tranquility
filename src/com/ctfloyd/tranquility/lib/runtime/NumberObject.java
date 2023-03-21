@@ -9,18 +9,33 @@ public class NumberObject extends JsObject {
     private final double value;
     private final boolean positiveInfinity;
     private final boolean negativeInfinity;
+    private final boolean notANumber;
 
     private NumberObject(double value) {
         this.value = value;
         this.positiveInfinity = false;
         this.negativeInfinity = false;
+        this.notANumber = false;
     }
 
     private NumberObject(boolean positiveInfinity, boolean negativeInfinity) {
-        ASSERT(positiveInfinity != negativeInfinity);
+        if (positiveInfinity || negativeInfinity) {
+            ASSERT(positiveInfinity != negativeInfinity);
+        }
         this.value = 0;
         this.positiveInfinity = positiveInfinity;
         this.negativeInfinity = negativeInfinity;
+        this.notANumber = false;
+    }
+
+    private NumberObject(boolean positiveInfinity, boolean negativeInfinity, boolean notANumber) {
+        if (positiveInfinity || negativeInfinity) {
+            ASSERT(positiveInfinity != negativeInfinity);
+        }
+        this.value = 0;
+        this.positiveInfinity = positiveInfinity;
+        this.negativeInfinity = negativeInfinity;
+        this.notANumber = notANumber;
     }
 
     public static NumberObject create(Realm realm, double _double) {
@@ -41,6 +56,12 @@ public class NumberObject extends JsObject {
         return number;
     }
 
+    public static NumberObject createNaN(Realm realm) {
+        NumberObject number = new NumberObject(false, false, true);
+        number.setPrototypeOf(realm.getIntrinsics().get(Intrinsic.NUMBER));
+        return number;
+    }
+
     public double getValue() {
         return value;
     }
@@ -52,6 +73,10 @@ public class NumberObject extends JsObject {
 
     public boolean isInfinite() {
         return positiveInfinity || negativeInfinity;
+    }
+
+    public boolean isNan() {
+        return notANumber;
     }
 
     @Override

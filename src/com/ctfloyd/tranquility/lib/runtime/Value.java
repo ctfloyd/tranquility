@@ -219,7 +219,7 @@ public class Value {
         // TODO: 2. If key is a symbol, then
             // a. Return key
         // 3. Return !ToString(key)
-        return key._toString();
+        return key._toString().asString();
     }
 
     public Value toPrimitive() {
@@ -241,26 +241,26 @@ public class Value {
     }
 
     // https://tc39.es/ecma262/#sec-tostring
-    public String _toString() {
+    public Value _toString() {
         // 1. If argument is a String, return argument
         if (isString()) {
-            return asString();
+            return this;
         }
 
         // TODO: 2. If argument is a symbol, throw a typeError Exception
         // 3. If argument is undefined, return "undefined"
         if (isUndefined()) {
-            return "undefined";
+            return Value.string("undefined");
         }
         // 4. If argument is null, return "null"
         if (isNull()) {
-            return "null";
+            return Value.string("null");
         }
 
         // 5. If argument is true, return "true"
         // 6. If argument is false, return "false"
         if (isBoolean()) {
-            return asBoolean() ? "true" : "false";
+            return asBoolean() ? Value.string("true") : Value.string("false");
         }
 
         // TODO: 7. If argument is a Number, return Number::toString(10);
@@ -277,6 +277,66 @@ public class Value {
 
         // 12. Return ? ToString(primValue)
         return primitiveValue._toString();
+    }
+
+    // https://tc39.es/ecma262/#sec-parsefloat-string
+    public Value trimString(TrimStringSpecifier where) {
+        // 1. Let str be ? RequireObjectCoercible(string).
+        // TODO: This isn't quite right.
+        ASSERT(isString());
+        //2. Let S be ? ToString(string);
+        Value S = _toString();
+        // 3. If where is start, let T be the String value that is a copy of S with leading white space removed.
+        Value T = null;
+        if (where == TrimStringSpecifier.START) {
+            T = Value.string(S.asString().stripLeading());
+        // 4. Else If where is end, let T be the String value that is a copy of S with trailing white space removed.
+        } else if (where == TrimStringSpecifier.END) {
+            T = Value.string(S.asString().stripTrailing());
+        // 5. Else,
+        } else {
+            // a. Assert: where is start+end
+            ASSERT(where == TrimStringSpecifier.START_AND_END);
+            // b. Let T be the String value that is a copy of S with both leading and trailing white space removed.
+            T = Value.string(S.asString().trim());
+        }
+        // 6. Return T.
+        return T;
+    }
+
+    //  https://tc39.es/ecma262/#sec-tonumber
+    // TODO: I'm not sure this supposed to return the number object. I think it should return a number primitive.
+    public NumberObject _toNumber(Realm realm) {
+        // 1. If argument is a Number, return argument.
+        if (isNumber()) {
+            return NumberObject.create(realm, this.asDouble());
+        }
+
+        if (isObject() && asObject().isNumberObject()) {
+            return (NumberObject) this.asObject();
+        }
+        // TODO: 2. If argument is either a Symbol or a BigInt, throw a TypeError exception.
+        // 3. If argument is undefined, return NaN.
+        if (isUndefined()) {
+            return NumberObject.createNaN(realm);
+        }
+        // 4. If argument is either null or false, return +0𝔽.
+        if (isNull() || (isBoolean() && asBoolean() == false)) {
+            return NumberObject.createPositiveInfinity(realm);
+        }
+        // 5. If argument is true, return 1𝔽.
+        if (isBoolean() && asBoolean()) {
+            return NumberObject.create(realm, 1.0);
+        }
+        // TODO: 6. If argument is a String, return StringToNumber(argument).
+        // 7. Assert: argument is an Object.
+        ASSERT(this.isObject());
+        // 8. Let primValue be ? ToPrimitive(argument, number).
+        Value primValue = toPrimitive("number");
+        // 9. Assert: primValue is not an Object.
+        ASSERT(!primValue.isObject());
+        // 10. Return ? ToNumber(primValue).
+        return primValue._toNumber(realm);
     }
 
     // https://tc39.es/ecma262/#sec-isintegralnumber
@@ -310,7 +370,7 @@ public class Value {
         }
 
         // 2. Let desc bew a new Property Descriptor that initially has no fields.
-        PropertyDescriptor desc = new PropertyDescriptor(Value._null(), false, false, false);
+        PropertyDescriptor desc = PropertyDescriptor.create(Value._null(), PropertyDescriptorWritable.NO, PropertyDescriptorEnumerable.NO, PropertyDescriptorConfigurable.NO);
 
         JsObject obj = asObject();
         // 3. Let hasEnumerable be ? HasProperty(Obj, "enumerable").

@@ -90,7 +90,7 @@ public class Function extends JsObject {
             if (thisArgument.isUndefined() || thisArgument.isNull()) {
                 Optional<GlobalEnvironment> globalEnvironment = realm.getGlobalEnvironment();
                 ASSERT(globalEnvironment.isPresent());
-                thisValue = globalEnvironment.get().getThisBinding();
+                thisValue = globalEnvironment.get().getGlobalThisValue();
             } else {
                 thisValue = Value.object(thisArgument.toObject(realm));
             }

@@ -166,7 +166,7 @@ public class StringPrototype extends JsObject {
         String string = stringObject.getString();
         // FIXME: 3 and 4 ask about RegExp
         // 5. Let searchStr be ? ToString(searchString);
-        String searchString = arguments.getFirstArgument()._toString();
+        Value searchString = arguments.getFirstArgument()._toString();
         // 6. Let len be the length of S
         int len = string.length();
         // FIXME: Infinity is not implemented yet
@@ -181,7 +181,7 @@ public class StringPrototype extends JsObject {
         // 8. Let end be the result of clamping pos between 0 and len.
         int end = Math.max(0, Math.min(pos, len));
         // 9. Let searchLength be the length of searchString
-        int searchLength = searchString.length();
+        int searchLength = searchString.asString().length();
         // 10. If searchLength = 0, return true
         if (searchLength == 0) {
             return Value._boolean(true);
@@ -195,7 +195,7 @@ public class StringPrototype extends JsObject {
         // 13. Let substring be the substring of S from start to end
         String substring = string.substring(start, end);
         // 14. If substring is searchStr, return true
-        return Value._boolean(substring.equals(searchString));
+        return Value._boolean(substring.equals(searchString.asString()));
     }
 
     // https://tc39.es/ecma262/#sec-string.prototype.includes
@@ -209,7 +209,7 @@ public class StringPrototype extends JsObject {
         String string = stringObject.getString();
         // FIXME: 3 and 4 ask about RegExp
         // 5. Let searchStr be ? ToString(searchString);
-        String searchString = arguments.getFirstArgument()._toString();
+        Value searchString = arguments.getFirstArgument()._toString();
         // 6. Let pos be ? ToIntegerOrInfinity(position);
         // FIXME: Infinity not implemented
         int pos = arguments.getFirstArgumentOr(Value.number(0)).asInteger();
@@ -222,7 +222,7 @@ public class StringPrototype extends JsObject {
         // 9. Let start be the result of clamping pos between 0 and len
         int start = Math.max(0, Math.min(pos, len));
         // 10. Let index be StringIndexOf(S, searchStr, start)
-        int index = string.indexOf(searchString, start);
+        int index = string.indexOf(searchString.asString(), start);
         // 11. If is not -1 return true - 12. Return false
         return Value._boolean(index != -1);
     }

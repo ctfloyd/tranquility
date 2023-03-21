@@ -47,7 +47,8 @@ public class ObjectEnvironment extends Environment {
         // 1. Let bindingObject be envRec.[[BindingObject]]
         // 2. Perform ? DefinePropertyOrThrow(bindingObject, N, PropertyDescriptor { [[Value]]: undefined, [[Writable]]:
         //  true, [[Enumerable]]: true, [[Configurable]]: D}}
-        bindingObject.definePropertyOrThrow(bindingName, new PropertyDescriptor(Value.undefined(), true, true, canDelete));
+        PropertyDescriptorConfigurable configurable = canDelete ? PropertyDescriptorConfigurable.YES : PropertyDescriptorConfigurable.NO;
+        bindingObject.definePropertyOrThrow(bindingName, PropertyDescriptor.create(Value.undefined(), PropertyDescriptorWritable.YES, PropertyDescriptorEnumerable.YES, configurable));
         // 3. Return unused
     }
 

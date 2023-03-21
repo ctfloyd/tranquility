@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 public class NumberUtils {
 
-    private static final Set<Character> DIGITS = Stream.of('0', '1', '2', '3', '4', '5', '6', '7', '8', '9').collect(Collectors.toSet());
+    private static final Set<Character> DIGITS = Stream.of('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.').collect(Collectors.toSet());
     private static final Set<Character> OCTAL_DIGITS = Stream.of('0', '1', '2', '3', '4', '5', '6', '7').collect(Collectors.toSet());
     private static final Set<Character> HEXADECIMAL_DIGITS = Stream.of('0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
             'A', 'B', 'C', 'D', 'E', 'F').collect(Collectors.toSet());
@@ -68,6 +68,10 @@ public class NumberUtils {
         }
 
         return null;
+    }
+
+    public boolean isDigitsOrDot(char ch) {
+        return ch == '.' || DIGITS.contains(ch);
     }
 
 }

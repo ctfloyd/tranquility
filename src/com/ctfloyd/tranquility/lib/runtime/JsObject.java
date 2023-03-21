@@ -192,7 +192,7 @@ public class JsObject extends RuntimeDependency {
     public boolean isNumberObject() { return false; }
 
     protected void putNativeFunction(String name, NativeFunctionInterface function) {
-        properties.put(name, new PropertyDescriptor(Value.object(new NativeFunction(function))));
+        properties.put(name, PropertyDescriptor.create(Value.object(new NativeFunction(function))));
     }
 
     // https://tc39.es/ecma262/#sec-ordinaryget
@@ -234,7 +234,7 @@ public class JsObject extends RuntimeDependency {
             return Optional.empty();
         }
         // 2. Let d be a newly created Property Descriptor with no fields.
-        PropertyDescriptor d = new PropertyDescriptor(Value._null(), true, true, true);
+        PropertyDescriptor d = PropertyDescriptor.create(Value._null(), PropertyDescriptorWritable.YES, PropertyDescriptorEnumerable.YES, PropertyDescriptorConfigurable.YES);
         // 3. Let X be O's own property whose key is P
         PropertyDescriptor x = properties.get(propertyName);
         // 4. If x is a data property, then
@@ -317,8 +317,12 @@ public class JsObject extends RuntimeDependency {
             if (propertyDescriptor.isAccessorDescriptor()) {
                 throw new RuntimeException("need to implement");
             } else {
-                PropertyDescriptor newDesc = new PropertyDescriptor(propertyDescriptor.getValue(),
-                        propertyDescriptor.isWritable(), propertyDescriptor.isEnumerable(), propertyDescriptor.isConfigurable());
+                PropertyDescriptor newDesc = PropertyDescriptor.create(
+                        propertyDescriptor.getValue(),
+                        propertyDescriptor.isWritableAsEnum(),
+                        propertyDescriptor.isEnumerableAsEnum(),
+                        propertyDescriptor.isConfigurableAsEnum()
+                );
                 properties.put(propertyName, newDesc);
             }
             return true;
@@ -360,7 +364,7 @@ public class JsObject extends RuntimeDependency {
             } else {
                 // c. Else,
                 //   i. Set ownDesc to the PropertyDescriptor(undefined, true, true, true).
-                ownDesc = new PropertyDescriptor(Value.undefined(), true, true, true);
+                ownDesc = PropertyDescriptor.create(Value.undefined(), PropertyDescriptorWritable.YES, PropertyDescriptorEnumerable.YES, PropertyDescriptorConfigurable.YES);
             }
         }
         ASSERT(ownDesc != null);
@@ -387,7 +391,7 @@ public class JsObject extends RuntimeDependency {
                     return false;
                 }
                 // iii. Let valueDesc be the PropertyDescriptor(V).
-                PropertyDescriptor valueDesc = new PropertyDescriptor(value);
+                PropertyDescriptor valueDesc = PropertyDescriptor.create(value);
                 // iv. Return ? Receiver.[[DefineOwnProperty]](P, valueDesc).
                 return receiver.asObject().defineOwnProperty(propertyName, valueDesc);
             } else {
@@ -413,7 +417,7 @@ public class JsObject extends RuntimeDependency {
     }
 
     private boolean createDataProperty(String propertyName, Value value) {
-        PropertyDescriptor newDesc = new PropertyDescriptor(value, true, true, true);
+        PropertyDescriptor newDesc = PropertyDescriptor.create(value, PropertyDescriptorWritable.YES, PropertyDescriptorEnumerable.YES, PropertyDescriptorConfigurable.YES);
         return defineOwnProperty(propertyName, newDesc);
     }
 

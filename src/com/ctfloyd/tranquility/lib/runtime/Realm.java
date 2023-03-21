@@ -40,7 +40,7 @@ public class Realm {
         // 7. If the host requires use of an exotic object to serve as realm's global object, let global be such an object
         // created in a host-defined manner. Otherwise, let global be undefined, indicating that an ordinary object
         // should be created as the global object.
-        JsObject global = null;
+        JsObject global = GlobalObject.create(realm);
 
         // 8. If the host requires that the this binding in realm's global scope return an objet other than the global object,
         // let thisValue be such an objet created in a host-defined manner. Otherwise, let thisValue be undefined, indicating
@@ -94,7 +94,7 @@ public class Realm {
     }
 
     public void addIntrinsic(Intrinsic intrinsic) {
-        intrinsics.put(intrinsic, intrinsic.getGlobalValue());
+        intrinsics.put(intrinsic, intrinsic.getGlobalValue(this));
     }
 
     public Optional<JsObject> getGlobalObject() {

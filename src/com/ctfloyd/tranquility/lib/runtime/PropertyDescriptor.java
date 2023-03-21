@@ -3,28 +3,34 @@ package com.ctfloyd.tranquility.lib.runtime;
 import java.util.Optional;
 import java.util.StringJoiner;
 
-import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
-
 public class PropertyDescriptor {
 
-    private Value value = null;
-    private boolean writable = false;
-    private boolean enumerable = false;
-    private boolean configurable = false;
+    private Value value;
+    private boolean writable;
+    private boolean enumerable;
+    private boolean configurable;
     private Function get = null;
     private Function set = null;
 
-    public PropertyDescriptor(Value value, boolean writable, boolean enumerable, boolean configurable) {
-        ASSERT(value != null);
+    private PropertyDescriptor(Value value, boolean writable, boolean enumerable, boolean configurable) {
         this.value = value;
         this.writable = writable;
         this.enumerable = enumerable;
         this.configurable = configurable;
     }
 
-    public PropertyDescriptor(Value value) {
-        this.value = value;
+    public static PropertyDescriptor create(Value value) {
+        return PropertyDescriptor.create(value, PropertyDescriptorWritable.NO, PropertyDescriptorEnumerable.NO, PropertyDescriptorConfigurable.NO);
     }
+
+    public static PropertyDescriptor create(Value value, PropertyDescriptorWritable writable, PropertyDescriptorEnumerable enumerable,
+                                            PropertyDescriptorConfigurable configurable) {
+        boolean bWritable = writable == PropertyDescriptorWritable.YES;
+        boolean bEnumerable = enumerable == PropertyDescriptorEnumerable.YES.YES;
+        boolean bConfigurable = configurable == PropertyDescriptorConfigurable.YES;
+        return new PropertyDescriptor(value, bWritable, bEnumerable, bConfigurable);
+    }
+
 
     // https://tc39.es/ecma262/#sec-isaccessordescriptor
     public boolean isAccessorDescriptor() {
@@ -90,6 +96,10 @@ public class PropertyDescriptor {
         return writable;
     }
 
+    public PropertyDescriptorWritable isWritableAsEnum() {
+        return writable ? PropertyDescriptorWritable.YES : PropertyDescriptorWritable.NO;
+    }
+
     public void setWritable(boolean writable) {
         this.writable = writable;
     }
@@ -98,12 +108,20 @@ public class PropertyDescriptor {
         return enumerable;
     }
 
+    public PropertyDescriptorEnumerable isEnumerableAsEnum() {
+        return enumerable ? PropertyDescriptorEnumerable.YES : PropertyDescriptorEnumerable.NO;
+    }
+
     public void setEnumerable(boolean enumerable) {
         this.enumerable = enumerable;
     }
 
     public boolean isConfigurable() {
         return configurable;
+    }
+
+    public PropertyDescriptorConfigurable isConfigurableAsEnum() {
+        return configurable ? PropertyDescriptorConfigurable.YES : PropertyDescriptorConfigurable.NO;
     }
 
     public void setConfigurable(boolean configurable) {
