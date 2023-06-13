@@ -1,6 +1,6 @@
 package com.ctfloyd.tranquility.lib.runtime;
 
-import com.ctfloyd.tranquility.lib.ast.BlockStatement;
+import com.ctfloyd.tranquility.lib.parse.ast.BlockStatement;
 
 import java.util.List;
 import java.util.Optional;

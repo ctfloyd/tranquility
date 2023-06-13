@@ -1,5 +1,8 @@
 package com.ctfloyd.tranquility.lib.tokenize;
 
+import com.ctfloyd.tranquility.lib.parse.tokenize.Token;
+import com.ctfloyd.tranquility.lib.parse.tokenize.TokenType;
+import com.ctfloyd.tranquility.lib.parse.tokenize.Tokenizer;
 import com.ctfloyd.tranquility.lib.test.Suite;
 import com.ctfloyd.tranquility.lib.test.Test;
 

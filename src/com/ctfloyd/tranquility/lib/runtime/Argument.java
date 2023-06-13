@@ -1,6 +1,6 @@
 package com.ctfloyd.tranquility.lib.runtime;
 
-import com.ctfloyd.tranquility.lib.ast.AstNode;
+import com.ctfloyd.tranquility.lib.parse.ast.AstNode;
 
 import static com.ctfloyd.tranquility.lib.common.Assert.ASSERT;
 

@@ -1,6 +1,16 @@
 package com.ctfloyd.tranquility.lib.runtime;
 
 import com.ctfloyd.tranquility.lib.ast.*;
+import com.ctfloyd.tranquility.lib.parse.ast.BinaryExpression;
+import com.ctfloyd.tranquility.lib.parse.ast.BinaryExpressionOperator;
+import com.ctfloyd.tranquility.lib.parse.ast.BlockStatement;
+import com.ctfloyd.tranquility.lib.parse.ast.CallExpression;
+import com.ctfloyd.tranquility.lib.parse.ast.ExpressionStatement;
+import com.ctfloyd.tranquility.lib.parse.ast.FunctionDeclaration;
+import com.ctfloyd.tranquility.lib.parse.ast.Identifier;
+import com.ctfloyd.tranquility.lib.parse.ast.NumericLiteral;
+import com.ctfloyd.tranquility.lib.parse.ast.Program;
+import com.ctfloyd.tranquility.lib.parse.ast.ReturnStatement;
 import com.ctfloyd.tranquility.lib.test.Suite;
 import com.ctfloyd.tranquility.lib.test.Test;
 

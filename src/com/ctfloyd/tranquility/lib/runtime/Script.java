@@ -1,12 +1,12 @@
 package com.ctfloyd.tranquility.lib.runtime;
 
-import com.ctfloyd.tranquility.lib.ast.AstNode;
-import com.ctfloyd.tranquility.lib.ast.FunctionDeclaration;
-import com.ctfloyd.tranquility.lib.ast.Program;
+import com.ctfloyd.tranquility.lib.parse.ast.AstNode;
+import com.ctfloyd.tranquility.lib.parse.ast.FunctionDeclaration;
+import com.ctfloyd.tranquility.lib.parse.ast.Program;
 import com.ctfloyd.tranquility.lib.parse.Parser;
-import com.ctfloyd.tranquility.lib.tokenize.Token;
-import com.ctfloyd.tranquility.lib.tokenize.TokenStream;
-import com.ctfloyd.tranquility.lib.tokenize.Tokenizer;
+import com.ctfloyd.tranquility.lib.parse.tokenize.Token;
+import com.ctfloyd.tranquility.lib.parse.tokenize.TokenStream;
+import com.ctfloyd.tranquility.lib.parse.tokenize.Tokenizer;
 
 import java.util.ArrayList;
 import java.util.List;
